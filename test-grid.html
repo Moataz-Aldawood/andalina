@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andalina Grid Test</title>
+    <!-- Initialize Andalina -->
+    <script src="andalina.js" data-prefix="an" defer></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .page-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="page-title">Grid Layout Demonstration</h1>
+
+    <!-- Use the grid layout template -->
+    <an-layout-template src="grid-layout.html">
+        
+        <!-- Inject multiple card components into the grid's content area -->
+        <an-inject name="grid-content">
+            
+            <an-repeat times="6">
+                <an-component src="card.html" 
+                    title="Mock Card #{{ $index }}" 
+                    description="This is dynamically generated card number {{ $index }} to test our new grid layout without copy-pasting HTML.">
+                </an-component>
+            </an-repeat>
+
+        </an-inject>
+        
+    </an-layout-template>
+
+</body>
+</html>

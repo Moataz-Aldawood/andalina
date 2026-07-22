@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Master Template</title>
+    <style>
+        body { font-family: system-ui, sans-serif; line-height: 1.6; margin: 0; background-color: #fafafa; }
+        .master-container { max-width: 900px; margin: 0 auto; padding: 20px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); min-height: 100vh;}
+        .master-header { background: #2c3e50; color: #fff; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;}
+    </style>
+    <!-- A test script to ensure external libraries are executed during page swap -->
+    <script>
+        console.log("Master template script executed!");
+    </script>
+</head>
+<body>
+    <div class="master-container">
+        <header class="master-header">
+            <h1>My Awesome Application</h1>
+            <p>This header is defined in the Master Template</p>
+        </header>
+
+        <div style="display: flex; gap: 30px; margin-top: 30px;">
+            <main style="flex: 3;">
+                <!-- Main Content Slot -->
+                <an-place name="main-content">
+                    <p style="color: gray;">Default Master Content...</p>
+                </an-place>
+            </main>
+            
+            <aside style="flex: 1; border-left: 1px solid #eee; padding-left: 20px;">
+                <!-- Sidebar Slot -->
+                <an-place name="side-content"></an-place>
+            </aside>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Master Template</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: #fff; margin: 0; }
+        .app-shell { display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: #111; padding: 20px; text-align: center; border-bottom: 2px solid #e74c3c; }
+        .main-container { flex: 1; padding: 40px; display: flex; justify-content: center; }
+    </style>
+    <!-- Master can accept injected styles from children! -->
+    <an-place name="head-assets"></an-place>
+</head>
+<body>
+    <div class="app-shell">
+        <header>
+            <h1>Global App Header</h1>
+        </header>
+        <div class="main-container">
+            <!-- The master expects a 'layout-slot' -->
+            <an-place name="layout-slot"></an-place>
+        </div>
+    </div>
+</body>
+</html>
+

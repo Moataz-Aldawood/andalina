@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="zxx">
+
+<head>
+   <meta charset="utf-8">
+   <title>GoDocs documentation theme</title>
+
+   <!-- mobile responsive meta -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+   <!-- ** Plugins Needed for the Project ** -->
+   <!-- plugins -->
+   <link rel="stylesheet" href="plugins/bulma/bulma.min.css">
+   <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
+   <!-- Main Stylesheet -->
+   <link href="css/style.css" rel="stylesheet">
+
+   <!--Favicon-->
+   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+   <style>
+      .an-prefix {
+         color: #ED6C44 !important;
+      }
+
+      .an-tag {
+         color: #4C4743 !important;
+      }
+
+      .content pre.rendered-html-block {
+         border: 4px solid #ED6C44 !important;
+      }
+   </style>
+</head>
+
+<body>
+
+   <nav class="navbar navigation" role="navigation" aria-label="main navigation">
+      <div class="container">
+         <div class="navbar-brand">
+            <a class="navbar-item" href="index.html">
+               <img class="img-fluid" src="images/logo.png" alt="godocs" width="155px">
+            </a>
+
+            <a role="button" class="navbar-burger burger" aria-expanded="false" data-target="navbar-links">
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+            </a>
+         </div>
+
+         <div id="navbar-links" class="navbar-menu">
+            <div class="navbar-start">
+               <a class="navbar-item" href="index.html">Home</a>
+               <a class="navbar-item" href="documentation.html">Doc</a>
+               <a class="navbar-item" href="demos.html">Demos</a>
+               <a class="navbar-item" href="changelog.html">Changelog</a>
+            </div>
+
+            <div class="navbar-end ml-0">
+               <div class="navbar-item py-0">
+                  <a href="https://github.com" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="#" class="btn btn-sm btn-primary ml-2">Download</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+
+   <!-- details page -->
+   <section class="pt-5">
+      <div class="container is-max-desktop andalina-content section-sm">
+         <div class="columns is-multiline is-centered">
+            <!-- sidebar -->
+            <div class="column is-3-desktop is-12-tablet">
+               <ul class="sidenav">
+                  <li title="About andalina" class="sidelist">
+                     <a href="#about-andalina">What is <span class="an-prefix">an</span><span
+                           class="an-tag">dalina</span> ?</a>
+                  </li>
+                  <li title="How to use" class="sidelist">
+                     <a href="#how-to-use">How to use</a>
+                  </li>
+                  <li title="&lt;an-repeat&gt;" class="sidelist">
+                     <a href="#repeat"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-repeat&gt;</span></a>
+                  </li>
+                  <li title="&lt;an-include&gt;" class="sidelist">
+                     <a href="#include"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-include&gt;</span></a>
+                  </li>
+                  <li title="&lt;an-component&gt;" class="sidelist">
+                     <a href="#components"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-component&gt;</span></a>
+                  </li>
+                  <li title="&lt;an-layout-template&gt;" class="sidelist">
+                     <a href="#layout-template"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-layout-template&gt;</span></a>
+                  </li>
+                  <li title="&lt;an-page-template&gt;" class="sidelist">
+                     <a href="#page-template"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-page-template&gt;</span></a>
+                  </li>
+                  <li title="Configuration" class="sidelist">
+                     <a href="#configuration">Configuration</a>
+                  </li>
+                  <li title="View Final Source" class="sidelist">
+                     <a href="#show-source">View Final Source</a>
+                  </li>
+                  <li title="Debugging" class="sidelist">
+                     <a href="#debugging">Debugging</a>
+                  </li>
+               </ul>
+            </div>
+
+            <!-- body -->
+            <div class="column is-8-desktop is-12-tablet">
+               <div class="px-4">
+                  <h2 class="mb-4 has-text-weight-bold has-text-centered"
+                     style="color: var(--color-main-1) !important;">Documentation</h2> <!-- main content -->
+                  <div class="content">
+                     <div id="about-andalina">
+                        <h3>What is andalina?</h3>
+                        <p>andalina is a zero-dependency, development-time composition tool designed to enforce the DRY
+                           (Don't Repeat Yourself) principle for HTML authoring. It is not a framework for serving web
+                           applications; it is a template parser for HTML/XHTML that runs directly in the browser.</p>
+
+                        <h4>The Problem We Solve:</h4>
+                        <p>This addresses a classic <strong>Developer Experience (DX) problem</strong>: the handoff
+                           friction between Front-End (FE) and Back-End (BE) teams. Often, when the FE team delivers raw
+                           HTML, the BE team has to rewrite or "clean up" the HTML to ingest it or wrap it in their
+                           server-side logic (JSF, ASP, Laravel, PHP, Django, JSP, Thymeleaf, Blade, Jinja2, etc.). This
+                           leads to massive BE/FE misalignment during the development phase.</p>
+
+                        <h4>The Vision:</h4>
+                        <p>Our vision is to solve this misalignment by providing a simple, unified, language-agnostic
+                           template language. By using andalina, the FE team delivers structured, modular components
+                           that perfectly map to server-side component boundaries. The BE team can now easily integrate
+                           these templates without rewriting the HTML. This vision is built upon four core pillars:</p>
+                        <ul>
+                           <li><strong>Zero-Dependency:</strong> andalina runs entirely in the browser. No Node.js build
+                              pipelines, no Webpack, and no server-side rendering required.</li>
+                           <li><strong>Simple & Easy to Learn:</strong> andalina uses only 5 core tags. It is incredibly
+                              easy to pick up, even for absolute beginners.</li>
+                           <li><strong>Standard HTML/XHTML:</strong> There is no need to learn a new programming
+                              language or complex framework. It's just the HTML you already know!</li>
+                           <li><strong>Single Source of Truth:</strong> Front-End developers can fix bugs in exactly one
+                              place. No more repeating code across 20 files—andalina handles the repetition for you.
+                           </li>
+                        </ul>
+                     </div>
+
+                     <div id="how-to-use">
+
+                        <h3>How to Use</h3>
+                        <div class="andalina-important-card">
+                           <strong>Important Note:</strong> Because andalina uses the Fetch API to load templates
+                           dynamically, modern browsers will block it due to CORS restrictions if you open the
+                           HTML/XHTML file
+                           directly (e.g., <code>file://</code>). <strong>You must run your project through a local
+                              development server</strong> (like VS Code's "Live Server" extension) for andalina to work!
+                        </div>
+                        <p>Simply drop the andalina script tag into the <code>&lt;head&gt;</code> of your HTML document.
+                           Ensure you use the <code>defer</code> attribute so it parses after the DOM is ready.</p>
+                        <pre><code>&lt;script src="andalina.js" defer&gt;&lt;/script&gt;</code></pre>
+                     </div>
+
+                     <div id="repeat">
+
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-repeat&gt;</span></h3>
+                        <p>Used to loop content dynamically.</p>
+
+                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-repeat&gt;</span> attributes:</h4>
+                        <ul>
+                           <li><code>times</code> <em>(Required)</em>: An integer specifying how many times to repeat
+                              the content block.</li>
+                           <li><code>index-as</code> <em>(Optional, Default: "$index")</em>: The variable name used to
+                              access the current loop iteration index inside the block.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <pre><code>&lt;an-repeat times="3" index-as="i"&gt;
+    &lt;p&gt;Item number {{i}}&lt;/p&gt;
+&lt;/an-repeat&gt;</code></pre>
+
+                        <h4>Rendered HTML:</h4>
+                        <pre class="rendered-html-block">&lt;p&gt;Item number
+                           0&lt;/p&gt;
+                           &lt;p&gt;Item number 1&lt;/p&gt;
+                           &lt;p&gt;Item number 2&lt;/p&gt;</pre>
+                     </div>
+
+                     <div id="include">
+
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-include&gt;</span></h3>
+                        <p>Used to inject static HTML partials directly into your page.</p>
+
+                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-include&gt;</span> attributes:</h4>
+                        <ul>
+                           <li><code>src</code> <em>(Required)</em>: The path to the HTML/XHTML file you want to
+                              include.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <p><strong>1. The Partial (header.html)</strong></p>
+                        <pre><code>&lt;header&gt;Welcome!&lt;/header&gt;</code></pre>
+
+                        <p><strong>2. The Call (index.html)</strong></p>
+                        <pre><code>&lt;an-include src="header.html"&gt;&lt;/an-include&gt;</code></pre>
+
+                        <h4>Rendered HTML:</h4>
+                        <pre class="rendered-html-block">
+                           &lt;header&gt;Welcome!&lt;/header&gt;</pre>
+                     </div>
+
+                     <div id="components">
+
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-component&gt;</span></h3>
+                        <p>Used to import reusable components and pass dynamic properties via attributes. Variables
+                           inside the component are defined using
+                           <code>&lt;an-attribute&gt;</code>.
+                        </p>
+
+                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-component&gt;</span> attributes:</h4>
+                        <ul>
+                           <li><code>src</code> <em>(Optional)</em>: The exact path to the component HTML/XHTML file.
+                           </li>
+                           <li><code>name</code> <em>(Optional)</em>: The name of the component (resolves to
+                              <code>[componentsPath]/[name].html</code>). <em>Note: You must provide either
+                                 <code>src</code> or <code>name</code>.</em>
+                           </li>
+                           <li><em>Dynamic Attributes</em>: Any other attribute you add will be passed to the component
+                              as a property.</li>
+                        </ul>
+
+                        <p>Inside the component, use
+                           <code>&lt;an-attribute&gt;</code>
+                           to define the props. It accepts:
+                        </p>
+                        <ul>
+                           <li><code>name</code> <em>(Required)</em>: The name of the property.</li>
+                           <li><code>default-value</code> <em>(Optional)</em>: A fallback value if the prop is not
+                              passed.</li>
+                           <li><code>mandatory</code> <em>(Optional)</em>: Set to "true" to log a warning if the prop is
+                              missing.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <p><strong>1. The Component (user-card.html)</strong></p>
+                        <pre><code>&lt;an-attribute name="username" mandatory="true" /&gt;
+&lt;an-attribute name="role" default-value="Member" /&gt;
+&lt;div class="card"&gt;
+    &lt;h2&gt;{{username}}&lt;/h2&gt;
+    &lt;p&gt;Role: {{role}}&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+                        <p><strong>2. The Call (index.html)</strong></p>
+                        <pre><code>&lt;an-component name="user-card" username="Alice" role="Admin"&gt;&lt;/an-component&gt;</code></pre>
+
+                        <h4>Rendered HTML:</h4>
+                        <pre class="rendered-html-block">&lt;div
+                           class="card"&gt;
+                           &lt;h2&gt;Alice&lt;/h2&gt;
+                           &lt;p&gt;Role: Admin&lt;/p&gt;
+                           &lt;/div&gt;</pre>
+                     </div>
+
+                     <div id="layout-template">
+
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-layout-template&gt;</span></h3>
+                        <p>Used when one layout wants to extend another parent layout. Uses
+                           <code>&lt;an-inject&gt;</code>
+                           to fill the parent, and
+                           <code>&lt;an-place&gt;</code>
+                           to
+                           accept content from children.
+                        </p>
+
+                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-layout-template&gt;</span> attributes:</h4>
+                        <ul>
+                           <li><code>src</code> <em>(Required)</em>: The path to the parent layout HTML/XHTML file.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <p><strong>1. The Parent Layout (master.html)</strong></p>
+                        <pre><code>&lt;body&gt;
+    &lt;an-place name="main"&gt;&lt;/an-place&gt;
+&lt;/body&gt;</code></pre>
+
+                        <p><strong>2. The Child Layout (mid-layout.html)</strong></p>
+                        <pre><code>&lt;an-layout-template src="master.html"&gt;
+    &lt;an-inject name="main"&gt;
+        &lt;div class="sidebar"&gt;Sidebar content&lt;/div&gt;
+        &lt;an-place name="content"&gt;&lt;/an-place&gt;
+    &lt;/an-inject&gt;
+&lt;/an-layout-template&gt;</code></pre>
+
+                        <h4>Rendered HTML:</h4>
+                        <pre class="rendered-html-block">&lt;body&gt;
+                           &lt;div class="sidebar"&gt;Sidebar content&lt;/div&gt;
+                           &lt;an-place
+                           name="content"&gt;<span class="an-tag">&lt;/</span><span class="an-prefix">an</span><span
+                              class="an-tag">-place&gt;</span>
+                           &lt;/body&gt;
+                        </pre>
+                     </div>
+
+                     <div id="page-template">
+
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-page-template&gt;</span></h3>
+                        <p>The root tag used in your final HTML page to wrap your content inside a layout.</p>
+
+                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-page-template&gt;</span> attributes:</h4>
+                        <ul>
+                           <li><code>src</code> <em>(Required)</em>: The path to the layout HTML/XHTML file.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <p><strong>1. The Template Page (master.html)</strong></p>
+                        <pre><code>&lt;body&gt;
+    &lt;header&gt;Global Header&lt;/header&gt;
+    &lt;main&gt;
+        &lt;an-place name="content"&gt;&lt;/an-place&gt;
+    &lt;/main&gt;
+&lt;/body&gt;</code></pre>
+
+                        <p><strong>2. The Calling Page (index.html)</strong></p>
+                        <pre><code>&lt;an-page-template src="master.html"&gt;
+    &lt;an-inject name="content"&gt;
+        &lt;h1&gt;Welcome to the Homepage&lt;/h1&gt;
+    &lt;/an-inject&gt;
+&lt;/an-page-template&gt;</code></pre>
+
+                        <h4>Rendered HTML:</h4>
+                        <pre class="rendered-html-block">&lt;body&gt;
+                           &lt;header&gt;Global Header&lt;/header&gt;
+                           &lt;main&gt;
+                           &lt;h1&gt;Welcome to the Homepage&lt;/h1&gt;
+                           &lt;/main&gt;
+                           &lt;/body&gt;</pre>
+                     </div>
+
+                     <div id="configuration">
+
+                        <h3>Configuration</h3>
+                        <p>Define the global behavior in <code>andalina.config.json</code>:</p>
+                        <pre><code>{
+    "showSource": "disabled",
+    "debug": "enabled",
+    "preventFOUC": "enabled",
+    "propStart": "{{",
+    "propEnd": "}}",
+    "prefix": "an",
+    "componentsPath": "components"
+}</code></pre>
+                        <p><strong>Page Scope Configuration:</strong> You can override the global configuration directly
+                           on a specific page by adding data attributes to the andalina script tag.</p>
+                        <pre><code>&lt;script src="andalina.js" data-debug="enabled" data-components-path="my-components" defer&gt;&lt;/script&gt;</code></pre>
+                     </div>
+
+                     <div id="show-source">
+
+                        <h3>View Final Source</h3>
+                        <p>Since andalina runs client-side and dynamically manipulates the DOM, viewing the page source
+                           in your browser (Right Click &gt; View Page Source) will only show your
+                           <code>&lt;an-&gt;</code> tags, not the final rendered HTML.
+                        </p>
+                        <p>If you need to inspect or copy the completely rendered HTML, you can enable the
+                           <code>showSource</code> configuration globally in <code>andalina.config.json</code>, or on a
+                           single page using <code>data-show-source="enabled"</code>.
+                        </p>
+                        <p>When enabled, andalina will print the <strong>Final Composed Source Code</strong> directly
+                           into your Developer Tools Console! You can easily inspect it or copy-paste it.</p>
+                     </div>
+
+                     <div id="debugging">
+
+                        <h3>Debugging</h3>
+                        <p>When working with complex nested templates, it's easy to lose track of what andalina is
+                           fetching. To help with this, you can enable <code>debug</code> mode.</p>
+
+                        <h4>Enable Debug Mode:</h4>
+                        <p>You can turn on debug mode globally in your <code>andalina.config.json</code>, or on a single
+                           page using the script attribute: <code>data-debug="enabled"</code>.</p>
+                        <p>When enabled, andalina will print a beautiful, structured trace directly to your browser's
+                           Developer Tools Console, showing exactly which files were fetched, how long the network
+                           request took, and the properties passed to each component.</p>
+                     </div>
+
+                  </div>
+
+                  <!-- navigation -->
+                  <nav class="pagination mt-5">
+                     <a class="nav nav-prev" href="index.html"><i class="ti-arrow-left mr-2"></i>
+                        <span class="d-none d-md-block">Back to Home</span></a>
+                  </nav>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- /details page -->
+
+   <footer>
+      <div class="container">
+         <div class="columns is-multiline is-align-items-center border-bottom py-5">
+            <div class="column is-4-desktop is-12-tablet">
+               <!-- Footer menu removed per user request -->
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <a class="navbar-brand is-justify-content-center" href="index.html">
+                  <img class="img-fluid" src="images/logo.png" alt="Hugo documentation theme">
+               </a>
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <ul class="list-inline social-icons has-text-right-desktop has-text-centered">
+                  <li class="list-inline-item"><a href="#"><i class="ti-facebook"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-twitter-alt"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-github"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-linkedin"></i></a></li>
+               </ul>
+            </div>
+         </div>
+         <div class="py-4 has-text-centered">
+            <small class="text-light">Copyright © 2026 - Invented &amp; Developed by <a
+                  href="https://www.linkedin.com/in/moataz-aldawood/">Moataz Al Dawood</a></small>
+         </div>
+      </div>
+   </footer>
+
+   <!-- plugins -->
+   <script src="plugins/jQuery/jquery.min.js"></script>
+   <script src="plugins/masonry/masonry.min.js"></script>
+   <script src="plugins/clipboard/clipboard.min.js"></script>
+   <script src="plugins/match-height/jquery.matchHeight-min.js"></script>
+
+   <!-- Main Script -->
+   <script src="js/script.js"></script>
+
+</body>
+
+</html>

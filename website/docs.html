@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Andalina Documentation. Learn how to compose modular HTML architectures without any build tools.">
+    <title>Documentation | Andalina</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="nav-brand">Andalina</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="docs.html">Docs</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+                <span style="color: var(--border);">|</span>
+                <a href="ar/index.html">العربية</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding: 4rem 1.5rem; max-width: 800px;">
+        <h1>Documentation</h1>
+        <p class="lead">Learn how to build zero-dependency component architectures using Andalina. Everything runs perfectly in the browser without any build steps.</p>
+        
+        <div style="margin-top: 3rem;">
+            <h2>1. Installation</h2>
+            <p>Simply drop the script tag into the <code>&lt;head&gt;</code> of your HTML document. Ensure you use the <code>defer</code> attribute so it parses after the DOM is ready.</p>
+            <pre>&lt;script src="andalina.js" defer&gt;&lt;/script&gt;</pre>
+        </div>
+
+        <div style="margin-top: 3rem;">
+            <h2>2. Configuration File</h2>
+            <p>Create an <code>andalina.config.json</code> file in your root directory to configure the engine globally.</p>
+<pre>{
+    "showSource": "disabled",
+    "debug": "enabled",
+    "preventFOUC": "enabled",
+    "propStart": "{{",
+    "propEnd": "}}",
+    "prefix": "an"
+}</pre>
+            <p><strong>Note:</strong> <code>propStart</code> and <code>propEnd</code> are mandatory to prevent conflicts with frameworks like Vue or Angular.</p>
+        </div>
+
+        <div style="margin-top: 3rem;">
+            <h2>3. Master Layouts</h2>
+            <p>Create a master layout (e.g., <code>master.html</code>) and use <code>&lt;<span class="an-prefix">an</span><span class="an-tag">-place</span>&gt;</code> tags to define where content should go.</p>
+<pre>&lt;!-- master.html --&gt;
+&lt;main&gt;
+    &lt;<span class="an-prefix">an</span><span class="an-tag">-place</span> name="content"&gt;&lt;/<span class="an-prefix">an</span><span class="an-tag">-place</span>&gt;
+&lt;/main&gt;</pre>
+            
+            <p style="margin-top: 1rem;">Then, in your page, use <code>&lt;<span class="an-prefix">an</span><span class="an-tag">-page-template</span>&gt;</code> and <code>&lt;<span class="an-prefix">an</span><span class="an-tag">-inject</span>&gt;</code> to fill that layout:</p>
+<pre>&lt;!-- index.html --&gt;
+&lt;<span class="an-prefix">an</span><span class="an-tag">-page-template</span> src="master.html"&gt;
+    &lt;<span class="an-prefix">an</span><span class="an-tag">-inject</span> name="content"&gt;
+        &lt;h1&gt;Hello World!&lt;/h1&gt;
+    &lt;/<span class="an-prefix">an</span><span class="an-tag">-inject</span>&gt;
+&lt;/<span class="an-prefix">an</span><span class="an-tag">-page-template</span>&gt;</pre>
+        </div>
+
+        <div style="margin-top: 3rem;">
+            <h2>4. Components & Props</h2>
+            <p>You can define variables inside a component using <code>&lt;<span class="an-prefix">an</span><span class="an-tag">-attribute</span>&gt;</code>, and pass them down just like React or Vue!</p>
+<pre>&lt;!-- button.html --&gt;
+&lt;<span class="an-prefix">an</span><span class="an-tag">-attribute</span> name="label" mandatory="true" /&gt;
+&lt;<span class="an-prefix">an</span><span class="an-tag">-attribute</span> name="theme" default-value="primary" /&gt;
+
+&lt;button class="btn btn-{{theme}}"&gt;{{label}}&lt;/button&gt;</pre>
+
+            <p style="margin-top: 1rem;">Usage:</p>
+<pre>&lt;<span class="an-prefix">an</span><span class="an-tag">-component</span> src="button.html" label="Submit" theme="outline"&gt;&lt;/<span class="an-prefix">an</span><span class="an-tag">-component</span>&gt;</pre>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Andalina Project. Designed with pure HTML & CSS.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<an-attribute name="username" mandatory="true" />
+<an-attribute name="role" default-value="User" />
+
+<div style="display: flex; align-items: center; gap: 1rem;">
+    <div style="width: 50px; height: 50px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem;">
+        {{username.charAt(0)}}
+    </div>
+    <div>
+        <h4 style="margin: 0; color: var(--text-main);">{{username}}</h4>
+        <span style="color: var(--text-muted); font-size: 0.875rem;">{{role}}</span>
+    </div>
+</div>

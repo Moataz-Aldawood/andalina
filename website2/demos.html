@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="zxx">
+
+<head>
+   <meta charset="utf-8">
+   <title>GoDocs documentation theme</title>
+
+   <!-- mobile responsive meta -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+   <!-- ** Plugins Needed for the Project ** -->
+   <!-- plugins -->
+   <link rel="stylesheet" href="plugins/bulma/bulma.min.css">
+   <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
+   <!-- Main Stylesheet -->
+   <link href="css/style.css" rel="stylesheet">
+
+   <!--Favicon-->
+   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+</head>
+
+<body>
+
+   <nav class="navbar navigation" role="navigation" aria-label="main navigation">
+      <div class="container">
+         <div class="navbar-brand">
+            <a class="navbar-item" href="index.html">
+               <img class="img-fluid" src="images/logo.png" alt="godocs" width="155px">
+            </a>
+
+            <a role="button" class="navbar-burger burger" aria-expanded="false" data-target="navbar-links">
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+            </a>
+         </div>
+
+         <div id="navbar-links" class="navbar-menu">
+            <div class="navbar-start">
+               <a class="navbar-item" href="index.html">Home</a>
+               <a class="navbar-item" href="documentation.html">Doc</a>
+               <a class="navbar-item" href="demos.html">Demos</a>
+               <a class="navbar-item" href="changelog.html">Changelog</a>
+            </div>
+
+            <div class="navbar-end ml-0">
+               <div class="navbar-item py-0">
+                  <a href="https://github.com" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="#" class="btn btn-sm btn-primary ml-2">Download</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+
+   <!-- details page -->
+   <section class="pt-5">
+      <div class="container is-max-desktop andalina-content section-sm">
+         <div class="columns is-multiline is-centered">
+            <!-- sidebar -->
+            <div class="column is-3-desktop is-12-tablet">
+               <ul class="sidenav">
+                  <li title="Dynamic Forms" class="sidelist parent active">
+                     <a href="#dynamic-forms">Dynamic Forms</a>
+                  </li>
+                  <li title="Nested Layouts" class="sidelist">
+                     <a href="#nested-layouts">Nested Layouts</a>
+                  </li>
+                  <li title="List Rendering" class="sidelist">
+                     <a href="#list-rendering">List Rendering</a>
+                  </li>
+               </ul>
+            </div>
+
+            <!-- body -->
+            <div class="column is-8-desktop is-12-tablet">
+               <div class="px-4">
+                  <h2 class="mb-4 has-text-weight-medium">Andalina Advanced Demos</h2> <!-- main content -->
+
+                  <div id="dynamic-forms">
+                     <hr>
+                     <h3>Dynamic Forms</h3>
+                     <p>Create complex, reusable forms by combining components and layouts together in Andalina.</p>
+
+                     <h4>Example:</h4>
+                     <p><strong>1. The Input Component (input.html)</strong></p>
+                     <pre><code>&lt;an-attribute name="type" default-value="text" /&gt;
+&lt;an-attribute name="placeholder" /&gt;
+&lt;div class="field"&gt;
+    &lt;div class="control"&gt;
+        &lt;input class="input" type="{{type}}" placeholder="{{placeholder}}"&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                     <p><strong>2. The Form (index.html)</strong></p>
+                     <pre><code>&lt;form&gt;
+    &lt;an-component src="input.html" type="email" placeholder="Enter email"&gt;&lt;/an-component&gt;
+    &lt;an-component src="input.html" type="password" placeholder="Password"&gt;&lt;/an-component&gt;
+    &lt;button class="button is-primary"&gt;Login&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+                     <h4>Rendered HTML:</h4>
+                     <div class="notification is-primary is-light"
+                        style="font-family: monospace; white-space: pre-wrap; overflow-x: auto;">&lt;form&gt;
+                        &lt;div class="field"&gt;
+                        &lt;div class="control"&gt;
+                        &lt;input class="input" type="email" placeholder="Enter email"&gt;
+                        &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="field"&gt;
+                        &lt;div class="control"&gt;
+                        &lt;input class="input" type="password" placeholder="Password"&gt;
+                        &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;button class="button is-primary"&gt;Login&lt;/button&gt;
+                        &lt;/form&gt;</div>
+                  </div>
+
+                  <div id="nested-layouts">
+                     <hr>
+                     <h3>Deeply Nested Layouts</h3>
+                     <p>Andalina natively resolves complex nested layouts without any issues.</p>
+
+                     <h4>Example:</h4>
+                     <p><strong>1. Super Master (super-master.html)</strong></p>
+                     <pre><code>&lt;body&gt;
+    &lt;nav&gt;Global Nav&lt;/nav&gt;
+    &lt;an-place name="wrapper"&gt;&lt;/an-place&gt;
+&lt;/body&gt;</code></pre>
+
+                     <p><strong>2. Master (master.html)</strong></p>
+                     <pre><code>&lt;an-layout-template src="super-master.html"&gt;
+    &lt;an-inject name="wrapper"&gt;
+        &lt;main&gt;
+            &lt;an-place name="content"&gt;&lt;/an-place&gt;
+        &lt;/main&gt;
+    &lt;/an-inject&gt;
+&lt;/an-layout-template&gt;</code></pre>
+
+                     <p><strong>3. Page (index.html)</strong></p>
+                     <pre><code>&lt;an-page-template src="master.html"&gt;
+    &lt;an-inject name="content"&gt;
+        &lt;p&gt;This content is 3 levels deep!&lt;/p&gt;
+    &lt;/an-inject&gt;
+&lt;/an-page-template&gt;</code></pre>
+
+                     <h4>Rendered HTML:</h4>
+                     <div class="notification is-primary is-light"
+                        style="font-family: monospace; white-space: pre-wrap; overflow-x: auto;">&lt;body&gt;
+                        &lt;nav&gt;Global Nav&lt;/nav&gt;
+                        &lt;main&gt;
+                        &lt;p&gt;This content is 3 levels deep!&lt;/p&gt;
+                        &lt;/main&gt;
+                        &lt;/body&gt;</div>
+                  </div>
+
+                  <div id="list-rendering">
+                     <hr>
+                     <h3>Complex List Rendering</h3>
+                     <p>Use components inside of loops to render clean UI dynamically.</p>
+
+                     <h4>Example:</h4>
+                     <p><strong>1. Component (card.html)</strong></p>
+                     <pre><code>&lt;an-attribute name="title" /&gt;
+&lt;div class="box"&gt;
+    &lt;h4&gt;{{title}}&lt;/h4&gt;
+&lt;/div&gt;</code></pre>
+
+                     <p><strong>2. Loop (index.html)</strong></p>
+                     <pre><code>&lt;div class="grid"&gt;
+    &lt;an-repeat times="2" index-as="index"&gt;
+        &lt;an-component src="card.html" title="Post #{{index}}"&gt;&lt;/an-component&gt;
+    &lt;/an-repeat&gt;
+&lt;/div&gt;</code></pre>
+
+                     <h4>Rendered HTML:</h4>
+                     <div class="notification is-primary is-light"
+                        style="font-family: monospace; white-space: pre-wrap; overflow-x: auto;">&lt;div
+                        class="grid"&gt;
+                        &lt;div class="box"&gt;&lt;h4&gt;Post #0&lt;/h4&gt;&lt;/div&gt;
+                        &lt;div class="box"&gt;&lt;h4&gt;Post #1&lt;/h4&gt;&lt;/div&gt;
+                        &lt;/div&gt;</div>
+                  </div>
+
+               </div>
+
+               <!-- navigation -->
+               <nav class="pagination mt-5">
+                  <a class="nav nav-prev" href="index.html"><i class="ti-arrow-left mr-2"></i>
+                     <span class="d-none d-md-block">Back to Home</span></a>
+               </nav>
+            </div>
+         </div>
+      </div>
+      </div>
+   </section>
+   <!-- /details page -->
+
+   <footer>
+      <div class="container">
+         <div class="columns is-multiline is-align-items-center border-bottom py-5">
+            <div class="column is-4-desktop is-12-tablet">
+               <!-- Footer menu removed per user request -->
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <a class="navbar-brand is-justify-content-center" href="index.html">
+                  <img class="img-fluid" src="images/logo.png" alt="Hugo documentation theme">
+               </a>
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <ul class="list-inline social-icons has-text-right-desktop has-text-centered">
+                  <li class="list-inline-item"><a href="#"><i class="ti-facebook"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-twitter-alt"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-github"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-linkedin"></i></a></li>
+               </ul>
+            </div>
+         </div>
+         <div class="py-4 has-text-centered">
+            <small class="text-light">Copyright © 2026 - Invented &amp; Developed by <a
+                  href="https://www.linkedin.com/in/moataz-aldawood/">Moataz Al Dawood</a></small>
+         </div>
+      </div>
+   </footer>
+
+   <!-- plugins -->
+   <script src="plugins/jQuery/jquery.min.js"></script>
+   <script src="plugins/masonry/masonry.min.js"></script>
+   <script src="plugins/clipboard/clipboard.min.js"></script>
+   <script src="plugins/match-height/jquery.matchHeight-min.js"></script>
+
+   <!-- Main Script -->
+   <script src="js/script.js"></script>
+
+</body>
+
+</html>

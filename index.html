@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andalina Demo</title>
+    <!-- Configure prefix explicitly via data-prefix -->
+    <script src="andalina.js" data-prefix="an" defer></script>
+    <style>
+        body { font-family: system-ui, sans-serif; line-height: 1.6; margin: 0; }
+        .box { border: 1px dashed #ccc; padding: 20px; margin: 10px 0; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <!-- Using the layout pattern -->
+    <an-template src="layout.html">
+        
+        <!-- Define the main content -->
+        <an-inject name="main-content">
+            <div class="box">
+                <h2>Hello from Index.html</h2>
+                <p>This content was injected into the layout's "main-content" insert slot.</p>
+                
+                <!-- We can even nest includes inside a define block! -->
+                <an-include src="nested.html"></an-include>
+            </div>
+        </an-inject>
+
+        <!-- Define the sidebar content -->
+        <an-inject name="side-content">
+            <div class="box" style="background: #eef8ff; border-color: #bee3f8;">
+                <h3>Sidebar Data</h3>
+                <ul>
+                    <li>Link 1</li>
+                    <li>Link 2</li>
+                </ul>
+            </div>
+        </an-inject>
+
+    </an-template>
+
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- The developer must call the parser here -->
+    <script src="andalina.js" data-prefix="an" defer></script>
+</head>
+<body>
+    
+    <!-- This tag completely replaces the page with master-template.html -->
+    <an-page-template src="master-template.html">
+        
+        <!-- Define the main content -->
+        <an-inject name="main-content">
+            <div style="border: 2px solid #3498db; padding: 20px; border-radius: 4px;">
+                <h2 style="color: #2980b9;">Hello from apply-template.html</h2>
+                <p>This content was defined in the child template, but the layout is entirely controlled by the master template!</p>
+                
+                <h4>Check the DevTools Console:</h4>
+                <p>You should see "Master template script executed!" logged, proving that Andalina successfully cloned and executed the master's scripts during the page swap.</p>
+            </div>
+        </an-inject>
+
+        <!-- Define the sidebar content -->
+        <an-inject name="side-content">
+            <div style="background: #ecf0f1; padding: 15px; border-radius: 4px;">
+                <h3>Navigation</h3>
+                <ul style="padding-left: 20px;">
+                    <li>Dashboard</li>
+                    <li>Settings</li>
+                    <li>Profile</li>
+                </ul>
+            </div>
+        </an-inject>
+
+    </an-page-template>
+
+</body>
+</html>

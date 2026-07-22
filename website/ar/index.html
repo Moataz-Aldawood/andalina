@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="أندالينا - محرك مكونات HTML لمطوري الواجهات الأمامية بدون تبعيات.">
+    <title>أندالينا | محرك مكونات بدون تبعيات</title>
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- We load Andalina purely to drive the Live Sandbox section on this page -->
+    <script src="../../andalina.js" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="nav-brand">أندالينا</a>
+            <div class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="../docs.html">الوثائق</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+                <span style="color: var(--border);">|</span>
+                <a href="../index.html">English</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero container">
+            <span class="badge">الإصدار 1.0 متاح الآن</span>
+            <h1>ابنِ واجهات سريعة ومعيارية.<br>بدون خطوات بناء.</h1>
+            <p class="lead">يسمح أندالينا لمطوري الواجهات الأمامية بتركيب مكونات HTML مبنية على الخصائص بدون React، بدون Webpack، وبدون Node.js. فقط Vanilla JS نقي و DOM أصلي.</p>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <a href="../docs.html" class="btn btn-primary">ابدأ الآن</a>
+                <a href="https://github.com" class="btn btn-outline">شاهد المصدر</a>
+            </div>
+        </section>
+
+        <section class="container" style="padding: 4rem 0;">
+            <h2>تجربة حية</h2>
+            <p>بينما هذا الموقع مبني باستخدام HTML نقي لضمان أفضل تحسين لمحركات البحث (SEO)، الصندوق أدناه يعرض مكونات حية ديناميكيًا باستخدام أندالينا.</p>
+            
+            <div class="sandbox">
+                <div class="sandbox-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    محرك أندالينا الحي
+                </div>
+                
+                <p>نحن نقوم بجلب <code>sandbox-component.html</code> وتمرير الخصائص إليه:</p>
+                <pre dir="ltr" style="text-align: left;">&lt;an-component src="../sandbox-component.html" username="مهندس واجهات" role="مطور رئيسي"&gt;&lt;/an-component&gt;</pre>
+                
+                <div style="padding: 1.5rem; background: white; border: 1px solid var(--border); border-radius: 0.375rem; margin-top: 1rem;">
+                    <!-- The Andalina Engine parses this tag live! -->
+                    <an-component src="../sandbox-component.html" username="مهندس واجهات" role="مطور رئيسي"></an-component>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 مشروع أندالينا. مصمم باستخدام HTML و CSS نقي.</p>
+        </div>
+    </footer>
+</body>
+</html>

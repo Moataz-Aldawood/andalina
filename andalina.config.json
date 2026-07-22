@@ -1,0 +1,8 @@
+{
+    "showSource": "disabled",
+    "debug": "enabled",
+    "preventFOUC": "enabled",
+    "propStart": "{{",
+    "propEnd": "}}",
+    "prefix": "an"
+}

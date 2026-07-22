@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="zxx">
+
+<head>
+   <meta charset="utf-8">
+   <title>GoDocs documentation theme</title>
+
+   <!-- mobile responsive meta -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+   <!-- theme meta -->
+   <meta name="theme-name" content="godocs-bulma" />
+
+   <!-- ** Plugins Needed for the Project ** -->
+   <!-- plugins -->
+   <link rel="stylesheet" href="plugins/bulma/bulma.min.css">
+   <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
+   <!-- Main Stylesheet -->
+   <link href="css/style.css" rel="stylesheet">
+
+   <!--Favicon-->
+   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+</head>
+
+<body>
+
+   <nav class="navbar navigation" role="navigation" aria-label="main navigation">
+      <div class="container">
+         <div class="navbar-brand">
+            <a class="navbar-item" href="index.html">
+               <img class="img-fluid" src="images/logo.png" alt="godocs" width="155px">
+            </a>
+
+            <a role="button" class="navbar-burger burger" aria-expanded="false" data-target="navbar-links">
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+            </a>
+         </div>
+
+         <div id="navbar-links" class="navbar-menu">
+            <div class="navbar-start">
+               <a class="navbar-item" href="index.html">Home</a>
+               <a class="navbar-item" href="documentation.html">Doc</a>
+               <a class="navbar-item" href="demos.html">Demos</a>
+               <a class="navbar-item" href="changelog.html">Changelog</a>
+            </div>
+
+            <div class="navbar-end ml-0">
+               <div class="navbar-item py-0">
+                  <a href="https://github.com" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="#" class="btn btn-sm btn-primary ml-2">Download</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+
+   <!-- banner -->
+   <section class="section pb-0 hero-section" style="position: relative; overflow: hidden; padding-top: 5rem;">
+      <div class="container">
+         <div class="columns is-justify-content-space-between is-align-items-center">
+            <div class="column is-6-desktop has-text-centered-mobile has-text-centered-tablet has-text-left-desktop">
+               <h1 class="mb-4" style="font-size: 3.5rem; font-weight: 800; line-height: 1.1;">Build Modular
+                  HTML.<br><span class="has-text-primary">Zero Build Tools.</span></h1>
+               <p class="mb-5 is-size-5 has-text-grey">Andalina is a zero-dependency, client-side template engine that
+                  brings component architecture to vanilla HTML. No Node.js, no Webpack, no server required.</p>
+               <div class="buttons is-justify-content-flex-start is-justify-content-center-mobile">
+                  <a href="documentation.html" class="btn btn-primary mr-3 mb-3">Get Started</a>
+                  <a href="demos.html" class="btn btn-outline-primary mb-3">View Demos</a>
+               </div>
+            </div>
+            <div class="column is-6-desktop">
+               <div class="card shadow-lg"
+                  style="border-radius: 12px; background: #4C4743; overflow: hidden; border: 1px solid #767171;">
+                  <div class="card-header"
+                     style="background: #3A3633; padding: 10px 20px; border-bottom: 1px solid #767171;">
+                     <span
+                        style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #fc8181; margin-right: 6px;"></span>
+                     <span
+                        style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #f6e05e; margin-right: 6px;"></span>
+                     <span
+                        style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #68d391;"></span>
+                  </div>
+                  <div class="card-content p-0">
+                     <pre
+                        style="background: transparent; color: #FDE6C3; padding: 20px; margin: 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto;"><code><span style="color: #A5A5A5;">&lt;!-- Include a component and pass dynamic properties --&gt;</span>
+&lt;<span style="color: #5B9BD5;">an-component</span> name=<span style="color: #FFB230;">"user-card"</span> role=<span style="color: #FFB230;">"Admin"</span>&gt;&lt;/<span style="color: #5B9BD5;">an-component</span>&gt;
+
+<span style="color: #A5A5A5;">&lt;!-- Apply a master layout to the entire page --&gt;</span>
+&lt;<span style="color: #5B9BD5;">an-page-template</span> src=<span style="color: #FFB230;">"master.html"</span>&gt;
+    &lt;<span style="color: #5B9BD5;">an-inject</span> name=<span style="color: #FFB230;">"content"</span>&gt;
+        &lt;<span style="color: #5B9BD5;">h1</span>&gt;Hello World&lt;/<span style="color: #5B9BD5;">h1</span>&gt;
+    &lt;/<span style="color: #5B9BD5;">an-inject</span>&gt;
+&lt;/<span style="color: #5B9BD5;">an-page-template</span>&gt;</code></pre>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- /banner -->
+
+   <!-- before and after story -->
+   <section class="section bg-light mt-6" style="padding-top: 4rem; padding-bottom: 4rem;">
+      <div class="container">
+         <div class="has-text-centered mb-6">
+            <h2 class="section-title mb-3">The DX Problem We Solve</h2>
+            <p class="is-size-5 has-text-grey" style="max-width: 800px; margin: 0 auto;">Front-End developers often copy
+               and paste identical HTML across dozens of static files. Back-End developers then have to rip it apart to
+               use it in JSP, Jinja2, or Blade.</p>
+         </div>
+
+         <div class="columns is-multiline is-align-items-stretch">
+            <!-- Before -->
+            <div class="column is-6">
+               <h3 class="h4 has-text-grey mb-3"><i class="ti-close mr-2"></i>Before: Repetitive HTML</h3>
+               <div class="card shadow-sm h-100" style="border-radius: 8px; border-left: 4px solid #767171;">
+                  <div class="card-content p-4">
+                     <pre
+                        style="background: #fdfdfd; padding: 0; margin: 0; border: none; font-family: monospace; overflow-x: auto; color: #4a4a4a;"><code>&lt;!-- You have to paste this in every single file! --&gt;
+&lt;nav class="navbar"&gt;
+    &lt;div class="logo"&gt;MyApp&lt;/div&gt;
+    &lt;ul&gt;
+        &lt;li&gt;Home&lt;/li&gt;
+        &lt;li&gt;About&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+                  </div>
+               </div>
+            </div>
+            <!-- After -->
+            <div class="column is-6">
+               <h3 class="h4 has-text-primary mb-3"><i class="ti-check mr-2"></i>With Andalina</h3>
+               <div class="card shadow-sm h-100" style="border-radius: 8px; border-left: 4px solid #70AD47;">
+                  <div class="card-content p-4">
+                     <pre
+                        style="background: #fdfdfd; padding: 0; margin: 0; border: none; font-family: monospace; overflow-x: auto; color: #4a4a4a;"><code>&lt;!-- Write it once, use it everywhere! --&gt;
+&lt;an-component name="navbar"&gt;&lt;/an-component&gt;
+</code></pre>
+                     <p class="mt-4 is-size-6 has-text-grey" style="line-height: 1.6;">Your Back-End team immediately
+                        knows exactly where the component boundaries are without having to "clean up" the HTML to
+                        integrate it into their server logic.</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- /before and after story -->
+
+   <!-- topics -->
+   <section class="section" style="padding-top: 5rem;">
+      <div class="container">
+         <div class="has-text-centered mb-6">
+            <h2 class="section-title">The Four Core Pillars</h2>
+         </div>
+         <div class="columns is-multiline">
+            <!-- topic 1 -->
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
+               <div class="card match-height shadow-hover"
+                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                  <div class="card-body">
+                     <i class="card-icon ti-server mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
+                     <h3 class="card-title h4">Zero Dependency</h3>
+                     <p class="card-text has-text-grey">Andalina runs entirely in the browser. No Node.js build
+                        pipelines, no Webpack, and no server-side rendering required.</p>
+                  </div>
+               </div>
+            </div>
+            <!-- topic 2 -->
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
+               <div class="card match-height shadow-hover"
+                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                  <div class="card-body">
+                     <i class="card-icon ti-wand mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
+                     <h3 class="card-title h4">Incredibly Simple</h3>
+                     <p class="card-text has-text-grey">With only 5 core tags to learn, Andalina is exceptionally easy
+                        to pick up, even for absolute beginners.</p>
+                  </div>
+               </div>
+            </div>
+            <!-- topic 3 -->
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
+               <div class="card match-height shadow-hover"
+                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                  <div class="card-body">
+                     <i class="card-icon ti-html5 mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
+                     <h3 class="card-title h4">Standard HTML</h3>
+                     <p class="card-text has-text-grey">There is no need to learn a new programming language or complex
+                        framework. It's just the HTML you already know!</p>
+                  </div>
+               </div>
+            </div>
+            <!-- topic 4 -->
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
+               <div class="card match-height shadow-hover"
+                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                  <div class="card-body">
+                     <i class="card-icon ti-target mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
+                     <h3 class="card-title h4">Single Source of Truth</h3>
+                     <p class="card-text has-text-grey">Front-End developers fix bugs in exactly one place. Andalina
+                        handles injecting the repetition for you.</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- /topics -->
+
+   <!-- call to action -->
+   <section class="section" style="padding-top: 2rem; padding-bottom: 6rem;">
+      <div class="container">
+         <div class="columns is-align-items-center">
+            <div class="column is-12 has-text-centered">
+               <div class="p-6 andalina-content has-text-centered">
+                  <h2 class="mb-4" style="font-size: 2.5rem; font-weight: 800; color: #ED6C44;">Ready to stop repeating
+                     yourself?</h2>
+                  <p class="mb-5 is-size-5" style="color: #4C4743;">Drop the script tag into your project and start
+                     building
+                     modular HTML today.</p>
+                  <a href="documentation.html" class="btn btn-primary">Read the Documentation</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- /call to action -->
+
+   <footer>
+      <div class="container">
+         <div class="columns is-multiline is-align-items-center border-bottom py-5">
+            <div class="column is-4-desktop is-12-tablet">
+               <!-- Footer menu removed per user request -->
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <a class="navbar-brand is-justify-content-center" href="index.html">
+                  <img class="img-fluid" src="images/logo.png" alt="Hugo documentation theme">
+               </a>
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <ul class="list-inline social-icons has-text-right-desktop has-text-centered">
+                  <li class="list-inline-item"><a href="#"><i class="ti-facebook"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-twitter-alt"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-github"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-linkedin"></i></a></li>
+               </ul>
+            </div>
+         </div>
+         <div class="py-4 has-text-centered">
+            <small class="text-light">Copyright © 2026 - Invented &amp; Developed by <a
+                  href="https://www.linkedin.com/in/moataz-aldawood/">Moataz Al Dawood</a></small>
+         </div>
+      </div>
+   </footer>
+
+   <!-- plugins -->
+   <script src="plugins/jQuery/jquery.min.js"></script>
+   <script src="plugins/masonry/masonry.min.js"></script>
+   <script src="plugins/clipboard/clipboard.min.js"></script>
+   <script src="plugins/match-height/jquery.matchHeight-min.js"></script>
+
+   <!-- Main Script -->
+   <script src="js/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Prop Testing</title>
+    <script src="andalina.js" data-prefix="an" show-source="true" defer></script>
+</head>
+
+<body style="padding: 40px;">
+
+    <h1>Andalina Props Engine Test</h1>
+
+    <!-- Test 1: Passing all props correctly -->
+    <an-component src="user-card.html" username="Moataz" role="Lead Architect" theme-color="#e74c3c"></an-component>
+
+    <!-- Test 2: Omitting optional props to trigger default values -->
+    <an-component src="user-card.html" username="New Developer"></an-component>
+
+    <!-- Test 3: Omitting a mandatory prop (Check the DevTools Console for the error!) -->
+    <an-component src="user-card.html" role="Hacker"></an-component>
+
+</body>
+
+</html>

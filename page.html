@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="andalina.js" data-prefix="an" defer></script>
+</head>
+<body>
+    
+    <!-- The entry page calls the Mid Template -->
+    <an-page-template src="mid-template.html">
+        
+        <!-- It only knows about the 'page-content' slot exposed by mid-template -->
+        <an-inject name="page-content">
+            <h3 style="color: #3498db; margin-top: 0;">Hello from the Entry Page!</h3>
+            <p style="color: #aaa;">This text traveled through two layers of templates to get here.</p>
+            <p><strong>Chain:</strong> <code>page.html</code> &rarr; <code>mid-template.html</code> &rarr; <code>super-master.html</code></p>
+        </an-inject>
+
+    </an-page-template>
+
+</body>
+</html>
+
