@@ -1,0 +1,14 @@
+<an-layout src="dashboard-layout.html">
+    <an-inject name="header-content">
+        <h1>Admin Dashboard</h1>
+    </an-inject>
+    <an-inject name="sidebar-content">
+        <ul>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/settings">Settings</a></li>
+        </ul>
+    </an-inject>
+    <an-inject name="main-content">
+        <div class="stats-card">Welcome back, Admin!</div>
+    </an-inject>
+</an-layout>

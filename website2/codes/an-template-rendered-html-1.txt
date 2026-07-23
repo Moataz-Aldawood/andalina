@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Awesome Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Site Header -->
+    <header class="site-header">
+        <nav>...</nav> <!-- Fetched from partials/nav.html -->
+    </header>
+
+    <!-- Main Content Injection Point -->
+    <main class="container">
+        <section class="hero">
+            <h1>Welcome to my Website!</h1>
+            <p>This is my the page content.</p>
+        </section>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div>...</div> <!-- Fetched from partials/footer.html -->
+    </footer>
+
+    <!-- Andalina Scripts -->
+    <script src="andalina.js" data-templates-path="templates"></script>
+</body>
+</html>

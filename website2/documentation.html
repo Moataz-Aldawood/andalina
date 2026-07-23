@@ -11,7 +11,7 @@
 
 <head>
    <meta charset="utf-8">
-   <title>GoDocs documentation theme</title>
+   <title>an-dalina</title>
 
    <!-- mobile responsive meta -->
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -27,19 +27,10 @@
    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-   <style>
-      .an-prefix {
-         color: #ED6C44 !important;
-      }
+   <link rel="stylesheet" href="./js/highlight/styles/atom-one-dark.css">
+   <script src="./js/highlight/highlight.min.js"></script>
 
-      .an-tag {
-         color: #4C4743 !important;
-      }
 
-      .content pre.rendered-html-block {
-         border: 4px solid #ED6C44 !important;
-      }
-   </style>
 </head>
 
 <body>
@@ -91,33 +82,41 @@
                      <a href="#how-to-use">How to use</a>
                   </li>
                   <li title="&lt;an-repeat&gt;" class="sidelist">
-                     <a href="#repeat"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                     <a href="#repeat">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-repeat&gt;</span></a>
                   </li>
                   <li title="&lt;an-include&gt;" class="sidelist">
-                     <a href="#include"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                     <a href="#include">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-include&gt;</span></a>
                   </li>
                   <li title="&lt;an-component&gt;" class="sidelist">
-                     <a href="#components"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                     <a href="#components">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-component&gt;</span></a>
                   </li>
-                  <li title="&lt;an-layout-template&gt;" class="sidelist">
-                     <a href="#layout-template"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                           class="an-tag">-layout-template&gt;</span></a>
+                  <li title="&lt;an-layout&gt;" class="sidelist">
+                     <a href="#layout">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-layout&gt;</span></a>
                   </li>
-                  <li title="&lt;an-page-template&gt;" class="sidelist">
-                     <a href="#page-template"><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                           class="an-tag">-page-template&gt;</span></a>
+                  <li title="&lt;an-template&gt;" class="sidelist">
+                     <a href="#template">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-template&gt;</span></a>
                   </li>
+                  <li title="&lt;an-code&gt;" class="sidelist">
+                     <a href="#code">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-code&gt;</span></a>
+                  </li>
+
                   <li title="Configuration" class="sidelist">
                      <a href="#configuration">Configuration</a>
                   </li>
-                  <li title="View Final Source" class="sidelist">
-                     <a href="#show-source">View Final Source</a>
+                  <li title="Show Rendered HTML" class="sidelist">
+                     <a href="#show-rendered-html">Show Rendered HTML</a>
                   </li>
                   <li title="Debugging" class="sidelist">
                      <a href="#debugging">Debugging</a>
+                  </li>
+                  <li title="3rd Party JS" class="sidelist">
+                     <a href="#async-compatibility">3rd Party JS Compatibility</a>
                   </li>
                </ul>
             </div>
@@ -171,7 +170,7 @@
                         </div>
                         <p>Simply drop the andalina script tag into the <code>&lt;head&gt;</code> of your HTML document.
                            Ensure you use the <code>defer</code> attribute so it parses after the DOM is ready.</p>
-                        <pre><code>&lt;script src="andalina.js" defer&gt;&lt;/script&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/installation-example-01.txt"></an-code></code></pre>
                      </div>
 
                      <div id="repeat">
@@ -180,8 +179,7 @@
                               class="an-tag">-repeat&gt;</span></h3>
                         <p>Used to loop content dynamically.</p>
 
-                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-repeat&gt;</span> attributes:</h4>
+                        <h4>Attributes:</h4>
                         <ul>
                            <li><code>times</code> <em>(Required)</em>: An integer specifying how many times to repeat
                               the content block.</li>
@@ -190,15 +188,11 @@
                         </ul>
 
                         <h4>Example:</h4>
-                        <pre><code>&lt;an-repeat times="3" index-as="i"&gt;
-    &lt;p&gt;Item number {{i}}&lt;/p&gt;
-&lt;/an-repeat&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/an-repeat-example-01.txt"></an-code></code></pre>
 
                         <h4>Rendered HTML:</h4>
-                        <pre class="rendered-html-block">&lt;p&gt;Item number
-                           0&lt;/p&gt;
-                           &lt;p&gt;Item number 1&lt;/p&gt;
-                           &lt;p&gt;Item number 2&lt;/p&gt;</pre>
+                        <pre
+                           class="rendered-html-block"><code class="language-html"><an-code src="codes/an-repeat-rendered-html-1.txt"></an-code></code></pre>
                      </div>
 
                      <div id="include">
@@ -207,23 +201,28 @@
                               class="an-tag">-include&gt;</span></h3>
                         <p>Used to inject static HTML partials directly into your page.</p>
 
-                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-include&gt;</span> attributes:</h4>
+                        <h4>Attributes:</h4>
                         <ul>
-                           <li><code>src</code> <em>(Required)</em>: The path to the HTML/XHTML file you want to
-                              include.</li>
+                           <li><code>src</code> <em>(Optional)</em>: The exact path to the HTML/XHTML file you want to
+                              include.
+                           </li>
+                           <li><code>name</code> <em>(Optional)</em>: The name of the include fragment (resolves to
+                              <code>[includesPath]/[name][extension]</code>).
+                              <div class="andalina-inline-note"><strong>Note:</strong> You must provide either
+                                 <code>src</code> or <code>name</code>.</div>
+                           </li>
                         </ul>
 
                         <h4>Example:</h4>
-                        <p><strong>1. The Partial (header.html)</strong></p>
-                        <pre><code>&lt;header&gt;Welcome!&lt;/header&gt;</code></pre>
+                        <p><strong>1. The Partial (head-content.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-include-example-01.txt"></an-code></code></pre>
 
                         <p><strong>2. The Call (index.html)</strong></p>
-                        <pre><code>&lt;an-include src="header.html"&gt;&lt;/an-include&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/an-include-example-02.txt"></an-code></code></pre>
 
                         <h4>Rendered HTML:</h4>
-                        <pre class="rendered-html-block">
-                           &lt;header&gt;Welcome!&lt;/header&gt;</pre>
+                        <pre
+                           class="rendered-html-block"><code class="language-html"><an-code src="codes/an-include-rendered-html-1.txt"></an-code></code></pre>
                      </div>
 
                      <div id="components">
@@ -235,14 +234,14 @@
                            <code>&lt;an-attribute&gt;</code>.
                         </p>
 
-                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-component&gt;</span> attributes:</h4>
+                        <h4>Attributes:</h4>
                         <ul>
                            <li><code>src</code> <em>(Optional)</em>: The exact path to the component HTML/XHTML file.
                            </li>
                            <li><code>name</code> <em>(Optional)</em>: The name of the component (resolves to
-                              <code>[componentsPath]/[name].html</code>). <em>Note: You must provide either
-                                 <code>src</code> or <code>name</code>.</em>
+                              <code>[componentsPath]/[name][extension]</code>).
+                              <div class="andalina-inline-note"><strong>Note:</strong> You must provide either
+                                 <code>src</code> or <code>name</code>.</div>
                            </li>
                            <li><em>Dynamic Attributes</em>: Any other attribute you add will be passed to the component
                               as a property.</li>
@@ -262,28 +261,20 @@
 
                         <h4>Example:</h4>
                         <p><strong>1. The Component (user-card.html)</strong></p>
-                        <pre><code>&lt;an-attribute name="username" mandatory="true" /&gt;
-&lt;an-attribute name="role" default-value="Member" /&gt;
-&lt;div class="card"&gt;
-    &lt;h2&gt;{{username}}&lt;/h2&gt;
-    &lt;p&gt;Role: {{role}}&lt;/p&gt;
-&lt;/div&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/an-component-example-01.txt"></an-code></code></pre>
 
                         <p><strong>2. The Call (index.html)</strong></p>
-                        <pre><code>&lt;an-component name="user-card" username="Alice" role="Admin"&gt;&lt;/an-component&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/an-component-example-02.txt"></an-code></code></pre>
 
                         <h4>Rendered HTML:</h4>
-                        <pre class="rendered-html-block">&lt;div
-                           class="card"&gt;
-                           &lt;h2&gt;Alice&lt;/h2&gt;
-                           &lt;p&gt;Role: Admin&lt;/p&gt;
-                           &lt;/div&gt;</pre>
+                        <pre
+                           class="rendered-html-block"><code class="language-html"><an-code src="codes/an-component-rendered-html-1.txt"></an-code></code></pre>
                      </div>
 
-                     <div id="layout-template">
+                     <div id="layout">
 
                         <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-layout-template&gt;</span></h3>
+                              class="an-tag">-layout&gt;</span></h3>
                         <p>Used when one layout wants to extend another parent layout. Uses
                            <code>&lt;an-inject&gt;</code>
                            to fill the parent, and
@@ -292,103 +283,146 @@
                            accept content from children.
                         </p>
 
-                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-layout-template&gt;</span> attributes:</h4>
+                        <h4>Attributes:</h4>
                         <ul>
-                           <li><code>src</code> <em>(Required)</em>: The path to the parent layout HTML/XHTML file.</li>
+                           <li><code>src</code> <em>(Optional)</em>: The exact path to the layout HTML/XHTML file.
+                           </li>
+                           <li><code>name</code> <em>(Optional)</em>: The name of the layout (resolves to
+                              <code>[layoutsPath]/[name][extension]</code>).
+                              <div class="andalina-inline-note"><strong>Note:</strong> You must provide either
+                                 <code>src</code> or <code>name</code>.</div>
+                           </li>
                         </ul>
 
                         <h4>Example:</h4>
-                        <p><strong>1. The Parent Layout (master.html)</strong></p>
-                        <pre><code>&lt;body&gt;
-    &lt;an-place name="main"&gt;&lt;/an-place&gt;
-&lt;/body&gt;</code></pre>
+                        <p><strong>1. The Grid Layout (dashboard-layout.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-layout-example-01.txt"></an-code></code></pre>
 
-                        <p><strong>2. The Child Layout (mid-layout.html)</strong></p>
-                        <pre><code>&lt;an-layout-template src="master.html"&gt;
-    &lt;an-inject name="main"&gt;
-        &lt;div class="sidebar"&gt;Sidebar content&lt;/div&gt;
-        &lt;an-place name="content"&gt;&lt;/an-place&gt;
-    &lt;/an-inject&gt;
-&lt;/an-layout-template&gt;</code></pre>
+                        <p><strong>2. The Calling Page (admin.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-layout-example-02.txt"></an-code></code></pre>
 
                         <h4>Rendered HTML:</h4>
-                        <pre class="rendered-html-block">&lt;body&gt;
-                           &lt;div class="sidebar"&gt;Sidebar content&lt;/div&gt;
-                           &lt;an-place
-                           name="content"&gt;<span class="an-tag">&lt;/</span><span class="an-prefix">an</span><span
-                              class="an-tag">-place&gt;</span>
-                           &lt;/body&gt;
-                        </pre>
+                        <pre
+                           class="rendered-html-block"><code class="language-html"><an-code src="codes/an-layout-rendered-html-1.txt"></an-code></code></pre>
                      </div>
 
-                     <div id="page-template">
+                     <div id="template">
 
                         <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-page-template&gt;</span></h3>
-                        <p>The root tag used in your final HTML page to wrap your content inside a layout.</p>
+                              class="an-tag">-template&gt;</span></h3>
+                        <p>The root tag used in your final page to wrap your content inside a complete HTML/XHTML
+                           document template. Unlike an <code>&lt;an-layout&gt;</code> (which acts as a structural
+                           partial), a template provides the full, standard structure of a webpage, including the
+                           <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code> tags.</p>
 
-                        <h4><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
-                              class="an-tag">-page-template&gt;</span> attributes:</h4>
+                        <h4>Attributes:</h4>
                         <ul>
-                           <li><code>src</code> <em>(Required)</em>: The path to the layout HTML/XHTML file.</li>
+                           <li><code>src</code> <em>(Optional)</em>: The exact path to the template page HTML/XHTML
+                              file.
+                           </li>
+                           <li><code>name</code> <em>(Optional)</em>: The name of the template page (resolves to
+                              <code>[templatesPath]/[name][extension]</code>).
+                              <div class="andalina-inline-note"><strong>Note:</strong> You must provide either
+                                 <code>src</code> or <code>name</code>.</div>
+                           </li>
                         </ul>
 
                         <h4>Example:</h4>
-                        <p><strong>1. The Template Page (master.html)</strong></p>
-                        <pre><code>&lt;body&gt;
-    &lt;header&gt;Global Header&lt;/header&gt;
-    &lt;main&gt;
-        &lt;an-place name="content"&gt;&lt;/an-place&gt;
-    &lt;/main&gt;
-&lt;/body&gt;</code></pre>
+                        <p><strong>1. The Root Template (master.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-template-example-01.txt"></an-code></code></pre>
 
                         <p><strong>2. The Calling Page (index.html)</strong></p>
-                        <pre><code>&lt;an-page-template src="master.html"&gt;
-    &lt;an-inject name="content"&gt;
-        &lt;h1&gt;Welcome to the Homepage&lt;/h1&gt;
-    &lt;/an-inject&gt;
-&lt;/an-page-template&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/an-template-example-02.txt"></an-code></code></pre>
 
                         <h4>Rendered HTML:</h4>
-                        <pre class="rendered-html-block">&lt;body&gt;
-                           &lt;header&gt;Global Header&lt;/header&gt;
-                           &lt;main&gt;
-                           &lt;h1&gt;Welcome to the Homepage&lt;/h1&gt;
-                           &lt;/main&gt;
-                           &lt;/body&gt;</pre>
+                        <pre
+                           class="rendered-html-block"><code class="language-html"><an-code src="codes/an-template-rendered-html-1.txt"></an-code></code></pre>
                      </div>
+
+                     <div id="code">
+
+                        <h3>&lt;an-code&gt;</h3>
+                        <p>Used to inject unparsed source code directly from a file, perfectly formatted and safely
+                           escaped for documentation blocks.</p>
+                        <div class="andalina-important-card" style="margin-top: 15px;">
+                           <strong>Syntax Highlighting Warning:</strong> If you are using a code highlighter like
+                           <code>highlight.js</code> or <code>Prism.js</code>, you must ensure it only runs
+                           <em>after</em> your <code>&lt;an-code&gt;</code> blocks have been fully fetched and injected.
+                           For a detailed explanation of this async race condition and how to fix it, please see the <a
+                              href="#async-compatibility"><strong>Third-Party JS Compatibility</strong></a> section.
+                        </div>
+
+
+                        <h4>Attributes:</h4>
+                        <ul>
+                           <li><code>src</code> <em>(Required)</em>: The exact path to the source code file. If
+                              <code>codesPath</code> is configured, it resolves relative to that directory.
+                           </li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <p><strong>1. The Source Code (js/app.js)</strong></p>
+                        <pre><code class="language-javascript"><an-code src="codes/an-code-example-01.txt"></an-code></code></pre>
+
+                        <p><strong>2. The Call (index.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-code-example-02.txt"></an-code></code></pre>
+                     </div>
+
 
                      <div id="configuration">
 
                         <h3>Configuration</h3>
                         <p>Define the global behavior in <code>andalina.config.json</code>:</p>
-                        <pre><code>{
-    "showSource": "disabled",
-    "debug": "enabled",
-    "preventFOUC": "enabled",
-    "propStart": "{{",
-    "propEnd": "}}",
-    "prefix": "an",
-    "componentsPath": "components"
-}</code></pre>
+
+                        <h4>Properties:</h4>
+                        <ul>
+                           <li><code>showRenderedHtml</code>: <code>{enabled, disabled}</code>. Enables or disables the
+                              output of the final rendered HTML into the Developer Tools Console.</li>
+                           <li><code>debug</code>: <code>{enabled, disabled}</code>. Enables or disables the output of
+                              detailed debugging information during the rendering process.</li>
+                           <li><code>preventFOUC</code>: <code>{enabled, disabled}</code>. Prevents Flash of Unstyled
+                              Content by hiding the page body until rendering completes.</li>
+                           <li><code>propStart</code>: The starting string for properties. Defaults to <code>{{</code>.
+                              It can be any string, but it must be different from the <code>propEnd</code> value.</li>
+                           <li><code>propEnd</code>: The ending string for properties. Defaults to <code>}}</code>. It
+                              can be any string, but it must be different from the <code>propStart</code> value.</li>
+                           <li><code>prefix</code>: A custom prefix for Andalina tags. Defaults to <code>an</code>. It
+                              can be any string (e.g., <code>an</code>, <code>andalina</code>, <code>aa</code>).</li>
+                           <li><code>componentsPath</code>: The directory path where your component files are stored.
+                           </li>
+                           <li><code>layoutsPath</code>: The directory path where your layout files are stored.</li>
+                           <li><code>templatesPath</code>: The directory path where your templates files are stored.
+                           </li>
+                           <li><code>includesPath</code>: The directory path where your HTML fragment and include files
+                              are stored.</li>
+                           <li><code>codesPath</code>: The directory path where your source code snippet files are
+                              stored.</li>
+                           <li><code>extension</code>: The default file extension to be used for components, layouts,
+                              pages, and includes when referring to them by name only. It can be any string, but it must
+                              start with a dot (e.g., <code>.html</code>, <code>.xhtml</code>).</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <pre><code class="language-json"><an-code src="codes/configuration-example-01.json"></an-code></code></pre>
                         <p><strong>Page Scope Configuration:</strong> You can override the global configuration directly
                            on a specific page by adding data attributes to the andalina script tag.</p>
-                        <pre><code>&lt;script src="andalina.js" data-debug="enabled" data-components-path="my-components" defer&gt;&lt;/script&gt;</code></pre>
+                        <pre><code class="language-html"><an-code src="codes/configuration-example-02.txt"></an-code></code></pre>
                      </div>
 
-                     <div id="show-source">
+                     <div id="show-rendered-html">
 
-                        <h3>View Final Source</h3>
+                        <h3>Show Rendered HTML</h3>
                         <p>Since andalina runs client-side and dynamically manipulates the DOM, viewing the page source
                            in your browser (Right Click &gt; View Page Source) will only show your
                            <code>&lt;an-&gt;</code> tags, not the final rendered HTML.
                         </p>
                         <p>If you need to inspect or copy the completely rendered HTML, you can enable the
-                           <code>showSource</code> configuration globally in <code>andalina.config.json</code>, or on a
-                           single page using <code>data-show-source="enabled"</code>.
+                           <code>showRenderedHtml</code> configuration globally in <code>andalina.config.json</code>, or
+                           on a
+                           single page using <code>data-show-rendered-html="enabled"</code>:
                         </p>
-                        <p>When enabled, andalina will print the <strong>Final Composed Source Code</strong> directly
+                        <!-- <pre><code class="language-html"><an-code src="codes/show-rendered-html-example-01.txt"></an-code></code></pre> -->
+                        <p>When enabled, andalina will print the <strong>Final Rendered HTML</strong> directly
                            into your Developer Tools Console! You can easily inspect it or copy-paste it.</p>
                      </div>
 
@@ -404,6 +438,27 @@
                         <p>When enabled, andalina will print a beautiful, structured trace directly to your browser's
                            Developer Tools Console, showing exactly which files were fetched, how long the network
                            request took, and the properties passed to each component.</p>
+                     </div>
+
+                     <div id="async-compatibility">
+
+                        <h3>Third-Party JS Compatibility</h3>
+                        <p>Because andalina dynamically fetches and injects HTML into the DOM asynchronously, it can
+                           cause race conditions with third-party JavaScript libraries (such as sliders, lightboxes, or
+                           UI frameworks) that attempt to scan the DOM immediately on page load.</p>
+
+                        <div class="andalina-important-card">
+                           <strong>The Issue:</strong> If a third-party library runs before andalina has finished
+                           injecting your components, the library won't find the elements and will fail to initialize.
+                        </div>
+
+                        <h4>The Solution:</h4>
+                        <p>You must initialize your third-party libraries <em>after</em> you are sure the asynchronous
+                           fetching has completed. A reliable way to handle this is by awaiting the component injections
+                           or using a <code>Promise.all</code> approach if you are manually fetching content.</p>
+
+                        <h4>Example: Safe Initialization</h4>
+                        <pre><code class="language-javascript"><an-code src="codes/safe-initialization-example-01.txt"></an-code></code></pre>
                      </div>
 
                   </div>

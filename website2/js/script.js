@@ -30,7 +30,7 @@
 
 	// clipboard
 	var clipInit = false;
-	$('code').each(function () {
+	$('code:not(.no-copy)').each(function () {
 		var code = $(this),
 			text = code.text();
 		if (text.length > 2) {
@@ -282,3 +282,37 @@
 	});
 
 })(jQuery);
+
+// Custom <an-code> tag logic to dynamically fetch code snippets
+document.addEventListener('DOMContentLoaded', function() {
+    const codeTags = document.querySelectorAll('an-code');
+    const fetchPromises = [];
+    
+    codeTags.forEach(tag => {
+        const src = tag.getAttribute('src');
+        if (src) {
+            const fetchPromise = fetch(src)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch ' + src);
+                    return response.text();
+                })
+                .then(text => {
+                    const parent = tag.parentElement;
+                    const textNode = document.createTextNode(text);
+                    parent.insertBefore(textNode, tag);
+                    tag.remove();
+                })
+                .catch(err => console.error(err));
+                
+            fetchPromises.push(fetchPromise);
+        }
+    });
+
+    // Run highlight.js ONLY after all codes have been fetched and injected
+    Promise.all(fetchPromises).then(() => {
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightAll();
+        }
+    });
+});
+

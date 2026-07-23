@@ -1,0 +1,8 @@
+<an-template name="master">
+    <an-inject name="content">
+        <section class="hero">
+            <h1>Welcome to my Website!</h1>
+            <p>This is my the page content.</p>
+        </section>
+    </an-inject>
+</an-template>

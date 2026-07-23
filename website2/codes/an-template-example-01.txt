@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Awesome Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Site Header -->
+    <header class="site-header">
+        <an-include src="partials/nav.html"></an-include>
+    </header>
+
+    <!-- Main Content Injection Point -->
+    <main class="container">
+        <an-place name="content"></an-place>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <an-include src="partials/footer.html"></an-include>
+    </footer>
+
+    <!-- Andalina Scripts -->
+    <script src="andalina.js" data-templates-path="templates"></script>
+</body>
+</html>

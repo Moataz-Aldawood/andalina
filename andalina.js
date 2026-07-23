@@ -7,13 +7,18 @@
     const scriptTag = document.currentScript || document.querySelector('script[src*="andalina.js"]');
 
     let globalConfig = {
-        showSource: false,
+        showRenderedHtml: false,
         debug: false,
         preventFOUC: false,
         propStart: null, // Mandatory
         propEnd: null,   // Mandatory
         prefix: 'an',
-        componentsPath: 'components'
+        componentsPath: 'components',
+        codesPath: '',
+        layoutsPath: '',
+        templatesPath: '',
+        includesPath: 'includes',
+        extension: '.html'
     };
 
     function escapeRegExp(string) {
@@ -31,18 +36,19 @@
     }
 
     // Tag definitions
-    let tInclude, tLayoutTemplate, tComponent, tPageTemplate, tInject, tPlace, tAttribute, tRepeat;
+    let tInclude, tLayout, tComponent, tTemplate, tInject, tPlace, tAttribute, tRepeat, tCode;
 
     function buildTagNames() {
         const p = globalConfig.prefix;
         tInclude = `${p}-include`;
-        tLayoutTemplate = `${p}-layout-template`;
+        tLayout = `${p}-layout`;
         tComponent = `${p}-component`;
-        tPageTemplate = `${p}-page-template`;
+        tTemplate = `${p}-template`;
         tInject = `${p}-inject`;
         tPlace = `${p}-place`;
         tAttribute = `${p}-attribute`;
         tRepeat = `${p}-repeat`;
+        tCode = `${p}-code`;
     }
 
     // Cache for fetched fragments
@@ -181,11 +187,12 @@
 
             const repeatNode = context.querySelector(tRepeat);
             const includeNode = context.querySelector(tInclude);
-            const layoutNode = context.querySelector(tLayoutTemplate);
+            const layoutNode = context.querySelector(tLayout);
             const componentNode = context.querySelector(tComponent);
-            const pageNode = context.querySelector(tPageTemplate);
+            const pageNode = context.querySelector(tTemplate);
+            const codeNode = context.querySelector(tCode);
 
-            if (!repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode) {
+            if (!repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
                 break;
             }
 
@@ -217,9 +224,49 @@
                 continue;
             }
 
+            // 0.5 Process Code inclusions (Raw text fetching)
+            if (codeNode) {
+                const src = codeNode.getAttribute('src');
+                if (src) {
+                    const t0 = performance.now();
+                    const basePath = globalConfig.codesPath.replace(/\/$/, '');
+                    const fullPath = basePath ? `${basePath}/${src}` : src;
+                    
+                    const codeText = await fetchFragment(fullPath);
+                    const fetchTime = Math.round(performance.now() - t0);
+                    
+                    if (globalConfig.debug) {
+                        console.log(`%c[Andalina Debug] 📄 Code: ${fullPath} (fetch: ${fetchTime}ms)`, 'color: #3498db;');
+                    }
+                    
+                    // Clean up surrounding empty text nodes (prevents HTML template indentation from leaking into the code block)
+                    const prev = codeNode.previousSibling;
+                    if (prev && prev.nodeType === Node.TEXT_NODE && prev.nodeValue.trim() === '') {
+                        prev.remove();
+                    }
+                    const next = codeNode.nextSibling;
+                    if (next && next.nodeType === Node.TEXT_NODE && next.nodeValue.trim() === '') {
+                        next.remove();
+                    }
+
+                    codeNode.replaceWith(document.createTextNode(codeText.trim()));
+                } else {
+                    codeNode.remove();
+                }
+                continue;
+            }
+
             // 1. Process Page Templates (Full Document Swap)
             if (pageNode) {
-                const src = pageNode.getAttribute('src');
+                let src = pageNode.getAttribute('src');
+                if (!src) {
+                    const name = pageNode.getAttribute('name');
+                    if (name) {
+                        const basePath = globalConfig.templatesPath.replace(/\/$/, '');
+                        src = basePath ? `${basePath}/${name}${globalConfig.extension}` : `${name}${globalConfig.extension}`;
+                    }
+                }
+
                 if (src) {
                     const t0 = performance.now();
                     const layoutHtml = await fetchFragment(src);
@@ -278,11 +325,16 @@
                 const targetNode = layoutNode || componentNode;
                 let src = targetNode.getAttribute('src');
                 
-                if (!src && targetNode.tagName.toLowerCase() === tComponent) {
+                if (!src) {
                     const name = targetNode.getAttribute('name');
                     if (name) {
-                        const basePath = globalConfig.componentsPath.replace(/\/$/, '');
-                        src = `${basePath}/${name}.html`;
+                        if (targetNode.tagName.toLowerCase() === tComponent) {
+                            const basePath = globalConfig.componentsPath.replace(/\/$/, '');
+                            src = basePath ? `${basePath}/${name}${globalConfig.extension}` : `${name}${globalConfig.extension}`;
+                        } else if (targetNode.tagName.toLowerCase() === tLayout) {
+                            const basePath = globalConfig.layoutsPath.replace(/\/$/, '');
+                            src = basePath ? `${basePath}/${name}${globalConfig.extension}` : `${name}${globalConfig.extension}`;
+                        }
                     }
                 }
 
@@ -322,7 +374,15 @@
             }
             // 3. Process plain includes
             else if (includeNode) {
-                const src = includeNode.getAttribute('src');
+                let src = includeNode.getAttribute('src');
+                if (!src) {
+                    const name = includeNode.getAttribute('name');
+                    if (name) {
+                        const basePath = globalConfig.includesPath.replace(/\/$/, '');
+                        src = basePath ? `${basePath}/${name}${globalConfig.extension}` : `${name}${globalConfig.extension}`;
+                    }
+                }
+                
                 if (src) {
                     const t0 = performance.now();
                     const html = await fetchFragment(src);
@@ -370,19 +430,24 @@
             const configRes = await fetch(basePath + 'andalina.config.json');
             if (configRes.ok) {
                 const json = await configRes.json();
-                if (json.showSource !== undefined) globalConfig.showSource = isEnabled(json.showSource);
+                if (json.showRenderedHtml !== undefined) globalConfig.showRenderedHtml = isEnabled(json.showRenderedHtml);
                 if (json.debug !== undefined) globalConfig.debug = isEnabled(json.debug);
                 if (json.preventFOUC !== undefined) globalConfig.preventFOUC = isEnabled(json.preventFOUC);
                 if (json.propStart !== undefined) globalConfig.propStart = json.propStart;
                 if (json.propEnd !== undefined) globalConfig.propEnd = json.propEnd;
                 if (json.prefix !== undefined) globalConfig.prefix = json.prefix;
                 if (json.componentsPath !== undefined) globalConfig.componentsPath = json.componentsPath;
+                if (json.codesPath !== undefined) globalConfig.codesPath = json.codesPath;
+                if (json.layoutsPath !== undefined) globalConfig.layoutsPath = json.layoutsPath;
+                if (json.templatesPath !== undefined) globalConfig.templatesPath = json.templatesPath;
+                if (json.includesPath !== undefined) globalConfig.includesPath = json.includesPath;
+                if (json.extension !== undefined) globalConfig.extension = json.extension;
             }
         } catch (e) {}
         
         if (scriptTag) {
-            if (scriptTag.hasAttribute('show-source') || scriptTag.hasAttribute('data-show-source')) {
-                globalConfig.showSource = isEnabled(scriptTag.getAttribute('show-source')) || isEnabled(scriptTag.getAttribute('data-show-source'));
+            if (scriptTag.hasAttribute('show-rendered-html') || scriptTag.hasAttribute('data-show-rendered-html')) {
+                globalConfig.showRenderedHtml = isEnabled(scriptTag.getAttribute('show-rendered-html')) || isEnabled(scriptTag.getAttribute('data-show-rendered-html'));
             }
             if (scriptTag.hasAttribute('debug') || scriptTag.hasAttribute('data-debug')) {
                 globalConfig.debug = isEnabled(scriptTag.getAttribute('debug')) || isEnabled(scriptTag.getAttribute('data-debug'));
@@ -401,6 +466,21 @@
             }
             if (scriptTag.hasAttribute('components-path') || scriptTag.hasAttribute('data-components-path')) {
                 globalConfig.componentsPath = scriptTag.getAttribute('components-path') || scriptTag.getAttribute('data-components-path');
+            }
+            if (scriptTag.hasAttribute('codes-path') || scriptTag.hasAttribute('data-codes-path')) {
+                globalConfig.codesPath = scriptTag.getAttribute('codes-path') || scriptTag.getAttribute('data-codes-path');
+            }
+            if (scriptTag.hasAttribute('layouts-path') || scriptTag.hasAttribute('data-layouts-path')) {
+                globalConfig.layoutsPath = scriptTag.getAttribute('layouts-path') || scriptTag.getAttribute('data-layouts-path');
+            }
+            if (scriptTag.hasAttribute('templates-path') || scriptTag.hasAttribute('data-templates-path')) {
+                globalConfig.templatesPath = scriptTag.getAttribute('templates-path') || scriptTag.getAttribute('data-templates-path');
+            }
+            if (scriptTag.hasAttribute('includes-path') || scriptTag.hasAttribute('data-includes-path')) {
+                globalConfig.includesPath = scriptTag.getAttribute('includes-path') || scriptTag.getAttribute('data-includes-path');
+            }
+            if (scriptTag.hasAttribute('extension') || scriptTag.hasAttribute('data-extension')) {
+                globalConfig.extension = scriptTag.getAttribute('extension') || scriptTag.getAttribute('data-extension');
             }
         }
 
@@ -438,8 +518,8 @@
             console.log(`[Andalina] Parsing complete in ${totalTime}ms.`);
         }
         
-        if (globalConfig.showSource) {
-            console.groupCollapsed('%c[Andalina] ✨ Final Composed Source Code (Click to expand)', 'color: #2ecc71; font-size: 13px; font-weight: bold;');
+        if (globalConfig.showRenderedHtml) {
+            console.groupCollapsed('%c[Andalina] ✨ Final Rendered HTML (Click to expand)', 'color: #2ecc71; font-size: 13px; font-weight: bold;');
             console.log(document.documentElement.outerHTML);
             console.groupEnd();
         }
@@ -459,4 +539,5 @@
     }
 
 })();
+
 

@@ -1,0 +1,14 @@
+<div class="dashboard-grid">
+    <header class="header">
+        <an-place name="header-content"></an-place>
+    </header>
+    <aside class="sidebar">
+        <an-place name="sidebar-content"></an-place>
+    </aside>
+    <main class="main-content">
+        <an-place name="main-content"></an-place>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2026 Dashboard</p>
+    </footer>
+</div>

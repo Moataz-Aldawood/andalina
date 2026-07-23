@@ -1,0 +1,3 @@
+<an-repeat times="3" index-as="i">
+    <p>Item number {{i}}</p>
+</an-repeat>

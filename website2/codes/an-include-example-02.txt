@@ -1,0 +1,6 @@
+<head>
+    <an-include src="head-content.html"></an-include>
+</head>
+<body>
+    <p> Welcome </p>
+</body>

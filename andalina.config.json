@@ -1,5 +1,5 @@
 {
-    "showSource": "disabled",
+    "showRenderedHtml": "disabled",
     "debug": "enabled",
     "preventFOUC": "enabled",
     "propStart": "{{",
