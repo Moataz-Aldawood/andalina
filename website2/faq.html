@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="zxx">
+
+<head>
+   <meta charset="utf-8">
+   <title>an-dalina</title>
+
+   <!-- mobile responsive meta -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+   <!-- ** Plugins Needed for the Project ** -->
+   <!-- plugins -->
+   <link rel="stylesheet" href="plugins/bulma/bulma.min.css">
+   <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
+   <!-- Main Stylesheet -->
+   <link href="css/style.css" rel="stylesheet">
+
+   <!--Favicon-->
+   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+</head>
+
+<body>
+
+   <nav class="navbar navigation" role="navigation" aria-label="main navigation">
+      <div class="container">
+         <div class="navbar-brand">
+            <a class="navbar-item" href="index.html">
+               <img class="img-fluid" src="images/logo.png" alt="godocs" width="155px">
+            </a>
+
+            <a role="button" class="navbar-burger burger" aria-expanded="false" data-target="navbar-links">
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+               <span aria-hidden="true"></span>
+            </a>
+         </div>
+
+         <div id="navbar-links" class="navbar-menu">
+            <div class="navbar-start">
+               <a class="navbar-item" href="index.html">Home</a>
+               <a class="navbar-item" href="documentation.html">Doc</a>
+               <a class="navbar-item" href="download.html">Download</a>
+               <a class="navbar-item" href="faq.html">FAQ</a>
+            </div>
+
+            <div class="navbar-end ml-0">
+               <div class="navbar-item py-0">
+                  <a href="https://github.com" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="#" class="btn btn-sm btn-primary ml-2">Download</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+
+   <section class="pt-5">
+      <div class="container is-max-desktop andalina-content section-sm">
+         <div class="columns is-multiline is-centered">
+            <div class="column is-10-desktop is-12-tablet">
+               <div class="px-4">
+               <div class="p-6 shadow rounded content">
+                  <h1 class="mb-5 border-bottom pb-3">Frequently Asked Questions</h1>
+                  
+                  <div class="mb-5">
+                     <h3 class="has-text-primary mb-3">1. Can I use Andalina for a production website?</h3>
+                     <p class="is-size-5" style="line-height: 1.6;">
+                        Well, it works, but it is <strong>not recommended</strong> due to SEO implications. Search engines expect fully rendered HTML, and since Andalina fetches components client-side, web crawlers may not see your complete content.
+                     </p>
+                     <p class="is-size-5 mt-3" style="line-height: 1.6;">
+                        However, we highly recommend using it if you are publishing themes or templates! It is incredibly useful for your clients in this case because it provides a clean, modular structure.
+                     </p>
+                     <div class="andalina-inline-note mt-3">
+                        <strong>Note:</strong> If your pages contain code snippets (like a documentation site), we strongly prefer using the <code>&lt;an-code&gt;</code> component to keep your HTML clean.
+                     </div>
+                  </div>
+
+                  <hr class="my-5">
+
+                  <div class="mb-5">
+                     <h3 class="has-text-primary mb-3">2. Who are the target users?</h3>
+                     <p class="is-size-5" style="line-height: 1.6;">
+                        Andalina is built for <strong>all Front-End developers</strong>, especially those who:
+                     </p>
+                     <ul class="is-size-5 mt-3" style="line-height: 1.6;">
+                        <li>Build HTML themes and templates for sale or distribution.</li>
+                        <li>Need to quickly prototype modular UIs without setting up build tools.</li>
+                        <li>Want to deliver their outcomes cleanly to a Back-End development team (who will integrate it into server-side frameworks).</li>
+                     </ul>
+                  </div>
+
+               </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+
+   <footer>
+      <div class="container">
+         <div class="columns is-multiline is-align-items-center border-bottom py-5">
+            <div class="column is-4-desktop is-12-tablet">
+               <!-- Footer menu removed per user request -->
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <a class="navbar-brand is-justify-content-center" href="index.html">
+                  <img class="img-fluid" src="images/logo.png" alt="Hugo documentation theme">
+               </a>
+            </div>
+            <div class="column is-4-desktop is-12-tablet">
+               <ul class="list-inline social-icons has-text-right-desktop has-text-centered">
+                  <li class="list-inline-item"><a href="#"><i class="ti-facebook"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-twitter-alt"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-github"></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class="ti-linkedin"></i></a></li>
+               </ul>
+            </div>
+         </div>
+         <div class="py-4 has-text-centered">
+            <small class="text-light">Copyright © 2026 - Invented &amp; Developed by <a
+                  href="https://www.linkedin.com/in/moataz-aldawood/">Moataz Al Dawood</a></small>
+         </div>
+      </div>
+   </footer>
+
+   <!-- plugins -->
+   <script src="plugins/jQuery/jquery.min.js"></script>
+   <script src="plugins/masonry/masonry.min.js"></script>
+   <script src="plugins/clipboard/clipboard.min.js"></script>
+   <script src="plugins/match-height/jquery.matchHeight-min.js"></script>
+
+   <!-- Main Script -->
+   <script src="js/script.js"></script>
+
+</body>
+
+</html>
