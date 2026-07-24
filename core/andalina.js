@@ -1,6 +1,7 @@
 /**
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
+ * Version: 1.1.0
  */
 (function() {
     // 1. Configuration (Prefix detection)
@@ -92,53 +93,56 @@
         return clone;
     }
 
-    function processProps(targetNode, doc, fetchTime) {
-        const attributeTags = Array.from(doc.querySelectorAll(tAttribute));
-        const props = {};
-        const missingProps = {};
-        const passedProps = {};
+    function copyAttributes(source, target) {
+        if (!source || !target) return;
+        while (target.attributes.length > 0) {
+            target.removeAttribute(target.attributes[0].name);
+        }
+        Array.from(source.attributes).forEach(attr => {
+            target.setAttribute(attr.name, attr.value);
+        });
+    }
 
-        attributeTags.forEach(attrTag => {
-            const name = attrTag.getAttribute('name');
-            const mandatory = attrTag.getAttribute('mandatory') === 'true';
-            const defaultValue = attrTag.getAttribute('default-value');
-
-            if (!name) return;
-
-            let passedValue = targetNode.getAttribute(name);
-
-            if (passedValue === null || passedValue === undefined) {
-                if (mandatory) {
-                    console.error(`[Andalina] Missing mandatory attribute '${name}' in tag:`, targetNode);
-                    passedValue = `[Missing: ${name}]`;
-                    missingProps[name] = passedValue;
-                } else {
-                    passedValue = defaultValue !== null ? defaultValue : '';
-                    missingProps[name] = `[Default: ${passedValue}]`;
-                }
-            } else {
-                passedProps[name] = passedValue;
+    // Strips <an-attribute> tags before HTML parsing to prevent them from breaking the <head>
+    function stripAndExtractAttributes(html) {
+        const defaults = {};
+        const cleanHtml = html.replace(/<an-attribute[^>]*>/gi, (match) => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = match;
+            const tag = tempDiv.firstChild;
+            if (tag) {
+                const name = tag.getAttribute('name');
+                const defaultVal = tag.getAttribute('default-value');
+                if (name && defaultVal !== null) defaults[name] = defaultVal;
             }
+            return '';
+        });
+        return { cleanHtml, defaults };
+    }
 
-            props[name] = passedValue;
-            attrTag.remove();
+    function processProps(targetNode, doc, fetchTime, templateDefaults = {}) {        // 1. Gather props from the caller tag
+        const props = {};
+        Array.from(targetNode.attributes).forEach(attr => {
+            if (!['name', 'src'].includes(attr.name)) {
+                props[attr.name] = attr.value;
+            }
         });
 
-        if (globalConfig.debug) {
-            let typeName = "Component";
-            const tagName = targetNode.tagName || "";
-            if (tagName.includes('LAYOUT')) typeName = "Layout";
-            if (tagName.includes('PAGE')) typeName = "Page";
-            if (tagName.includes('INCLUDE')) typeName = "Include";
-            
-            console.log(`%c[Andalina Debug] 🧩 ${typeName}: ${targetNode.getAttribute('src')} (fetch: ${fetchTime}ms)`, 'color: #3498db;');
-            if (Object.keys(passedProps).length > 0) {
-                console.log(`                 ├─ Props Passed:`, passedProps);
-            }
-            if (Object.keys(missingProps).length > 0) {
-                console.log(`                 └─ Missing/Default:`, missingProps);
+        // 2. Merge extracted template defaults
+        const defaultKeys = Object.keys(templateDefaults);
+        if (defaultKeys.length > 0 && globalConfig.debug) {
+            console.log(`%c                 ├─ Found ${defaultKeys.length} <an-attribute> tags`, 'color: #7f8c8d; font-size: 11px;');
+        }
+        
+        for (const [key, val] of Object.entries(templateDefaults)) {
+            if (props[key] === undefined) {
+                props[key] = val;
             }
         }
+
+        // Also clean up any that somehow survived (e.g. dynamically injected later)
+        const attributeTags = Array.from(doc.querySelectorAll(tAttribute));
+        attributeTags.forEach(attrTag => attrTag.remove());
 
         if (Object.keys(props).length === 0) return;
 
@@ -269,11 +273,15 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const layoutHtml = await fetchFragment(src);
+                    let layoutHtml = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
+
+                    const extracted = stripAndExtractAttributes(layoutHtml);
+                    layoutHtml = extracted.cleanHtml;
+
                     const doc = parser.parseFromString(layoutHtml, 'text/html');
                     
-                    processProps(pageNode, doc, fetchTime);
+                    processProps(pageNode, doc, fetchTime, extracted.defaults);
 
                     // Collect <an-inject> blocks from the child template
                     const injects = Array.from(pageNode.querySelectorAll(tInject));
@@ -295,13 +303,16 @@
                     });
 
                     // Completely replace the current document's head and body
-                    const foucStyle = document.getElementById('andalina-fouc');
-                    document.head.innerHTML = '';
-                    if (foucStyle) document.head.appendChild(foucStyle);
-                    
+                    copyAttributes(doc.documentElement, document.documentElement);
+                    if (doc.head) copyAttributes(doc.head, document.head);
+                    if (doc.body) copyAttributes(doc.body, document.body);
+
+                    // We do NOT clear document.head.innerHTML anymore!
+                    // This perfectly preserves the caller page's <title>, <meta>, and <script> tags.
                     if (doc.head) {
                         Array.from(doc.head.childNodes).forEach(node => {
                             if (node.tagName === 'SCRIPT' && node.src.includes('andalina.js')) return; // Don't reload andalina
+                            if (node.tagName === 'TITLE' && document.querySelector('head > title')) return; // Caller title wins
                             document.head.appendChild(cloneNodeSafe(node));
                         });
                     }
@@ -340,10 +351,14 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const layoutHtml = await fetchFragment(src);
+                    let layoutHtml = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
+                    
+                    const extracted = stripAndExtractAttributes(layoutHtml);
+                    layoutHtml = extracted.cleanHtml;
+
                     const doc = parser.parseFromString(layoutHtml, 'text/html');
-                    processProps(targetNode, doc, fetchTime);
+                    processProps(targetNode, doc, fetchTime, extracted.defaults);
                     const layoutContainer = doc.body ? doc.body : doc.documentElement;
 
                     const injects = Array.from(targetNode.querySelectorAll(tInject));

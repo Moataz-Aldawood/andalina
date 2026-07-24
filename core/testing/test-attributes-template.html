@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" data-global-version="1.0">
+<head id="main-head" data-theme="{{theme}}">
+    <an-attribute name="lang" default-value="en" />
+    <an-attribute name="theme" default-value="light" />
+    <title>Test Attributes</title>
+</head>
+<body class="body-theme-{{theme}}" data-test="success">
+    <h1>Testing Attributes Transfer</h1>
+    <p>Language: {{lang}}</p>
+    <p>Theme: {{theme}}</p>
+    <div style="padding: 20px; border: 1px solid #ccc;">
+        <an-place name="content"></an-place>
+    </div>
+</body>
+</html>

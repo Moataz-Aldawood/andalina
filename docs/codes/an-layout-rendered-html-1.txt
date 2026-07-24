@@ -1,17 +1,25 @@
-<div class="dashboard-grid">
-    <header class="header">
-        <h1>Admin Dashboard</h1>
-    </header>
-    <aside class="sidebar">
-        <ul>
-            <li><a href="/users">Users</a></li>
-            <li><a href="/settings">Settings</a></li>
-        </ul>
-    </aside>
-    <main class="main-content">
-        <div class="stats-card">Welcome back, Admin!</div>
-    </main>
-    <footer class="footer">
-        <p>&copy; 2026 Dashboard</p>
-    </footer>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="andalina.js" defer> </script>
+</head>
+<body>
+    <div class="dashboard-grid theme-dark">
+        <header class="header">
+            <h1>Admin Dashboard</h1>
+        </header>
+        <aside class="sidebar">
+            <ul>
+                <li><a href="/users">Users</a></li>
+                <li><a href="/settings">Settings</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="stats-card">Welcome back, Admin!</div>
+        </main>
+        <footer class="footer">
+            <p>&copy; 2026 Dashboard</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
+    <script src="andalina.js" defer> </script>
     <meta charset="UTF-8">
     <title>My Awesome Website</title>
     <link rel="stylesheet" href="style.css">
@@ -23,8 +24,5 @@
     <footer class="site-footer">
         <div>...</div> <!-- Fetched from partials/footer.html -->
     </footer>
-
-    <!-- Andalina Scripts -->
-    <script src="andalina.js" data-templates-path="templates"></script>
 </body>
 </html>

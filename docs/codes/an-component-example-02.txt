@@ -1,5 +1,14 @@
-<!-- call a component using src attribute -->
-<an-component src="user-card.html" username="Alice" role="Admin"/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="andalina.js" defer> </script>
+</head>
+<body>
 
-<!-- call a component using name attribute -->
-<an-component name="user-card" username="Bob"/>
+    <!-- call a component using src attribute -->
+    <an-component src="user-card.html" username="Alice" role="Admin"/>
+
+    <!-- call a component using name attribute -->
+    <an-component name="user-card" username="Bob"/>
+</body>
+</html>
