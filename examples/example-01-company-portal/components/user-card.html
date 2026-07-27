@@ -1,17 +1,15 @@
 <!-- Reusable Employee/Team Member Card for an-repeat grid -->
-<an-template id="user-card">
-   <div class="team-card">
-      <div class="team-avatar">
-         <an-slot name="avatar">AU</an-slot>
-      </div>
-      <h3 class="team-name">
-         <an-slot name="name">Alex Universal</an-slot>
-      </h3>
-      <div class="team-role">
-         <an-slot name="role">Software Engineer</an-slot>
-      </div>
-      <p class="team-bio">
-         <an-slot name="bio">Passionate about client-side architecture and zero-dependency HTML composition.</an-slot>
-      </p>
+<div class="team-card">
+   <div class="team-avatar">
+      <an-place name="avatar">AU</an-place>
    </div>
-</an-template>
+   <h3 class="team-name">
+      <an-place name="name">Alex Universal</an-place>
+   </h3>
+   <div class="team-role">
+      <an-place name="role">Software Engineer</an-place>
+   </div>
+   <p class="team-bio">
+      <an-place name="bio">Passionate about client-side architecture and zero-dependency HTML composition.</an-place>
+   </p>
+</div>

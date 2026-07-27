@@ -1,32 +1,30 @@
 <!-- Reusable E-Commerce Product Card with Default Slot Fallbacks -->
-<an-template id="product-card">
-   <div class="product-card">
-      <div class="product-icon">
-         <an-slot name="icon">⚡</an-slot>
-      </div>
-      <div class="product-meta">
-         <span class="product-category">
-            <an-slot name="category">SaaS Cloud</an-slot>
-         </span>
-         <span class="product-badge">
-            <an-slot name="badge">In Stock</an-slot>
-         </span>
-      </div>
-      <h3 class="product-title">
-         <an-slot name="title">Standard Plan</an-slot>
-      </h3>
-      <p class="product-desc">
-         <an-slot name="desc">
-            Default product specification: cloud-hosted zero-dependency HTML composition engine with real-time browser caching.
-         </an-slot>
-      </p>
-      <div class="product-footer">
-         <span class="product-price">
-            <an-slot name="price">$49/mo</an-slot>
-         </span>
-         <button class="btn-buy">
-            <an-slot name="button">Add to Cart</an-slot>
-         </button>
-      </div>
+<div class="product-card">
+   <div class="product-icon">
+      <an-place name="icon">⚡</an-place>
    </div>
-</an-template>
+   <div class="product-meta">
+      <span class="product-category">
+         <an-place name="category">SaaS Cloud</an-place>
+      </span>
+      <span class="product-badge">
+         <an-place name="badge">In Stock</an-place>
+      </span>
+   </div>
+   <h3 class="product-title">
+      <an-place name="title">Standard Plan</an-place>
+   </h3>
+   <p class="product-desc">
+      <an-place name="desc">
+         Default product specification: cloud-hosted zero-dependency HTML composition engine with real-time browser caching.
+      </an-place>
+   </p>
+   <div class="product-footer">
+      <span class="product-price">
+         <an-place name="price">$49/mo</an-place>
+      </span>
+      <button class="btn-buy">
+         <an-place name="button">Add to Cart</an-place>
+      </button>
+   </div>
+</div>

@@ -3,15 +3,12 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Example 1: Team Grid (Layout + Repeat) | Andalina</title>
+   <title>Team Grid | Andalina Company Portal</title>
    
-   <!-- Core Andalina Engine -->
-   <script src="lib/andalina.js" defer></script>
+   <an-include src="./partials/styles.html"></an-include>
+   <script src="../lib/andalina.js" defer></script>
 </head>
 <body>
-
-   <!-- Include CSS stylesheets inside body so HTML5 parser does not prematurely close head -->
-   <an-include src="./partials/styles.html"></an-include>
 
    <!-- Master Page Layout combined with an-repeat grid -->
    <an-layout src="./layouts/master.html">
@@ -23,58 +20,58 @@
 
          <section class="section-card">
             <div class="section-header">
-               <h2 class="section-title">Engineering & Design Team</h2>
-               <span class="badge">6 Members</span>
+               <h2 class="section-title">Core Engineering & Leadership Roster</h2>
+               <span class="badge">Grid Layout + Repeat</span>
             </div>
 
             <!-- Responsive Grid filled via an-repeat -->
             <div class="card-grid">
                <an-repeat times="1">
                   <!-- Card 1 -->
-                  <an-component template="user-card" src="./components/user-card.html">
-                     <span slot="avatar" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">SR</span>
-                     <span slot="name">Sarah Rodriguez</span>
-                     <span slot="role">Lead Systems Architect</span>
-                     <span slot="bio">Spearheading zero-dependency front-end frameworks and declarative browser parsing.</span>
+                  <an-component src="./components/user-card.html">
+                     <an-inject name="avatar"><span style="background: linear-gradient(135deg, #3b82f6, #60a5fa); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;">SR</span></an-inject>
+                     <an-inject name="name">Sarah Rodriguez</an-inject>
+                     <an-inject name="role">Lead Systems Architect</an-inject>
+                     <an-inject name="bio">Spearheading zero-dependency front-end frameworks and declarative browser parsing.</an-inject>
                   </an-component>
 
                   <!-- Card 2 -->
-                  <an-component template="user-card" src="./components/user-card.html">
-                     <span slot="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">MK</span>
-                     <span slot="name">Marcus Klein</span>
-                     <span slot="role">Principal UI/UX Designer</span>
-                     <span slot="bio">Designing stunning glassmorphic interfaces and micro-interactions for modern web apps.</span>
+                  <an-component src="./components/user-card.html">
+                     <an-inject name="avatar"><span style="background: linear-gradient(135deg, #10b981, #059669); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;">MK</span></an-inject>
+                     <an-inject name="name">Marcus Klein</an-inject>
+                     <an-inject name="role">Principal UI/UX Designer</an-inject>
+                     <an-inject name="bio">Designing stunning glassmorphic interfaces and micro-interactions for modern web apps.</an-inject>
                   </an-component>
 
                   <!-- Card 3 -->
-                  <an-component template="user-card" src="./components/user-card.html">
-                     <span slot="avatar" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">EL</span>
-                     <span slot="name">Elena Lin</span>
-                     <span slot="role">Front-End Engineer</span>
-                     <span slot="bio">Specializing in vanilla HTML component composition and client-side performance.</span>
+                  <an-component src="./components/user-card.html">
+                     <an-inject name="avatar"><span style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;">EL</span></an-inject>
+                     <an-inject name="name">Elena Lin</an-inject>
+                     <an-inject name="role">Front-End Engineer</an-inject>
+                     <an-inject name="bio">Specializing in vanilla HTML component composition and client-side performance.</an-inject>
                   </an-component>
 
                   <!-- Card 4 -->
-                  <an-component template="user-card" src="./components/user-card.html">
-                     <span slot="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">DP</span>
-                     <span slot="name">David Patel</span>
-                     <span slot="role">Back-End Integrations Lead</span>
-                     <span slot="bio">Ensuring seamless handoff between front-end components and server-side templates.</span>
+                  <an-component src="./components/user-card.html">
+                     <an-inject name="avatar"><span style="background: linear-gradient(135deg, #f59e0b, #d97706); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;">DP</span></an-inject>
+                     <an-inject name="name">David Patel</an-inject>
+                     <an-inject name="role">Back-End Integrations Lead</an-inject>
+                     <an-inject name="bio">Ensuring seamless handoff between front-end components and server-side templates.</an-inject>
                   </an-component>
 
                   <!-- Card 5 -->
-                  <an-component template="user-card" src="./components/user-card.html">
-                     <span slot="avatar" style="background: linear-gradient(135deg, #ec4899, #be185d);">AL</span>
-                     <span slot="name">Amira Laurent</span>
-                     <span slot="role">Developer Advocate</span>
-                     <span slot="bio">Creating interactive documentation, code showcases, and community examples.</span>
+                  <an-component src="./components/user-card.html">
+                     <an-inject name="avatar"><span style="background: linear-gradient(135deg, #ec4899, #be185d); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;">AL</span></an-inject>
+                     <an-inject name="name">Amira Laurent</an-inject>
+                     <an-inject name="role">Developer Advocate</an-inject>
+                     <an-inject name="bio">Creating interactive documentation, code showcases, and community examples.</an-inject>
                   </an-component>
 
                   <!-- Card 6: Uses default bio slot fallback -->
-                  <an-component template="user-card" src="./components/user-card.html">
-                     <span slot="avatar" style="background: linear-gradient(135deg, #06b6d4, #0e7490);">JD</span>
-                     <span slot="name">Jordan Davis</span>
-                     <span slot="role">Quality Assurance Engineer</span>
+                  <an-component src="./components/user-card.html">
+                     <an-inject name="avatar"><span style="background: linear-gradient(135deg, #06b6d4, #0e7490); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;">JD</span></an-inject>
+                     <an-inject name="name">Jonathan Doe</an-inject>
+                     <an-inject name="role">Junior Component Developer</an-inject>
                   </an-component>
                </an-repeat>
             </div>

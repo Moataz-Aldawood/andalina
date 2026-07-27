@@ -3,10 +3,10 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Example 2: Customer Reviews | Andalina Storefront</title>
+   <title>Customer Reviews | Andalina SaaS Catalog</title>
    
    <link rel="stylesheet" href="css/style.css">
-   <script src="lib/andalina.js" defer></script>
+   <script src="../lib/andalina.js" defer></script>
 </head>
 <body>
 
@@ -22,33 +22,29 @@
          <div class="reviews-grid">
             <an-repeat times="1">
                <!-- Review 1: Full custom review -->
-               <an-component template="review-card" src="./components/review-card.html">
-                  <span slot="author">Alex Mercer</span>
-                  <span slot="role">CTO at StackFlow</span>
-                  <span slot="avatar" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">AM</span>
-                  <span slot="date">2 days ago</span>
-                  <span slot="comment">
-                     "Andalina allowed us to eliminate a 200MB Node_modules folder for our internal company portal. It renders instantly and our designers love working with declarative HTML components."
-                  </span>
+               <an-component src="./components/review-card.html">
+                  <an-inject name="author">Alex Mercer</an-inject>
+                  <an-inject name="role">CTO at StackFlow</an-inject>
+                  <an-inject name="avatar"><span style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">AM</span></an-inject>
+                  <an-inject name="date">2 days ago</an-inject>
+                  <an-inject name="comment">Andalina allowed us to eliminate a 200MB Node_modules folder for our internal company portal. It renders instantly and our designers love working with declarative HTML components.</an-inject>
                </an-component>
 
                <!-- Review 2: Full custom review -->
-               <an-component template="review-card" src="./components/review-card.html">
-                  <span slot="author">Samantha Chen</span>
-                  <span slot="role">Principal Frontend Lead</span>
-                  <span slot="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">SC</span>
-                  <span slot="date">1 week ago</span>
-                  <span slot="comment">
-                     "The default slot fallbacks are a game-changer. We define standard buttons and cards once, and only override the slots we need. No JS framework lock-in!"
-                  </span>
+               <an-component src="./components/review-card.html">
+                  <an-inject name="author">Samantha Chen</an-inject>
+                  <an-inject name="role">Principal Frontend Lead</an-inject>
+                  <an-inject name="avatar"><span style="background: linear-gradient(135deg, #10b981, #059669); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">SC</span></an-inject>
+                  <an-inject name="date">1 week ago</an-inject>
+                  <an-inject name="comment">The default slot fallbacks are a game-changer. We define standard buttons and cards once, and only override the slots we need. No JS framework lock-in!</an-inject>
                </an-component>
 
                <!-- Review 3: Uses default badge and comment fallback -->
-               <an-component template="review-card" src="./components/review-card.html">
-                  <span slot="author">David K.</span>
-                  <span slot="role">Full-Stack Architect</span>
-                  <span slot="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">DK</span>
-                  <span slot="date">2 weeks ago</span>
+               <an-component src="./components/review-card.html">
+                  <an-inject name="author">David K.</an-inject>
+                  <an-inject name="role">Full-Stack Architect</an-inject>
+                  <an-inject name="avatar"><span style="background: linear-gradient(135deg, #f59e0b, #d97706); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">DK</span></an-inject>
+                  <an-inject name="date">2 weeks ago</an-inject>
                </an-component>
             </an-repeat>
          </div>

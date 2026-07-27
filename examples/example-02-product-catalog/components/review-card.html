@@ -1,14 +1,25 @@
 <!-- Reusable Customer Review Card -->
-<an-template id="review-card">
-   <div class="review-card">
-      <div class="review-stars">
-         <an-slot name="stars">★★★★★</an-slot>
+<div class="review-card">
+   <div class="review-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+      <div class="review-avatar" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;">
+         <an-place name="avatar"><span style="background: linear-gradient(135deg, #f59e0b, #d97706); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">DK</span></an-place>
       </div>
-      <p class="review-text">
-         "<an-slot name="quote">Andalina completely eliminated our need for server-side HTML template engines. Our frontend and backend teams are finally aligned!</an-slot>"
-      </p>
-      <div class="review-author">
-         — <an-slot name="author">Verified Developer</an-slot>
+      <div>
+         <h4 class="review-author" style="margin: 0; font-size: 1rem;">
+            <an-place name="author">Verified Developer</an-place>
+         </h4>
+         <span class="review-role" style="font-size: 0.8rem; color: #94a3b8;">
+            <an-place name="role">Full-Stack Architect</an-place>
+         </span>
       </div>
+      <span class="review-date" style="margin-left: auto; font-size: 0.75rem; color: #64748b;">
+         <an-place name="date">Recently</an-place>
+      </span>
    </div>
-</an-template>
+   <div class="review-stars" style="color: #f59e0b; margin-bottom: 0.75rem;">
+      <an-place name="stars">★★★★★</an-place>
+   </div>
+   <p class="review-text" style="color: #e2e8f0; line-height: 1.5; font-style: italic;">
+      "<an-place name="comment">Andalina completely eliminated our need for server-side HTML template engines. Our frontend and backend teams are finally aligned!</an-place>"
+   </p>
+</div>
