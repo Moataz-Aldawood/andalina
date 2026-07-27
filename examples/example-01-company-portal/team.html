@@ -5,16 +5,16 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Example 1: Team Grid (Layout + Repeat) | Andalina</title>
    
-   <!-- Include CSS stylesheets -->
-   <an-include src="partials/styles.html"></an-include>
-
    <!-- Core Andalina Engine -->
    <script src="lib/andalina.js" data-prop-start="{{" data-prop-end="}}" defer></script>
 </head>
 <body>
 
+   <!-- Include CSS stylesheets inside body so HTML5 parser does not prematurely close head -->
+   <an-include src="./partials/styles.html"></an-include>
+
    <!-- Master Page Layout combined with an-repeat grid -->
-   <an-layout src="layouts/master.html">
+   <an-layout src="./layouts/master.html">
       <an-slot name="content">
          <h1 class="page-title">Team Roster Grid</h1>
          <p class="page-subtitle">
@@ -31,7 +31,7 @@
             <div class="card-grid">
                <an-repeat count="1">
                   <!-- Card 1 -->
-                  <an-component template="user-card" src="components/user-card.html">
+                  <an-component template="user-card" src="./components/user-card.html">
                      <span slot="avatar" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">SR</span>
                      <span slot="name">Sarah Rodriguez</span>
                      <span slot="role">Lead Systems Architect</span>
@@ -39,7 +39,7 @@
                   </an-component>
 
                   <!-- Card 2 -->
-                  <an-component template="user-card" src="components/user-card.html">
+                  <an-component template="user-card" src="./components/user-card.html">
                      <span slot="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">MK</span>
                      <span slot="name">Marcus Klein</span>
                      <span slot="role">Principal UI/UX Designer</span>
@@ -47,7 +47,7 @@
                   </an-component>
 
                   <!-- Card 3 -->
-                  <an-component template="user-card" src="components/user-card.html">
+                  <an-component template="user-card" src="./components/user-card.html">
                      <span slot="avatar" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">EL</span>
                      <span slot="name">Elena Lin</span>
                      <span slot="role">Front-End Engineer</span>
@@ -55,7 +55,7 @@
                   </an-component>
 
                   <!-- Card 4 -->
-                  <an-component template="user-card" src="components/user-card.html">
+                  <an-component template="user-card" src="./components/user-card.html">
                      <span slot="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">DP</span>
                      <span slot="name">David Patel</span>
                      <span slot="role">Back-End Integrations Lead</span>
@@ -63,7 +63,7 @@
                   </an-component>
 
                   <!-- Card 5 -->
-                  <an-component template="user-card" src="components/user-card.html">
+                  <an-component template="user-card" src="./components/user-card.html">
                      <span slot="avatar" style="background: linear-gradient(135deg, #ec4899, #be185d);">AL</span>
                      <span slot="name">Amira Laurent</span>
                      <span slot="role">Developer Advocate</span>
@@ -71,7 +71,7 @@
                   </an-component>
 
                   <!-- Card 6: Uses default bio slot fallback -->
-                  <an-component template="user-card" src="components/user-card.html">
+                  <an-component template="user-card" src="./components/user-card.html">
                      <span slot="avatar" style="background: linear-gradient(135deg, #06b6d4, #0e7490);">JD</span>
                      <span slot="name">Jordan Davis</span>
                      <span slot="role">Quality Assurance Engineer</span>

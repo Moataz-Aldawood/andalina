@@ -10,34 +10,45 @@
 </head>
 <body>
 
-   <an-layout src="layouts/store-layout.html">
+   <an-layout src="./layouts/store-layout.html">
       <an-slot name="content">
          <div class="hero-banner">
-            <h1 class="hero-title">Loved by Engineering Teams</h1>
+            <h1 class="hero-title">Customer Feedback & Reviews</h1>
             <p class="hero-subtitle">
-               See what developers and architects are saying about Andalina's client-side HTML composition.
+               See what engineering leads and developers say about building zero-dependency frontends with Andalina.
             </p>
          </div>
 
-         <div class="review-grid">
+         <div class="reviews-grid">
             <an-repeat count="1">
-               <!-- Review 1: Custom values -->
-               <an-component template="review-card" src="components/review-card.html">
-                  <span slot="stars">★★★★★</span>
-                  <span slot="quote">Andalina solved our biggest DX bottleneck: front-end developers no longer wait for back-end PHP/Blade rewrites.</span>
-                  <span slot="author">Marcus Vance, Chief Architect</span>
+               <!-- Review 1: Full custom review -->
+               <an-component template="review-card" src="./components/review-card.html">
+                  <span slot="author">Alex Mercer</span>
+                  <span slot="role">CTO at StackFlow</span>
+                  <span slot="avatar" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">AM</span>
+                  <span slot="date">2 days ago</span>
+                  <span slot="comment">
+                     "Andalina allowed us to eliminate a 200MB Node_modules folder for our internal company portal. It renders instantly and our designers love working with declarative HTML components."
+                  </span>
                </an-component>
 
-               <!-- Review 2: Default stars and quote -->
-               <an-component template="review-card" src="components/review-card.html">
-                  <span slot="author">Sarah Jenkins, Lead FE Engineer</span>
+               <!-- Review 2: Full custom review -->
+               <an-component template="review-card" src="./components/review-card.html">
+                  <span slot="author">Samantha Chen</span>
+                  <span slot="role">Principal Frontend Lead</span>
+                  <span slot="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">SC</span>
+                  <span slot="date">1 week ago</span>
+                  <span slot="comment">
+                     "The default slot fallbacks are a game-changer. We define standard buttons and cards once, and only override the slots we need. No JS framework lock-in!"
+                  </span>
                </an-component>
 
-               <!-- Review 3 -->
-               <an-component template="review-card" src="components/review-card.html">
-                  <span slot="stars">★★★★★</span>
-                  <span slot="quote">Zero-dependency client-side templates mean our static GitHub Pages site feels like a full-scale web application!</span>
-                  <span slot="author">David K., Open Source Maintainer</span>
+               <!-- Review 3: Uses default badge and comment fallback -->
+               <an-component template="review-card" src="./components/review-card.html">
+                  <span slot="author">David K.</span>
+                  <span slot="role">Full-Stack Architect</span>
+                  <span slot="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">DK</span>
+                  <span slot="date">2 weeks ago</span>
                </an-component>
             </an-repeat>
          </div>

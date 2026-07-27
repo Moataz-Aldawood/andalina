@@ -10,7 +10,7 @@
 </head>
 <body>
 
-   <an-layout src="layouts/store-layout.html">
+   <an-layout src="./layouts/store-layout.html">
       <an-slot name="content">
          <div class="hero-banner">
             <h1 class="hero-title">Next-Gen SaaS Catalog</h1>
@@ -22,7 +22,7 @@
          <div class="product-grid">
             <an-repeat count="1">
                <!-- Product 1: Overrides all slots -->
-               <an-component template="product-card" src="components/product-card.html">
+               <an-component template="product-card" src="./components/product-card.html">
                   <span slot="icon">🚀</span>
                   <span slot="category">Enterprise SaaS</span>
                   <span slot="badge">Best Seller</span>
@@ -33,44 +33,51 @@
                </an-component>
 
                <!-- Product 2: Uses default badge ("In Stock") and default button ("Add to Cart") -->
-               <an-component template="product-card" src="components/product-card.html">
+               <an-component template="product-card" src="./components/product-card.html">
                   <span slot="icon">⚡</span>
-                  <span slot="category">Developer Pack</span>
-                  <span slot="title">Andalina Dev Pro</span>
-                  <span slot="desc">Zero-dependency client-side parser with advanced render-tree console debugging.</span>
+                  <span slot="category">Developer Tools</span>
+                  <span slot="title">Andalina Studio</span>
+                  <span slot="desc">Interactive component previewer and template debugger with live syntax highlighting.</span>
                   <span slot="price">$49/mo</span>
                </an-component>
 
-               <!-- Product 3 -->
-               <an-component template="product-card" src="components/product-card.html">
+               <!-- Product 3: Uses default badge and button -->
+               <an-component template="product-card" src="./components/product-card.html">
                   <span slot="icon">🛡️</span>
                   <span slot="category">Security</span>
-                  <span slot="badge">New Release</span>
-                  <span slot="title">CORS Shield Module</span>
-                  <span slot="desc">Automated security headers and local server proxying for seamless frontend/backend handoff.</span>
+                  <span slot="title">Zero-XSS Sanitizer</span>
+                  <span slot="desc">Automated HTML escaping and attribute sanitization for client-side templates.</span>
                   <span slot="price">$79/mo</span>
                </an-component>
 
-               <!-- Product 4: Uses default description, badge, and button -->
-               <an-component template="product-card" src="components/product-card.html">
-                  <span slot="icon">☁️</span>
-                  <span slot="category">Cloud Hosting</span>
-                  <span slot="title">Static Edge CDN</span>
-                  <span slot="price">$29/mo</span>
-               </an-component>
-
-               <!-- Product 5 -->
-               <an-component template="product-card" src="components/product-card.html">
+               <!-- Product 4: Overrides all slots -->
+               <an-component template="product-card" src="./components/product-card.html">
                   <span slot="icon">🎨</span>
-                  <span slot="category">Design Systems</span>
-                  <span slot="badge">Popular</span>
-                  <span slot="title">Glassmorphic UI Kit</span>
-                  <span slot="desc">60+ prebuilt declarative HTML components ready to drop into any Andalina layout.</span>
-                  <span slot="price">$89/mo</span>
+                  <span slot="category">UI Libraries</span>
+                  <span slot="badge">New</span>
+                  <span slot="title">Glassmorphism UI Kit</span>
+                  <span slot="desc">120+ prebuilt accessible components with dark mode and CSS token customization.</span>
+                  <span slot="price">$129/mo</span>
+                  <span slot="button">Buy License</span>
                </an-component>
 
-               <!-- Product 6: Fully Default Card -->
-               <an-component template="product-card" src="components/product-card.html"></an-component>
+               <!-- Product 5: Default badge -->
+               <an-component template="product-card" src="./components/product-card.html">
+                  <span slot="icon">📊</span>
+                  <span slot="category">Analytics</span>
+                  <span slot="title">Declarative Insights</span>
+                  <span slot="desc">Real-time performance metrics and render time benchmarks for Andalina components.</span>
+                  <span slot="price">$39/mo</span>
+               </an-component>
+
+               <!-- Product 6: Default badge and button -->
+               <an-component template="product-card" src="./components/product-card.html">
+                  <span slot="icon">🌐</span>
+                  <span slot="category">Hosting</span>
+                  <span slot="title">Static CDN Deploy</span>
+                  <span slot="desc">Deploy your zero-dependency Andalina app to any edge CDN in under 10 seconds.</span>
+                  <span slot="price">$19/mo</span>
+               </an-component>
             </an-repeat>
          </div>
       </an-slot>

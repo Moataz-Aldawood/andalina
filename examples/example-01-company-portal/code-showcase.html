@@ -5,16 +5,16 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Example 1: Code Showcase (&lt;an-code&gt;) | Andalina</title>
    
-   <!-- Include CSS stylesheets -->
-   <an-include src="partials/styles.html"></an-include>
-
    <!-- Core Andalina Engine -->
    <script src="lib/andalina.js" data-prop-start="{{" data-prop-end="}}" defer></script>
 </head>
 <body>
 
+   <!-- Include CSS stylesheets inside body so HTML5 parser does not prematurely close head -->
+   <an-include src="./partials/styles.html"></an-include>
+
    <!-- Master Page Layout -->
-   <an-layout src="layouts/master.html">
+   <an-layout src="./layouts/master.html">
       <an-slot name="content">
          <h1 class="page-title">Dynamic Source Code Injection</h1>
          <p class="page-subtitle">
@@ -28,9 +28,9 @@
                <span class="badge">&lt;an-code&gt;</span>
             </div>
             <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-               The code block below is dynamically loaded from an external JSON file using <code>&lt;an-code src="snippets/sample-config.json"&gt;&lt;/an-code&gt;</code>:
+               The code block below is dynamically loaded from an external JSON file using <code>&lt;an-code src="./snippets/sample-config.json"&gt;&lt;/an-code&gt;</code>:
             </p>
-            <pre class="code-box"><code><an-code src="snippets/sample-config.json"></an-code></code></pre>
+            <pre class="code-box"><code><an-code src="./snippets/sample-config.json"></an-code></code></pre>
          </section>
 
          <!-- Section 2: Injected HTML Snippet File -->
@@ -42,7 +42,7 @@
             <p style="color: var(--text-secondary); margin-bottom: 1rem;">
                The code block below demonstrates how Andalina automatically escapes HTML tags when injecting external markup snippets:
             </p>
-            <pre class="code-box"><code><an-code src="snippets/component-demo.html"></an-code></code></pre>
+            <pre class="code-box"><code><an-code src="./snippets/component-demo.html"></an-code></code></pre>
          </section>
       </an-slot>
    </an-layout>

@@ -5,16 +5,16 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Example 1: UI Library & Default Values | Andalina</title>
    
-   <!-- 1. Dynamically include multiple CSS stylesheets via an-include -->
-   <an-include src="partials/styles.html"></an-include>
-
-   <!-- 2. Core Andalina Engine -->
+   <!-- Core Andalina Engine -->
    <script src="lib/andalina.js" data-prop-start="{{" data-prop-end="}}" defer></script>
 </head>
 <body>
 
+   <!-- 1. Dynamically include multiple CSS stylesheets via an-include inside body so HTML5 parser does not prematurely close head -->
+   <an-include src="./partials/styles.html"></an-include>
+
    <!-- Master Page Layout -->
-   <an-layout src="layouts/master.html">
+   <an-layout src="./layouts/master.html">
       <an-slot name="content">
          <h1 class="page-title">UI Control Library & Default Slot Fallbacks</h1>
          <p class="page-subtitle">
@@ -31,13 +31,13 @@
                <!-- Uses ALL default values -->
                <div>
                   <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Default Values:</div>
-                  <an-component template="custom-btn" src="components/ui-controls.html"></an-component>
+                  <an-component template="custom-btn" src="./components/ui-controls.html"></an-component>
                </div>
 
                <!-- Overrides label slot only -->
                <div>
                   <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Label Slot:</div>
-                  <an-component template="custom-btn" src="components/ui-controls.html">
+                  <an-component template="custom-btn" src="./components/ui-controls.html">
                      <span slot="label">Deploy Application</span>
                   </an-component>
                </div>
@@ -45,7 +45,7 @@
                <!-- Overrides icon and label slots -->
                <div>
                   <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Icon + Label:</div>
-                  <an-component template="custom-btn" src="components/ui-controls.html">
+                  <an-component template="custom-btn" src="./components/ui-controls.html">
                      <span slot="icon">🚀</span>
                      <span slot="label">Launch Production</span>
                   </an-component>
@@ -61,16 +61,16 @@
             </div>
             <div class="card-grid">
                <!-- Card 1: Uses Default Values -->
-               <an-component template="custom-card" src="components/ui-controls.html"></an-component>
+               <an-component template="custom-card" src="./components/ui-controls.html"></an-component>
 
                <!-- Card 2: Custom Title & Badge, Default Body -->
-               <an-component template="custom-card" src="components/ui-controls.html">
+               <an-component template="custom-card" src="./components/ui-controls.html">
                   <span slot="title">Analytics Engine</span>
                   <span slot="badge">v3.1 Beta</span>
                </an-component>
 
                <!-- Card 3: Fully Overridden Slots -->
-               <an-component template="custom-card" src="components/ui-controls.html">
+               <an-component template="custom-card" src="./components/ui-controls.html">
                   <span slot="title">Zero-Dependency Core</span>
                   <span slot="badge">Production</span>
                   <span slot="body">
@@ -91,10 +91,10 @@
             </div>
             <div style="max-width: 600px;">
                <!-- Field 1: Default Values -->
-               <an-component template="text-field" src="components/ui-controls.html"></an-component>
+               <an-component template="text-field" src="./components/ui-controls.html"></an-component>
 
                <!-- Field 2: Custom Label & Helper Note -->
-               <an-component template="text-field" src="components/ui-controls.html">
+               <an-component template="text-field" src="./components/ui-controls.html">
                   <span slot="label">Work Email Address</span>
                   <span slot="helper">We will never share your corporate email with external third parties.</span>
                </an-component>
