@@ -1,21 +1,17 @@
-<an-template id="store-layout">
-   <header class="store-header">
-      <div class="store-logo">Andalina Cloud Catalog</div>
-      <nav class="store-nav">
-         <a href="index.html" class="store-link">Products</a>
-         <a href="reviews.html" class="store-link">Customer Reviews</a>
-         <a href="../index.html" class="store-link" style="border: 1px solid var(--primary-neon);">← All Examples</a>
-         <span class="cart-pill">🛒 Cart (3)</span>
-      </nav>
-   </header>
+<header class="store-header">
+   <div class="store-logo">Andalina Cloud Catalog</div>
+   <nav class="store-nav">
+      <a href="index.html" class="store-link">Products</a>
+      <a href="reviews.html" class="store-link">Customer Reviews</a>
+      <a href="../index.html" class="store-link" style="border: 1px solid var(--primary-neon);">← All Examples</a>
+      <span class="cart-pill">🛒 Cart (3)</span>
+   </nav>
+</header>
 
-   <main class="main-wrapper">
-      <an-slot name="content">
-         <p>Default Storefront Content Area</p>
-      </an-slot>
-   </main>
+<main class="main-wrapper">
+   <an-place name="content"></an-place>
+</main>
 
-   <footer class="store-footer">
-      <p>Andalina Cloud Catalog • Client-Side Component Composition Demo</p>
-   </footer>
-</an-template>
+<footer class="store-footer">
+   <p>Andalina Cloud Catalog • Client-Side Component Composition Demo</p>
+</footer>

@@ -15,7 +15,7 @@
 
    <!-- Master Page Layout -->
    <an-layout src="./layouts/master.html">
-      <an-slot name="content">
+      <an-inject name="content">
          <h1 class="page-title">Dynamic Source Code Injection</h1>
          <p class="page-subtitle">
             This page demonstrates using <code>&lt;an-code src="..."&gt;</code> to load, escape, and render raw code files directly into your HTML pages without manual copy-pasting.
@@ -44,7 +44,7 @@
             </p>
             <pre class="code-box"><code><an-code src="./snippets/component-demo.html"></an-code></code></pre>
          </section>
-      </an-slot>
+      </an-inject>
    </an-layout>
 
 </body>

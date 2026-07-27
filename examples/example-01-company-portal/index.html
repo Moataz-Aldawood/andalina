@@ -15,7 +15,7 @@
 
    <!-- Master Page Layout -->
    <an-layout src="./layouts/master.html">
-      <an-slot name="content">
+      <an-inject name="content">
          <h1 class="page-title">UI Control Library & Default Slot Fallbacks</h1>
          <p class="page-subtitle">
             This page loads multiple CSS stylesheets using <code>&lt;an-include&gt;</code> and demonstrates reusable buttons, cards, and text fields where some use default fallback values while others override specific slots.
@@ -100,7 +100,7 @@
                </an-component>
             </div>
          </section>
-      </an-slot>
+      </an-inject>
    </an-layout>
 
 </body>

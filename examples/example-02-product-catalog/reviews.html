@@ -11,7 +11,7 @@
 <body>
 
    <an-layout src="./layouts/store-layout.html">
-      <an-slot name="content">
+      <an-inject name="content">
          <div class="hero-banner">
             <h1 class="hero-title">Customer Feedback & Reviews</h1>
             <p class="hero-subtitle">
@@ -52,7 +52,7 @@
                </an-component>
             </an-repeat>
          </div>
-      </an-slot>
+      </an-inject>
    </an-layout>
 
 </body>

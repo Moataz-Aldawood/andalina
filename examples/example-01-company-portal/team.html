@@ -15,7 +15,7 @@
 
    <!-- Master Page Layout combined with an-repeat grid -->
    <an-layout src="./layouts/master.html">
-      <an-slot name="content">
+      <an-inject name="content">
          <h1 class="page-title">Team Roster Grid</h1>
          <p class="page-subtitle">
             This page demonstrates combining <code>&lt;an-layout&gt;</code> with <code>&lt;an-repeat&gt;</code> to render a responsive grid of reusable employee cards.
@@ -79,7 +79,7 @@
                </an-repeat>
             </div>
          </section>
-      </an-slot>
+      </an-inject>
    </an-layout>
 
 </body>
