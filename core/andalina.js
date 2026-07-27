@@ -448,12 +448,15 @@
         }
         
         try {
-            let configUrl = basePath + 'andalina.config.json';
+            let configUrl = 'andalina.config.json';
             const scriptTagVersion = scriptTag ? scriptTag.getAttribute('data-version') : null;
             if (scriptTagVersion) {
                 configUrl += `?v=${encodeURIComponent(scriptTagVersion)}`;
             }
-            const configRes = await fetch(configUrl);
+            let configRes = await fetch(configUrl);
+            if (!configRes.ok && basePath) {
+                configRes = await fetch(basePath + configUrl);
+            }
             if (configRes.ok) {
                 const json = await configRes.json();
                 if (json.version !== undefined) globalConfig.version = json.version;
