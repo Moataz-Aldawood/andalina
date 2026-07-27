@@ -19,7 +19,8 @@
         layoutsPath: '',
         templatesPath: '',
         includesPath: 'includes',
-        extension: '.html'
+        extension: '.html',
+        version: ''
     };
 
     function escapeRegExp(string) {
@@ -60,7 +61,12 @@
             return cache.get(url);
         }
         try {
-            const response = await fetch(url);
+            let fetchUrl = url;
+            if (globalConfig.version) {
+                const separator = fetchUrl.includes('?') ? '&' : '?';
+                fetchUrl += `${separator}v=${encodeURIComponent(globalConfig.version)}`;
+            }
+            const response = await fetch(fetchUrl);
             if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
             const text = await response.text();
             cache.set(url, text);
@@ -442,9 +448,15 @@
         }
         
         try {
-            const configRes = await fetch(basePath + 'andalina.config.json');
+            let configUrl = basePath + 'andalina.config.json';
+            const scriptTagVersion = scriptTag ? scriptTag.getAttribute('data-version') : null;
+            if (scriptTagVersion) {
+                configUrl += `?v=${encodeURIComponent(scriptTagVersion)}`;
+            }
+            const configRes = await fetch(configUrl);
             if (configRes.ok) {
                 const json = await configRes.json();
+                if (json.version !== undefined) globalConfig.version = json.version;
                 if (json.showRenderedHtml !== undefined) globalConfig.showRenderedHtml = isEnabled(json.showRenderedHtml);
                 if (json.debug !== undefined) globalConfig.debug = isEnabled(json.debug);
                 if (json.preventFOUC !== undefined) globalConfig.preventFOUC = isEnabled(json.preventFOUC);

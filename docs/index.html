@@ -61,8 +61,8 @@
 
             <div class="navbar-end ml-0">
                <div class="navbar-item py-0">
-                  <a href="https://github.com" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
-                  <a href="#" class="btn btn-sm btn-primary ml-2">Download</a>
+                  <a href="https://github.com/Moataz-Aldawood/andalina" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="download.html" class="btn btn-sm btn-primary ml-2">Download</a>
                </div>
             </div>
          </div>
@@ -71,96 +71,189 @@
 
    <!-- banner -->
    <section class="section pb-0 hero-section" style="position: relative; overflow: hidden; padding-top: 5rem;">
-      <div class="container">
-         <div class="columns is-justify-content-space-between is-align-items-center">
-            <div class="column is-6-desktop has-text-centered-mobile has-text-centered-tablet has-text-left-desktop">
-               <h1 class="mb-4" style="font-size: 3.5rem; font-weight: 800; line-height: 1.1;">Build Modular
-                  HTML.<br><span class="has-text-primary">Zero Build Tools.</span></h1>
-               <p class="mb-5 is-size-5 has-text-grey">Andalina is a zero-dependency, client-side template engine that
-                  brings component architecture to vanilla HTML. No Node.js, no Webpack, no server required.</p>
-               <div class="buttons is-justify-content-flex-start is-justify-content-center-mobile">
-                  <a href="documentation.html" class="btn btn-primary mr-3 mb-3">Get Started</a>
-                  <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank" class="btn btn-outline-primary mb-3">View Examples on GitHub</a>
-               </div>
-            </div>
-            <div class="column is-6-desktop">
-               <div class="card shadow-lg"
-                  style="border-radius: 12px; background: #4C4743; overflow: hidden; border: 1px solid #767171;">
-                  <div class="card-header"
-                     style="background: #3A3633; padding: 10px 20px; border-bottom: 1px solid #767171;">
-                     <span
-                        style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #fc8181; margin-right: 6px;"></span>
-                     <span
-                        style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #f6e05e; margin-right: 6px;"></span>
-                     <span
-                        style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #68d391;"></span>
-                  </div>
-                  <div class="card-content p-0">
-                     <pre
-                        style="background: transparent; color: #FDE6C3; padding: 20px; margin: 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto;"><code><span style="color: #A5A5A5;">&lt;!-- Include a component and pass dynamic properties --&gt;</span>
-&lt;<span style="color: #5B9BD5;">an-component</span> name=<span style="color: #FFB230;">"user-card"</span> role=<span style="color: #FFB230;">"Admin"</span>&gt;&lt;/<span style="color: #5B9BD5;">an-component</span>&gt;
+      <div class="container has-text-centered">
 
-<span style="color: #A5A5A5;">&lt;!-- Apply a master layout to the entire page --&gt;</span>
-&lt;<span style="color: #5B9BD5;">an-template</span> name=<span style="color: #FFB230;">"master"</span>&gt;
-    &lt;<span style="color: #5B9BD5;">an-inject</span> name=<span style="color: #FFB230;">"content"</span>&gt;
-        &lt;<span style="color: #5B9BD5;">h1</span>&gt;Hello World&lt;/<span style="color: #5B9BD5;">h1</span>&gt;
-    &lt;/<span style="color: #5B9BD5;">an-inject</span>&gt;
-&lt;/<span style="color: #5B9BD5;">an-template</span>&gt;</code></pre>
-                  </div>
-               </div>
-            </div>
+         <h1 class="mb-4" style="font-size: 3rem; font-weight: 800; line-height: 1.1;">Build reusable pages,
+            templates, layouts, and any other UI components for vanilla HTML.</h1>
+         <p class="mb-5 is-size-5 has-text-grey" style="max-width: 800px; margin-left: auto; margin-right: auto;">Andalina is a zero-dependency, client-side template engine that
+            brings component architecture to vanilla HTML. No Node.js, no Webpack, no server required.</p>
+         <div class="buttons is-justify-content-center">
+            <a href="documentation.html" class="btn btn-primary mr-3 mb-3">Get Started</a>
+            <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank"
+               class="btn btn-outline-primary mb-3">View Examples on GitHub</a>
          </div>
       </div>
+
+
    </section>
    <!-- /banner -->
 
-   <!-- before and after story -->
-   <section class="section bg-light mt-6" style="padding-top: 4rem; padding-bottom: 4rem;">
-      <div class="container">
+   <!-- examples slider -->
+   <section class="section bg-light mt-6" style="padding-top: 5rem; padding-bottom: 5rem;">
+      <div class="container is-max-desktop">
          <div class="has-text-centered mb-6">
-            <h2 class="section-title mb-3">The DX Problem We Solve</h2>
-            <p class="is-size-5 has-text-grey" style="max-width: 800px; margin: 0 auto;">Front-End developers often copy
-               and paste identical HTML across dozens of static files. Back-End developers then have to rip it apart to
-               use it in JSP, Jinja2, or Blade.</p>
+            <h2 class="section-title mb-3" style="font-size: 2.5rem;">The DX Problem We Solve</h2>
+            <p class="is-size-5 has-text-grey" style="max-width: 800px; margin: 0 auto; line-height: 1.8;">
+               Front-End developers often copy and paste identical HTML across dozens of static files. Back-End
+               developers then have to rip it apart to use it in JSP, Jinja2, or Blade.<br><br>
+               <strong>Andalina fixes this.</strong> You write modular components once in standard HTML, and Andalina
+               dynamically stitches them together in the browser. Zero build steps, zero Node.js required.
+            </p>
          </div>
 
-         <div class="columns is-multiline is-align-items-stretch">
-            <!-- Before -->
-            <div class="column is-6">
-               <h3 class="h4 has-text-grey mb-3"><i class="ti-close mr-2"></i>Before: Repetitive HTML</h3>
-               <div class="card shadow-sm h-100" style="border-radius: 8px; border-left: 4px solid #767171;">
-                  <div class="card-content p-4">
-                     <pre
-                        style="background: #fdfdfd; padding: 0; margin: 0; border: none; font-family: monospace; overflow-x: auto; color: #4a4a4a;"><code>&lt;!-- You have to paste this in every single file! --&gt;
-&lt;nav class="navbar"&gt;
-    &lt;div class="logo"&gt;MyApp&lt;/div&gt;
-    &lt;ul&gt;
-        &lt;li&gt;Home&lt;/li&gt;
-        &lt;li&gt;About&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/nav&gt;</code></pre>
+         <div class="examples-slider">
+
+            <!-- Slide 1: an-template -->
+            <div class="example-card">
+               <div class="slide-card-wrapper">
+                  <h3 class="slide-main-title">Build a page template and reuse it in any page</h3>
+                  <div class="slide-grid">
+                     <!-- Top Left Box -->
+                     <div class="slide-box-col">
+                        <span class="slide-box-header">master-template.html</span>
+                        <div class="slide-box">
+                           <div class="wireframe-layout-preview">
+                              <div class="wireframe-header-bar"></div>
+                              <div class="wireframe-body-row">
+                                 <div class="wireframe-sidebar-bar"></div>
+                                 <div class="wireframe-main-col">
+                                    <div class="wireframe-top-bar"></div>
+                                    <div class="wireframe-active-slot">
+                                       <pre class="slide-code"><code class="no-copy">&lt;<span class="code-tag">an-place</span> <span class="code-attr">name</span>=<span class="code-val">"main-content"</span>&gt;
+
+  <span class="code-comment">&lt;!-- your content will be placed here --&gt;</span>
+
+&lt;/<span class="code-tag">an-place</span>&gt;</code></pre>
+                                    </div>
+                                    <div class="wireframe-bottom-bar"></div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <!-- Top Right Box -->
+                     <div class="slide-box-col">
+                        <span class="slide-box-header">index.html</span>
+                        <div class="slide-box">
+                           <pre class="slide-code"><code class="no-copy">&lt;<span class="code-tag">an-template</span> <span class="code-attr">name</span>=<span class="code-val">"master-template"</span>&gt;
+   &lt;<span class="code-tag">an-inject</span> <span class="code-attr">name</span>=<span class="code-val">"main-content"</span>&gt;
+
+      &lt;<span class="code-html-tag">p</span>&gt; this is my page content &lt;/<span class="code-html-tag">p</span>&gt;
+
+   &lt;/<span class="code-tag">an-inject</span>&gt;
+&lt;/<span class="code-tag">an-template</span>&gt;</code></pre>
+                        </div>
+                     </div>
+
+                     <!-- Bottom Row Box -->
+                     <div class="slide-box-col slide-box-full">
+                        <span class="slide-box-header">Rendered HTML for index.html</span>
+                        <div class="slide-box">
+                           <div class="wireframe-layout-preview">
+                              <div class="wireframe-header-bar"></div>
+                              <div class="wireframe-body-row">
+                                 <div class="wireframe-sidebar-bar"></div>
+                                 <div class="wireframe-main-col">
+                                    <div class="wireframe-top-bar"></div>
+                                    <div class="wireframe-active-slot">
+                                       <pre class="slide-code"><code class="no-copy">&lt;<span class="code-html-tag">p</span>&gt; this is my page content &lt;/<span class="code-html-tag">p</span>&gt;</code></pre>
+                                    </div>
+                                    <div class="wireframe-bottom-bar"></div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                </div>
             </div>
-            <!-- After -->
-            <div class="column is-6">
-               <h3 class="h4 has-text-primary mb-3"><i class="ti-check mr-2"></i>With Andalina</h3>
-               <div class="card shadow-sm h-100" style="border-radius: 8px; border-left: 4px solid #70AD47;">
-                  <div class="card-content p-4">
-                     <pre
-                        style="background: #fdfdfd; padding: 0; margin: 0; border: none; font-family: monospace; overflow-x: auto; color: #4a4a4a;"><code>&lt;!-- Write it once, use it everywhere! --&gt;
-&lt;an-component name="navbar"&gt;&lt;/an-component&gt;
-</code></pre>
-                     <p class="mt-4 is-size-6 has-text-grey" style="line-height: 1.6;">Your Back-End team immediately
-                        knows exactly where the component boundaries are without having to "clean up" the HTML to
-                        integrate it into their server logic.</p>
+
+            <!-- Slide 2: an-component -->
+            <div class="example-card">
+               <div class="slide-card-wrapper">
+                  <h3 class="slide-main-title">Create reusable UI components with dynamic properties</h3>
+                  <div class="slide-grid">
+                     <!-- Top Left Box -->
+                     <div class="slide-box-col">
+                        <span class="slide-box-header">user-card.html</span>
+                        <div class="slide-box">
+                           <pre class="slide-code"><code class="no-copy"><span class="code-comment">&lt;!-- Define component attributes --&gt;</span>
+&lt;<span class="code-tag">an-attribute</span> <span class="code-attr">name</span>=<span class="code-val">"username"</span> <span class="code-attr">mandatory</span>=<span class="code-val">"true"</span> /&gt;
+&lt;<span class="code-tag">an-attribute</span> <span class="code-attr">name</span>=<span class="code-val">"role"</span> <span class="code-attr">default-value</span>=<span class="code-val">"Member"</span> /&gt;
+
+<span class="code-comment">&lt;!-- Component UI Structure --&gt;</span>
+&lt;<span class="code-html-tag">div</span> <span class="code-attr">class</span>=<span class="code-val">"card"</span>&gt;
+   &lt;<span class="code-html-tag">h3</span>&gt;<span class="code-var">{{username}}</span>&lt;/<span class="code-html-tag">h3</span>&gt;
+   &lt;<span class="code-html-tag">p</span>&gt;Role: <span class="code-var">{{role}}</span>&lt;/<span class="code-html-tag">p</span>&gt;
+&lt;/<span class="code-html-tag">div</span>&gt;</code></pre>
+                        </div>
+                     </div>
+
+                     <!-- Top Right Box -->
+                     <div class="slide-box-col">
+                        <span class="slide-box-header">index.html</span>
+                        <div class="slide-box">
+                           <pre class="slide-code"><code class="no-copy"><span class="code-comment">&lt;!-- Call component with custom role --&gt;</span>
+&lt;<span class="code-tag">an-component</span> <span class="code-attr">name</span>=<span class="code-val">"user-card"</span> 
+              <span class="code-attr">username</span>=<span class="code-val">"Alice"</span> 
+              <span class="code-attr">role</span>=<span class="code-val">"Admin"</span> /&gt;
+
+<span class="code-comment">&lt;!-- Call component with default role --&gt;</span>
+&lt;<span class="code-tag">an-component</span> <span class="code-attr">name</span>=<span class="code-val">"user-card"</span> 
+              <span class="code-attr">username</span>=<span class="code-val">"Bob"</span> /&gt;</code></pre>
+                        </div>
+                     </div>
+
+                     <!-- Bottom Left Box -->
+                     <div class="slide-box-col">
+                        <span class="slide-box-header">Rendered HTML for index.html</span>
+                        <div class="slide-box">
+                           <pre class="slide-code"><code class="no-copy">&lt;<span class="code-html-tag">div</span> <span class="code-attr">class</span>=<span class="code-val">"card"</span>&gt;
+   &lt;<span class="code-html-tag">h3</span>&gt;Alice&lt;/<span class="code-html-tag">h3</span>&gt;
+   &lt;<span class="code-html-tag">p</span>&gt;Role: Admin&lt;/<span class="code-html-tag">p</span>&gt;
+&lt;/<span class="code-html-tag">div</span>&gt;
+
+&lt;<span class="code-html-tag">div</span> <span class="code-attr">class</span>=<span class="code-val">"card"</span>&gt;
+   &lt;<span class="code-html-tag">h3</span>&gt;Bob&lt;/<span class="code-html-tag">h3</span>&gt;
+   &lt;<span class="code-html-tag">p</span>&gt;Role: Member&lt;/<span class="code-html-tag">p</span>&gt;
+&lt;/<span class="code-html-tag">div</span>&gt;</code></pre>
+                        </div>
+                     </div>
+
+                     <!-- Bottom Right Box -->
+                     <div class="slide-box-col">
+                        <span class="slide-box-header">Visual Output for index.html</span>
+                        <div class="slide-box" style="padding: 1.5rem; justify-content: center; gap: 1rem;">
+                           <div class="ui-card-preview" style="background: #ffffff; border: 1px solid rgba(76, 71, 67, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 0;">
+                              <div>
+                                 <h4 class="ui-card-title mb-1" style="color: var(--color-main-1);">Alice</h4>
+                                 <p class="is-size-7 has-text-grey mb-0">Role: Admin</p>
+                              </div>
+                              <span class="ui-card-badge" style="background: var(--color-main-2); color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem;">Admin</span>
+                           </div>
+                           <div class="ui-card-preview" style="background: #ffffff; border: 1px solid rgba(76, 71, 67, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 0;">
+                              <div>
+                                 <h4 class="ui-card-title mb-1" style="color: var(--color-main-1);">Bob</h4>
+                                 <p class="is-size-7 has-text-grey mb-0">Role: Member</p>
+                              </div>
+                              <span class="ui-card-badge" style="background: var(--color-main-1); color: var(--bg-main); padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem;">Member</span>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                </div>
             </div>
+
+         </div>
+
+         <div class="slider-nav">
+            <span class="slider-dot active"></span>
+            <span class="slider-dot"></span>
          </div>
       </div>
    </section>
-   <!-- /before and after story -->
+   <!-- /examples slider -->
 
    <!-- topics -->
    <section class="section" style="padding-top: 5rem;">
@@ -170,51 +263,47 @@
          </div>
          <div class="columns is-multiline">
             <!-- topic 1 -->
-            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
-               <div class="card match-height shadow-hover"
-                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                  <div class="card-body">
-                     <i class="card-icon ti-server mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
-                     <h3 class="card-title h4">Zero Dependency</h3>
-                     <p class="card-text has-text-grey">Andalina runs entirely in the browser. No Node.js build
-                        pipelines, no Webpack, and no server-side rendering required.</p>
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet mb-4">
+               <div class="pillar-card">
+                  <div class="pillar-icon-wrapper">
+                     <i class="ti-server"></i>
                   </div>
+                  <h3 class="h4 mb-3">Zero Dependency</h3>
+                  <p class="has-text-grey" style="line-height: 1.6;">Andalina runs entirely in the browser. No Node.js
+                     build pipelines, no Webpack, and no server-side rendering required.</p>
                </div>
             </div>
             <!-- topic 2 -->
-            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
-               <div class="card match-height shadow-hover"
-                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                  <div class="card-body">
-                     <i class="card-icon ti-wand mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
-                     <h3 class="card-title h4">Incredibly Simple</h3>
-                     <p class="card-text has-text-grey">With only 5 core tags to learn, Andalina is exceptionally easy
-                        to pick up, even for absolute beginners.</p>
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet mb-4">
+               <div class="pillar-card">
+                  <div class="pillar-icon-wrapper">
+                     <i class="ti-wand"></i>
                   </div>
+                  <h3 class="h4 mb-3">Incredibly Simple</h3>
+                  <p class="has-text-grey" style="line-height: 1.6;">With only 5 core tags to learn, Andalina is
+                     exceptionally easy to pick up, even for absolute beginners.</p>
                </div>
             </div>
             <!-- topic 3 -->
-            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
-               <div class="card match-height shadow-hover"
-                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                  <div class="card-body">
-                     <i class="card-icon ti-html5 mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
-                     <h3 class="card-title h4">Standard HTML</h3>
-                     <p class="card-text has-text-grey">There is no need to learn a new programming language or complex
-                        framework. It's just the HTML you already know!</p>
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet mb-4">
+               <div class="pillar-card">
+                  <div class="pillar-icon-wrapper">
+                     <i class="ti-html5"></i>
                   </div>
+                  <h3 class="h4 mb-3">Standard HTML</h3>
+                  <p class="has-text-grey" style="line-height: 1.6;">There is no need to learn a new programming
+                     language or complex framework. It's just the HTML you already know!</p>
                </div>
             </div>
             <!-- topic 4 -->
-            <div class="column is-3-widescreen is-6-desktop is-6-tablet">
-               <div class="card match-height shadow-hover"
-                  style="border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                  <div class="card-body">
-                     <i class="card-icon ti-target mb-4 has-text-primary" style="font-size: 2.5rem;"></i>
-                     <h3 class="card-title h4">Single Source of Truth</h3>
-                     <p class="card-text has-text-grey">Front-End developers fix bugs in exactly one place. Andalina
-                        handles injecting the repetition for you.</p>
+            <div class="column is-3-widescreen is-6-desktop is-6-tablet mb-4">
+               <div class="pillar-card">
+                  <div class="pillar-icon-wrapper">
+                     <i class="ti-target"></i>
                   </div>
+                  <h3 class="h4 mb-3">Single Source</h3>
+                  <p class="has-text-grey" style="line-height: 1.6;">Front-End developers fix bugs in exactly one place.
+                     Andalina handles injecting the repetition for you.</p>
                </div>
             </div>
          </div>
@@ -276,6 +365,29 @@
 
    <!-- Main Script -->
    <script src="js/script.js"></script>
+
+   <script>
+      document.addEventListener('DOMContentLoaded', () => {
+         const slider = document.querySelector('.examples-slider');
+         const dots = document.querySelectorAll('.slider-dot');
+
+         if (slider && dots.length > 0) {
+            dots.forEach((dot, index) => {
+               dot.addEventListener('click', () => {
+                  const cardWidth = slider.clientWidth;
+                  slider.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
+               });
+            });
+
+            slider.addEventListener('scroll', () => {
+               const index = Math.round(slider.scrollLeft / slider.clientWidth);
+               dots.forEach((dot, i) => {
+                  dot.classList.toggle('active', i === index);
+               });
+            });
+         }
+      });
+   </script>
 
 </body>
 

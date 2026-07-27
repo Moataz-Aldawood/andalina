@@ -1,2 +1,9 @@
 .agents/
+node_modules/
+bootstrap_template/
+bootstrap_template_full/
+template/
+scrape.js
+package.json
+package-lock.json
 

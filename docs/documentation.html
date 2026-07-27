@@ -62,8 +62,8 @@
 
             <div class="navbar-end ml-0">
                <div class="navbar-item py-0">
-                  <a href="https://github.com" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
-                  <a href="#" class="btn btn-sm btn-primary ml-2">Download</a>
+                  <a href="https://github.com/Moataz-Aldawood/andalina" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="download.html" class="btn btn-sm btn-primary ml-2">Download</a>
                </div>
             </div>
          </div>
@@ -164,6 +164,19 @@
                      <div id="how-to-use">
 
                         <h3>How to Use</h3>
+
+                        <h4>1. Download Andalina</h4>
+                        <p>First, download the latest version of Andalina from the <a href="download.html">Download Page</a> (or our <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank">GitHub Repository</a>). The downloadable archive (<code>.zip</code>) includes:</p>
+                        <ul>
+                           <li><code>andalina.js</code>: The core zero-dependency client-side template engine.</li>
+                           <li><code>andalina.config.json</code>: Optional configuration file for customizing template paths and behavior.</li>
+                        </ul>
+
+                        <h4>2. Add to Your HTML Document</h4>
+                        <p>Place <code>andalina.js</code> in your project directory and simply drop the script tag into the <code>&lt;head&gt;</code> of your HTML document. Ensure you include the <code>defer</code> attribute so Andalina executes after the DOM is ready:</p>
+                        <pre><code class="language-html"><an-code src="codes/installation-example-01.txt"></an-code></code></pre>
+
+                        <h4>3. Run a Local Development Server</h4>
                         <div class="andalina-important-card">
                            <strong>Important Note:</strong> Because andalina uses the Fetch API to load templates
                            dynamically, modern browsers will block it due to CORS restrictions if you open the
@@ -171,9 +184,6 @@
                            directly (e.g., <code>file://</code>). <strong>You must run your project through a local
                               development server</strong> (like VS Code's "Live Server" extension) for andalina to work!
                         </div>
-                        <p>Simply drop the andalina script tag into the <code>&lt;head&gt;</code> of your HTML document.
-                           Ensure you use the <code>defer</code> attribute so it parses after the DOM is ready.</p>
-                        <pre><code class="language-html"><an-code src="codes/installation-example-01.txt"></an-code></code></pre>
                      </div>
 
                      <div id="repeat">
