@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Example 1: UI Library & Default Values | Andalina</title>
+   
+   <!-- 1. Dynamically include multiple CSS stylesheets via an-include -->
+   <an-include src="partials/styles.html"></an-include>
+
+   <!-- 2. Core Andalina Engine -->
+   <script src="../../core/andalina.js" defer></script>
+</head>
+<body>
+
+   <!-- Master Page Layout -->
+   <an-layout src="layouts/master.html">
+      <an-slot name="content">
+         <h1 class="page-title">UI Control Library & Default Slot Fallbacks</h1>
+         <p class="page-subtitle">
+            This page loads multiple CSS stylesheets using <code>&lt;an-include&gt;</code> and demonstrates reusable buttons, cards, and text fields where some use default fallback values while others override specific slots.
+         </p>
+
+         <!-- Section 1: Reusable Buttons (Default vs Overridden) -->
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">1. Reusable Buttons (&lt;an-component template="custom-btn"&gt;)</h2>
+               <span class="badge">Default vs Custom</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+               <!-- Uses ALL default values -->
+               <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Default Values:</div>
+                  <an-component template="custom-btn" src="components/ui-controls.html"></an-component>
+               </div>
+
+               <!-- Overrides label slot only -->
+               <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Label Slot:</div>
+                  <an-component template="custom-btn" src="components/ui-controls.html">
+                     <span slot="label">Deploy Application</span>
+                  </an-component>
+               </div>
+
+               <!-- Overrides icon and label slots -->
+               <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Icon + Label:</div>
+                  <an-component template="custom-btn" src="components/ui-controls.html">
+                     <span slot="icon">🚀</span>
+                     <span slot="label">Launch Production</span>
+                  </an-component>
+               </div>
+            </div>
+         </section>
+
+         <!-- Section 2: Reusable Cards (Default vs Overridden) -->
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">2. Reusable Cards (&lt;an-component template="custom-card"&gt;)</h2>
+               <span class="badge">Glassmorphic Cards</span>
+            </div>
+            <div class="card-grid">
+               <!-- Card 1: Uses Default Values -->
+               <an-component template="custom-card" src="components/ui-controls.html"></an-component>
+
+               <!-- Card 2: Custom Title & Badge, Default Body -->
+               <an-component template="custom-card" src="components/ui-controls.html">
+                  <span slot="title">Analytics Engine</span>
+                  <span slot="badge">v3.1 Beta</span>
+               </an-component>
+
+               <!-- Card 3: Fully Overridden Slots -->
+               <an-component template="custom-card" src="components/ui-controls.html">
+                  <span slot="title">Zero-Dependency Core</span>
+                  <span slot="badge">Production</span>
+                  <span slot="body">
+                     Andalina runs directly in your browser without requiring Node.js, Webpack, or any server-side compilation pipeline.
+                  </span>
+                  <span slot="action">
+                     <button class="btn btn-accent">View Documentation</button>
+                  </span>
+               </an-component>
+            </div>
+         </section>
+
+         <!-- Section 3: Reusable Form Text Fields -->
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">3. Reusable Form Text Fields (&lt;an-component template="text-field"&gt;)</h2>
+               <span class="badge">Form Controls</span>
+            </div>
+            <div style="max-width: 600px;">
+               <!-- Field 1: Default Values -->
+               <an-component template="text-field" src="components/ui-controls.html"></an-component>
+
+               <!-- Field 2: Custom Label & Helper Note -->
+               <an-component template="text-field" src="components/ui-controls.html">
+                  <span slot="label">Work Email Address</span>
+                  <span slot="helper">We will never share your corporate email with external third parties.</span>
+               </an-component>
+            </div>
+         </section>
+      </an-slot>
+   </an-layout>
+
+</body>
+</html>

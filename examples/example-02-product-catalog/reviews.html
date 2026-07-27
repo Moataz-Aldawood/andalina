@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Example 2: Customer Reviews | Andalina Storefront</title>
+   
+   <link rel="stylesheet" href="css/style.css">
+   <script src="../../core/andalina.js" defer></script>
+</head>
+<body>
+
+   <an-layout src="layouts/store-layout.html">
+      <an-slot name="content">
+         <div class="hero-banner">
+            <h1 class="hero-title">Loved by Engineering Teams</h1>
+            <p class="hero-subtitle">
+               See what developers and architects are saying about Andalina's client-side HTML composition.
+            </p>
+         </div>
+
+         <div class="review-grid">
+            <an-repeat count="1">
+               <!-- Review 1: Custom values -->
+               <an-component template="review-card" src="components/review-card.html">
+                  <span slot="stars">★★★★★</span>
+                  <span slot="quote">Andalina solved our biggest DX bottleneck: front-end developers no longer wait for back-end PHP/Blade rewrites.</span>
+                  <span slot="author">Marcus Vance, Chief Architect</span>
+               </an-component>
+
+               <!-- Review 2: Default stars and quote -->
+               <an-component template="review-card" src="components/review-card.html">
+                  <span slot="author">Sarah Jenkins, Lead FE Engineer</span>
+               </an-component>
+
+               <!-- Review 3 -->
+               <an-component template="review-card" src="components/review-card.html">
+                  <span slot="stars">★★★★★</span>
+                  <span slot="quote">Zero-dependency client-side templates mean our static GitHub Pages site feels like a full-scale web application!</span>
+                  <span slot="author">David K., Open Source Maintainer</span>
+               </an-component>
+            </an-repeat>
+         </div>
+      </an-slot>
+   </an-layout>
+
+</body>
+</html>

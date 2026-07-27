@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Example 1: Code Showcase (&lt;an-code&gt;) | Andalina</title>
+   
+   <!-- Include CSS stylesheets -->
+   <an-include src="partials/styles.html"></an-include>
+
+   <!-- Core Andalina Engine -->
+   <script src="../../core/andalina.js" defer></script>
+</head>
+<body>
+
+   <!-- Master Page Layout -->
+   <an-layout src="layouts/master.html">
+      <an-slot name="content">
+         <h1 class="page-title">Dynamic Source Code Injection</h1>
+         <p class="page-subtitle">
+            This page demonstrates using <code>&lt;an-code src="..."&gt;</code> to load, escape, and render raw code files directly into your HTML pages without manual copy-pasting.
+         </p>
+
+         <!-- Section 1: Injected JSON File -->
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">1. Configuration File (snippets/sample-config.json)</h2>
+               <span class="badge">&lt;an-code&gt;</span>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+               The code block below is dynamically loaded from an external JSON file using <code>&lt;an-code src="snippets/sample-config.json"&gt;&lt;/an-code&gt;</code>:
+            </p>
+            <pre class="code-box"><code><an-code src="snippets/sample-config.json"></an-code></code></pre>
+         </section>
+
+         <!-- Section 2: Injected HTML Snippet File -->
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">2. HTML Component Usage (snippets/component-demo.html)</h2>
+               <span class="badge">&lt;an-code&gt;</span>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+               The code block below demonstrates how Andalina automatically escapes HTML tags when injecting external markup snippets:
+            </p>
+            <pre class="code-box"><code><an-code src="snippets/component-demo.html"></an-code></code></pre>
+         </section>
+      </an-slot>
+   </an-layout>
+
+</body>
+</html>

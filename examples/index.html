@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Andalina Official Examples Hub</title>
+   <style>
+      *, *::before, *::after {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+      }
+
+      body {
+         background: #090d16;
+         color: #f8fafc;
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+         min-height: 100vh;
+         display: flex;
+         flex-direction: column;
+      }
+
+      .hub-header {
+         background: rgba(15, 23, 42, 0.85);
+         backdrop-filter: blur(12px);
+         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         padding: 1.5rem 3rem;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+      }
+
+      .hub-brand {
+         font-size: 1.5rem;
+         font-weight: 800;
+         background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+      }
+
+      .hub-nav a {
+         color: #94a3b8;
+         text-decoration: none;
+         margin-left: 2rem;
+         font-weight: 600;
+         transition: color 0.2s;
+      }
+
+      .hub-nav a:hover {
+         color: #fff;
+      }
+
+      .container {
+         max-width: 1200px;
+         margin: 0 auto;
+         padding: 4rem 2rem;
+         width: 100%;
+      }
+
+      .hub-title {
+         font-size: 3rem;
+         font-weight: 800;
+         text-align: center;
+         margin-bottom: 1rem;
+      }
+
+      .hub-subtitle {
+         color: #94a3b8;
+         font-size: 1.25rem;
+         text-align: center;
+         max-width: 750px;
+         margin: 0 auto 4rem auto;
+         line-height: 1.6;
+      }
+
+      .examples-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+         gap: 2.5rem;
+      }
+
+      .example-card {
+         background: #111827;
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         border-radius: 1.5rem;
+         padding: 2.5rem;
+         display: flex;
+         flex-direction: column;
+         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+         position: relative;
+         overflow: hidden;
+      }
+
+      .example-card:hover {
+         transform: translateY(-6px);
+         border-color: #38bdf8;
+         box-shadow: 0 25px 35px -10px rgba(56, 189, 248, 0.15);
+      }
+
+      .card-header {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         margin-bottom: 1rem;
+      }
+
+      .example-number {
+         font-size: 0.85rem;
+         font-weight: 700;
+         text-transform: uppercase;
+         letter-spacing: 0.08em;
+         color: #38bdf8;
+         background: rgba(56, 189, 248, 0.15);
+         padding: 0.35rem 0.8rem;
+         border-radius: 9999px;
+         border: 1px solid rgba(56, 189, 248, 0.3);
+      }
+
+      .example-title {
+         font-size: 1.75rem;
+         font-weight: 800;
+         margin-bottom: 1rem;
+         color: #fff;
+      }
+
+      .example-description {
+         color: #94a3b8;
+         font-size: 1.05rem;
+         line-height: 1.7;
+         margin-bottom: 2rem;
+      }
+
+      .features-list {
+         margin-bottom: 2.5rem;
+         display: flex;
+         flex-wrap: wrap;
+         gap: 0.6rem;
+      }
+
+      .feature-tag {
+         background: rgba(255, 255, 255, 0.05);
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         color: #e2e8f0;
+         padding: 0.35rem 0.8rem;
+         border-radius: 0.5rem;
+         font-size: 0.85rem;
+         font-weight: 500;
+      }
+
+      .card-links {
+         display: flex;
+         gap: 1rem;
+         margin-top: auto;
+      }
+
+      .btn {
+         display: inline-flex;
+         align-items: center;
+         justify-content: center;
+         padding: 0.85rem 1.75rem;
+         border-radius: 0.75rem;
+         font-weight: 700;
+         font-size: 0.95rem;
+         text-decoration: none;
+         transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+         background: #38bdf8;
+         color: #090d16;
+         flex: 1;
+      }
+
+      .btn-primary:hover {
+         background: #7dd3fc;
+         transform: translateY(-2px);
+      }
+
+      .btn-outline {
+         background: transparent;
+         border: 1px solid rgba(255, 255, 255, 0.2);
+         color: #f8fafc;
+      }
+
+      .btn-outline:hover {
+         background: rgba(255, 255, 255, 0.05);
+         border-color: #fff;
+      }
+
+      .hub-footer {
+         margin-top: auto;
+         border-top: 1px solid rgba(255, 255, 255, 0.1);
+         padding: 2.5rem;
+         text-align: center;
+         color: #94a3b8;
+         font-size: 0.95rem;
+      }
+
+      @media (max-width: 768px) {
+         .examples-grid {
+            grid-template-columns: 1fr;
+         }
+      }
+   </style>
+</head>
+<body>
+
+   <header class="hub-header">
+      <div class="hub-brand">Andalina Examples Hub</div>
+      <nav class="hub-nav">
+         <a href="../docs/index.html">Documentation Website</a>
+         <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank">GitHub Repository</a>
+      </nav>
+   </header>
+
+   <main class="container">
+      <h1 class="hub-title">Simple Websites Built with Andalina</h1>
+      <p class="hub-subtitle">
+         Explore real-world examples demonstrating zero-dependency client-side HTML composition, declarative slots with default fallbacks, responsive repeat grids, and dynamic source code injection.
+      </p>
+
+      <div class="examples-grid">
+         <!-- Example 01: Company Portal & UI Library -->
+         <article class="example-card">
+            <div class="card-header">
+               <span class="example-number">Example 01</span>
+            </div>
+            <h2 class="example-title">Company Portal & UI Library</h2>
+            <p class="example-description">
+               A comprehensive 3-page website showcasing a reusable component library (buttons, cards, text fields), dynamic multi-stylesheet imports, layout + repeat grids, and raw code injection.
+            </p>
+            <div class="features-list">
+               <span class="feature-tag">Multi CSS &lt;an-include&gt;</span>
+               <span class="feature-tag">Default Slot Fallbacks</span>
+               <span class="feature-tag">Layout + &lt;an-repeat&gt; Grid</span>
+               <span class="feature-tag">&lt;an-code&gt; Injection</span>
+               <span class="feature-tag">3 Interconnected Pages</span>
+            </div>
+            <div class="card-links">
+               <a href="example-01-company-portal/index.html" class="btn btn-primary">Launch Example 1 →</a>
+               <a href="example-01-company-portal/team.html" class="btn btn-outline">Team Grid</a>
+               <a href="example-01-company-portal/code-showcase.html" class="btn btn-outline">&lt;an-code&gt;</a>
+            </div>
+         </article>
+
+         <!-- Example 02: Modern Product Catalog -->
+         <article class="example-card">
+            <div class="card-header">
+               <span class="example-number" style="color: #c084fc; background: rgba(192, 132, 252, 0.15); border-color: rgba(192, 132, 252, 0.3);">Example 02</span>
+            </div>
+            <h2 class="example-title">Modern Product Catalog & Storefront</h2>
+            <p class="example-description">
+               A sleek SaaS cloud product catalog and customer review showcase featuring sticky glassmorphism layouts, product badges, pricing tables, and star ratings with default fallback content.
+            </p>
+            <div class="features-list">
+               <span class="feature-tag">&lt;an-layout&gt; Storefront</span>
+               <span class="feature-tag">&lt;an-component&gt; Badges</span>
+               <span class="feature-tag">Pricing Table Grid</span>
+               <span class="feature-tag">Customer Reviews Grid</span>
+               <span class="feature-tag">Default Description Fallbacks</span>
+            </div>
+            <div class="card-links">
+               <a href="example-02-product-catalog/index.html" class="btn btn-primary" style="background: #c084fc; color: #090d16;">Launch Example 2 →</a>
+               <a href="example-02-product-catalog/reviews.html" class="btn btn-outline">Customer Reviews</a>
+            </div>
+         </article>
+      </div>
+   </main>
+
+   <footer class="hub-footer">
+      <p>Andalina Examples Hub • Client-Side HTML Component Architecture</p>
+   </footer>
+
+</body>
+</html>

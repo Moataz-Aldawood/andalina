@@ -1,0 +1,14 @@
+<!-- Reusable Customer Review Card -->
+<an-template id="review-card">
+   <div class="review-card">
+      <div class="review-stars">
+         <an-slot name="stars">★★★★★</an-slot>
+      </div>
+      <p class="review-text">
+         "<an-slot name="quote">Andalina completely eliminated our need for server-side HTML template engines. Our frontend and backend teams are finally aligned!</an-slot>"
+      </p>
+      <div class="review-author">
+         — <an-slot name="author">Verified Developer</an-slot>
+      </div>
+   </div>
+</an-template>
