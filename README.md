@@ -67,4 +67,4 @@ For full documentation, guides, FAQs, and interactive examples, visit the offici
 
 ## 📄 License
 
-Licensed under the MIT License.
+Licensed under the GNU Lesser General Public License (LGPL-3.0-or-later). See [LICENSE](file:///LICENSE) for details.

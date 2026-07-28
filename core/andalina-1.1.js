@@ -2,6 +2,7 @@
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
  * Version: 1.1.0
+ * License: GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)
  */
 (function() {
     // 1. Configuration (Prefix detection)
