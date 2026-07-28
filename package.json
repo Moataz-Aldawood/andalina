@@ -1,0 +1,34 @@
+{
+  "name": "andalina",
+  "version": "1.2.0",
+  "description": "Zero-dependency client-side HTML composition engine supporting components, templates, layouts, and repeaters.",
+  "main": "core/andalina.js",
+  "files": [
+    "core",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node testing/run-benchmark.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Moataz-Aldawood/andalina.git"
+  },
+  "keywords": [
+    "html",
+    "components",
+    "templates",
+    "composition",
+    "layout",
+    "zero-dependency",
+    "andalina"
+  ],
+  "author": "Moataz Aldawood",
+  "license": "MIT",
+  "dependencies": {
+    "website-scraper": "^6.0.0"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

@@ -74,8 +74,8 @@
                <div class="p-6 shadow rounded content has-text-centered">
                   <h1 class="mb-4">Download Andalina</h1>
                   <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default configuration.</p>
-                  <a href="downloads/andalina-v1.1.0.zip" class="btn btn-primary mb-3" style="font-size: 1.25rem; padding: 15px 30px;">
-                      <i class="ti-download mr-2"></i> Download v1.1.0 (.zip)
+                  <a href="downloads/andalina-v1.2.0.zip" class="btn btn-primary mb-3" style="font-size: 1.25rem; padding: 15px 30px;">
+                      <i class="ti-download mr-2"></i> Download v1.2.0 (.zip)
                   </a>
                   <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and <code>andalina.config.json</code></small></p>
                </div>
@@ -84,67 +84,73 @@
                   <div class="mt-4">
 
                      <!-- changelog post -->
-                     <h3 id="february-updates">February Updates</h3>
-                     <p><strong>Feb 6, 2019</strong></p>
-                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                        dolore
-                        magna aliquyam erat, sed diam voluptua. At vero eos et ustoLorem ipsum dolor sit amet,
-                        consetetur.&rdquo;
-                     </p>
+                     <h3 id="v1-2-0">v1.2.0 &ndash; Structured Syntax &amp; Core Optimization</h3>
+                     <p><strong>July 28, 2026</strong></p>
+                     <p>Major architecture upgrade enforcing Structured Syntax for components and layouts, plus significant core engine optimizations.</p>
                      <div class="mt-5">
-                        <div class="badge changed">Changed</div>
+                        <div class="badge added">Added</div>
                         <ul>
                            <li>
-                              <p>Better support for using applying additional filters to posts_tax_query for categories
-                                 for
-                                 custom
-                                 WordPress syncs</p>
+                              <p><strong>Structured Syntax Support:</strong> Added canonical wrapper tags <code>&lt;an-component-def&gt;</code> and <code>&lt;an-layout-def&gt;</code>, cleanly separating metadata (<code>&lt;an-attributes&gt;</code>) from DOM markup (<code>&lt;an-body&gt;</code>).</p>
                            </li>
                            <li>
-                              <p>Reporting fine-tuning for speed improvements (up to 60% improvement in latency)</p>
+                              <p><strong>Instant O(1) Metadata Lookup:</strong> Replaced regex string stripping with native DOM queries (<code>doc.querySelector('an-attributes')</code>), extracting prop defaults and flags instantly without temporary innerHTML divs.</p>
                            </li>
                            <li>
-                              <p>Replaced login / registration pre-app screens with a cleaner design</p>
+                              <p><strong>Mandatory Prop Checking:</strong> Calling tags are now validated against <code>mandatory="true"</code> attributes with descriptive warnings if omitted.</p>
                            </li>
                         </ul>
                      </div>
                      <div class="mt-5">
-                        <div class="badge removed">Removed</div>
+                        <div class="badge changed">Changed</div>
                         <ul>
-                           <li>Removed an issue with the sync autolinker only interlinking selectively.</li>
-                           <li>Removed up an issue with prematurely logging out users</li>
+                           <li>
+                              <p><strong>Core Engine Optimization:</strong> Benchmarked against v1.1.0 showing a <strong>26.2% speed improvement (1.36x faster)</strong> in component parse and render cycles.</p>
+                           </li>
+                           <li>
+                              <p><strong>Strict Architecture Enforcement:</strong> Flat/unstructured components now log a helpful console error guiding developers to structured syntax.</p>
+                           </li>
                         </ul>
                      </div>
 
                      <hr>
 
                      <!-- changelog post -->
-                     <h3 id="march-updates">March Updates</h3>
-                     <p><strong>Mar 6, 2019</strong></p>
-                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor <br>
-                        invidunt
-                        dolore magna aliquyam erat, sed diam voluptua. At vero eos et ustoLorem ipsum dolor sit amet,
-                        consetetur.&rdquo;</p>
+                     <h3 id="v1-1-0">v1.1.0 &ndash; Global Versioning &amp; Cache Busting</h3>
+                     <p><strong>July 27, 2026</strong></p>
+                     <p>Introduced global versioning, cache-busting query parameters, and pre-parse attribute extraction.</p>
                      <div class="mt-5">
                         <div class="badge added">Added</div>
                         <ul>
-                           <li>Some scheduled changelogs, tweets, and slack messages queued up this weekend and were not
-                              published
-                              on time. We fixed the issue and all delayed publications should be out.</li>
-                           <li>We now prioritize keywords over title and body so customers can more effectively
-                              influence
-                              search
-                              results</li>
-                           <li>Support form in the Assistant is now protected with reCaptcha to reduce spam
-                              reinitializeOnUrlChange
-                              added to the JavaScript API to improve support for pages with turbolinks</li>
+                           <li>
+                              <p><strong>Global Cache Busting:</strong> Added <code>globalConfig.version</code> and <code>data-version</code> support to automatically append <code>?v=VERSION</code> to fetched URLs.</p>
+                           </li>
+                           <li>
+                              <p><strong>Cache-Control Headers:</strong> Injected <code>no-cache</code> meta headers across documentation and download pages.</p>
+                           </li>
                         </ul>
                      </div>
                      <div class="mt-5">
                         <div class="badge fixed">Fixed</div>
                         <ul>
-                           <li>Fixed an issue with the sync autolinker only interlinking selectively.</li>
-                           <li>Fixed up an issue with prematurely logging out users</li>
+                           <li>
+                              <p><strong>Head Parsing Protection:</strong> Prevented browser DOM parsers from moving component metadata into the body during fragment loading.</p>
+                           </li>
+                        </ul>
+                     </div>
+
+                     <hr>
+
+                     <!-- changelog post -->
+                     <h3 id="v1-0-0">v1.0.0 &ndash; Initial Release</h3>
+                     <p><strong>July 20, 2026</strong></p>
+                     <p>First public release of Andalina HTML Composition Engine.</p>
+                     <div class="mt-5">
+                        <div class="badge added">Added</div>
+                        <ul>
+                           <li>
+                              <p>Zero-dependency client-side HTML composition engine supporting <code>&lt;an-include&gt;</code>, <code>&lt;an-layout&gt;</code>, <code>&lt;an-component&gt;</code>, <code>&lt;an-template&gt;</code>, and <code>&lt;an-repeat&gt;</code>.</p>
+                           </li>
                         </ul>
                      </div>
 

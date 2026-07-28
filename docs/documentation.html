@@ -259,10 +259,9 @@
                            <li><em>Dynamic Attributes</em>: Any other attribute you add will be passed to the component
                               as a property.</li>
                         </ul>
-
-                        <p>Inside the component, use
-                           <code>&lt;an-attribute&gt;</code>
-                           to define the props. It accepts:
+                        <p>Inside the component file, define your component using Andalina's <strong>Structured Syntax</strong>: wrap the file in an <code>&lt;an-component-def&gt;</code> container, specify metadata in an <code>&lt;an-attributes&gt;</code> block, and place your markup inside an <code>&lt;an-body&gt;</code> block.
+                        </p>
+                        <p>Inside <code>&lt;an-attributes&gt;</code>, use <code>&lt;an-attribute&gt;</code> to define the props. It accepts:
                         </p>
                         <ul>
                            <li><code>name</code> <em>(Required)</em>: The name of the property.</li>
@@ -288,12 +287,11 @@
 
                         <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                               class="an-tag">-layout&gt;</span></h3>
-                        <p>Used when one layout wants to extend another parent layout. Uses
-                           <code>&lt;an-inject&gt;</code>
-                           to fill the parent, and
-                           <code>&lt;an-place&gt;</code>
-                           to
-                           accept content from children.
+                        <p>A structural wrapper that can be nested inside an <code>&lt;an-template&gt;</code> or within
+                           another layout. It provides a reusable shell (like a sidebar grid or a card container) and
+                           uses <code>&lt;an-place&gt;</code> slots to accept content from children.
+                        </p>
+                        <p>Like components, layouts use Andalina's <strong>Structured Syntax</strong>: wrap the file in an <code>&lt;an-layout-def&gt;</code> container, specify optional metadata in an <code>&lt;an-attributes&gt;</code> block, and place your structural markup inside an <code>&lt;an-body&gt;</code> block.
                         </p>
 
                         <h4>Attributes:</h4>

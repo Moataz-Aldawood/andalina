@@ -1,7 +1,7 @@
 /**
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
- * Version: 1.2.0
+ * Version: 1.1.0
  */
 (function() {
     // 1. Configuration (Prefix detection)
@@ -39,7 +39,6 @@
 
     // Tag definitions
     let tInclude, tLayout, tComponent, tTemplate, tInject, tPlace, tAttribute, tRepeat, tCode;
-    let tComponentDef, tLayoutDef, tAttributes, tBody;
 
     function buildTagNames() {
         const p = globalConfig.prefix;
@@ -52,10 +51,6 @@
         tAttribute = `${p}-attribute`;
         tRepeat = `${p}-repeat`;
         tCode = `${p}-code`;
-        tComponentDef = `${p}-component-def`;
-        tLayoutDef = `${p}-layout-def`;
-        tAttributes = `${p}-attributes`;
-        tBody = `${p}-body`;
     }
 
     // Cache for fetched fragments
@@ -114,41 +109,24 @@
         });
     }
 
-    // Extracts <an-attributes> and <an-attribute> tags in O(1) DOM time without regex stripping
-    function extractStructuredMetadata(doc) {
+    // Strips <an-attribute> tags before HTML parsing to prevent them from breaking the <head>
+    function stripAndExtractAttributes(html) {
         const defaults = {};
-        const mandatoryAttrs = new Set();
-        const attributesNode = doc.querySelector(tAttributes);
-        if (attributesNode) {
-            const attrTags = Array.from(attributesNode.querySelectorAll(tAttribute));
-            attrTags.forEach(attrTag => {
-                const name = attrTag.getAttribute('name');
-                const defaultVal = attrTag.getAttribute('default-value');
-                const mandatory = attrTag.getAttribute('mandatory') === 'true';
-                if (name) {
-                    if (defaultVal !== null) defaults[name] = defaultVal;
-                    if (mandatory) mandatoryAttrs.add(name);
-                }
-            });
-            attributesNode.remove();
-        } else {
-            // Support <an-attribute> in head/body for page templates
-            const strayAttrs = Array.from(doc.querySelectorAll(tAttribute));
-            strayAttrs.forEach(attrTag => {
-                const name = attrTag.getAttribute('name');
-                const defaultVal = attrTag.getAttribute('default-value');
-                const mandatory = attrTag.getAttribute('mandatory') === 'true';
-                if (name) {
-                    if (defaultVal !== null) defaults[name] = defaultVal;
-                    if (mandatory) mandatoryAttrs.add(name);
-                }
-                attrTag.remove();
-            });
-        }
-        return { defaults, mandatoryAttrs };
+        const cleanHtml = html.replace(/<an-attribute[^>]*>/gi, (match) => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = match;
+            const tag = tempDiv.firstChild;
+            if (tag) {
+                const name = tag.getAttribute('name');
+                const defaultVal = tag.getAttribute('default-value');
+                if (name && defaultVal !== null) defaults[name] = defaultVal;
+            }
+            return '';
+        });
+        return { cleanHtml, defaults };
     }
 
-    function processProps(targetNode, doc, fetchTime, templateDefaults = {}, mandatoryAttrs = new Set()) {        // 1. Gather props from the caller tag
+    function processProps(targetNode, doc, fetchTime, templateDefaults = {}) {        // 1. Gather props from the caller tag
         const props = {};
         Array.from(targetNode.attributes).forEach(attr => {
             if (!['name', 'src'].includes(attr.name)) {
@@ -166,14 +144,6 @@
             if (props[key] === undefined) {
                 props[key] = val;
             }
-        }
-
-        if (mandatoryAttrs.size > 0 && globalConfig.debug) {
-            mandatoryAttrs.forEach(name => {
-                if (props[name] === undefined) {
-                    console.warn(`[Andalina] Mandatory attribute '${name}' missing on <${targetNode.tagName.toLowerCase()}>.`);
-                }
-            });
         }
 
         // Also clean up any that somehow survived (e.g. dynamically injected later)
@@ -309,13 +279,15 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const layoutHtml = await fetchFragment(src);
+                    let layoutHtml = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
 
+                    const extracted = stripAndExtractAttributes(layoutHtml);
+                    layoutHtml = extracted.cleanHtml;
+
                     const doc = parser.parseFromString(layoutHtml, 'text/html');
-                    const extracted = extractStructuredMetadata(doc);
                     
-                    processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    processProps(pageNode, doc, fetchTime, extracted.defaults);
 
                     // Collect <an-inject> blocks from the child template
                     const injects = Array.from(pageNode.querySelectorAll(tInject));
@@ -385,27 +357,15 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const layoutHtml = await fetchFragment(src);
+                    let layoutHtml = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
+                    
+                    const extracted = stripAndExtractAttributes(layoutHtml);
+                    layoutHtml = extracted.cleanHtml;
 
                     const doc = parser.parseFromString(layoutHtml, 'text/html');
-
-                    // Verify structured syntax for components & layouts
-                    const isComponent = targetNode.tagName.toLowerCase() === tComponent;
-                    const expectedDef = isComponent ? tComponentDef : tLayoutDef;
-                    const defNode = doc.querySelector(expectedDef);
-                    if (!defNode) {
-                        console.error(`[Andalina] Structured Syntax Error: '${src}' must be wrapped in <${expectedDef}> and <${tBody}>.`);
-                    }
-
-                    const extracted = extractStructuredMetadata(doc);
-                    processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
-
-                    let layoutContainer = doc.body ? doc.body : doc.documentElement;
-                    const bodyNode = doc.querySelector(tBody);
-                    if (bodyNode) {
-                        layoutContainer = bodyNode;
-                    }
+                    processProps(targetNode, doc, fetchTime, extracted.defaults);
+                    const layoutContainer = doc.body ? doc.body : doc.documentElement;
 
                     const injects = Array.from(targetNode.querySelectorAll(tInject));
                     const blocks = {};
