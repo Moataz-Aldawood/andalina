@@ -7,6 +7,48 @@
    
    <!-- Core Andalina Engine -->
    <script src="lib/andalina.js" defer></script>
+
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CQ8C1189H"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9CQ8C1189H');
+
+      // Enhanced download and link click tracking
+      document.addEventListener('click', function(e) {
+         const link = e.target.closest('a');
+         if (!link) return;
+         const href = link.getAttribute('href') || '';
+         const linkText = link.innerText.trim() || 'Link';
+         const isZip = href.includes('.zip');
+         const isDownload = isZip || href.includes('download') || link.classList.contains('ti-download') || link.querySelector('.ti-download');
+
+         if (isZip) {
+            gtag('event', 'zip_file_download', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'file_name': href,
+               'value': 1
+            });
+         }
+         if (isDownload) {
+            gtag('event', 'download_click', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'link_url': href,
+               'is_zip': isZip
+            });
+         }
+         gtag('event', 'link_click', {
+            'event_category': 'Navigation',
+            'event_label': linkText,
+            'link_url': href
+         });
+      });
+   </script>
+
 </head>
 <body>
 
