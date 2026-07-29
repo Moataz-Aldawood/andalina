@@ -12,7 +12,6 @@
 
 > **Explore interactive demos, live examples, and complete documentation on the official website:**
 > ### 👉 **[https://moataz-aldawood.github.io/andalina/](https://moataz-aldawood.github.io/andalina/)**
-> *(Alternative path if served from root: [https://moataz-aldawood.github.io/andalina/docs/](https://moataz-aldawood.github.io/andalina/docs/))*
 
 ---
 
@@ -60,8 +59,8 @@ Because Andalina uses the Fetch API to load templates dynamically, you must run 
 
 For full documentation, guides, FAQs, and interactive examples, visit the official website:
 - **Website:** [https://moataz-aldawood.github.io/andalina/](https://moataz-aldawood.github.io/andalina/)
-- **Documentation:** [https://moataz-aldawood.github.io/andalina/docs/documentation.html](https://moataz-aldawood.github.io/andalina/docs/documentation.html)
-- **Download Releases:** [https://moataz-aldawood.github.io/andalina/docs/download.html](https://moataz-aldawood.github.io/andalina/docs/download.html)
+- **Documentation:** [https://moataz-aldawood.github.io/andalina/documentation.html](https://moataz-aldawood.github.io/andalina/documentation.html)
+- **Download Releases:** [https://moataz-aldawood.github.io/andalina/download.html](https://moataz-aldawood.github.io/andalina/download.html)
 
 ---
 
