@@ -25,3 +25,6 @@
 **Solution:** Develop **Andalina Slicer** (`npx andalina slice` / `andalina-slicer`), an intelligent decompiler and migration tool that converts normal static HTML pages into structured Andalina pages (`<an-component-def>`, `<an-layout-def>`, `<an-template>`, `<an-attributes>`, and `<an-body>`).
 
 
+## 7. Native Data-Binding (`<an-data>`)
+**Problem:** Currently, Andalina handles structural HTML composition but does not support fetching external JSON data or iterating over dynamic data from an API out-of-the-box.
+**Solution:** Introduce an `<an-data>` tag (or similar mechanism) that fetches JSON data from a URL and exposes it to `<an-repeat>` or variables, enabling developers to render API results directly in Andalina without needing a 3rd party library.
