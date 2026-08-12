@@ -6,3 +6,5 @@ template/
 scrape.js
 package-lock.json
 
+examples/example-01-build/  
+examples/.vscode/ 

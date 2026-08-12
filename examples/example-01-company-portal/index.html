@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>UI Control Library & Default Fallbacks | Andalina Portal</title>
-   
-   <!-- 1. Include CSS using an-include -->
+
+   <!-- an-comment: 1. Include CSS using an-include -->
    <an-include src="./partials/styles.html"></an-include>
 
-   <!-- Andalina Core Engine -->
+   <!-- an-comment: Andalina Core Engine -->
    <script src="../lib/andalina.js" defer></script>
 
    <!-- Google tag (gtag.js) -->
    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CQ8C1189H"></script>
    <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-9CQ8C1189H');
 
       // Enhanced download and link click tracking
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
          const link = e.target.closest('a');
          if (!link) return;
          const href = link.getAttribute('href') || '';
@@ -53,40 +54,46 @@
    </script>
 
 </head>
+
 <body>
 
-   <!-- Master Page Layout -->
+   <!-- an-comment: Master Page Layout -->
    <an-layout src="./layouts/master.html">
       <an-inject name="content">
          <h1 class="page-title">UI Control Library & Default Slot Fallbacks</h1>
          <p class="page-subtitle">
-            This page loads multiple CSS stylesheets using <code>&lt;an-include&gt;</code> and demonstrates reusable buttons, cards, and text fields where some use default fallback values while others override specific slots.
+            This page loads multiple CSS stylesheets using <code>&lt;an-include&gt;</code> and demonstrates reusable
+            buttons, cards, and text fields where some use default fallback values while others override specific slots.
          </p>
 
-         <!-- Section 1: Reusable Buttons (Default vs Overridden) -->
+         <!-- an-comment: Section 1: Reusable Buttons (Default vs Overridden) -->
          <section class="section-card">
             <div class="section-header">
-               <h2 class="section-title">1. Reusable Buttons (&lt;an-component src="./components/custom-btn.html"&gt;)</h2>
+               <h2 class="section-title">1. Reusable Buttons (&lt;an-component src="./components/custom-btn.html"&gt;)
+               </h2>
                <span class="badge">Default vs Custom</span>
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-               <!-- Uses ALL default values -->
+               <!-- an-comment: Uses ALL default values -->
                <div>
-                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Default Values:</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Default Values:
+                  </div>
                   <an-component src="./components/custom-btn.html"></an-component>
                </div>
 
-               <!-- Overrides label slot only -->
+               <!-- an-comment: Overrides label slot only -->
                <div>
-                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Label Slot:</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Label
+                     Slot:</div>
                   <an-component src="./components/custom-btn.html">
                      <an-inject name="label">Deploy Application</an-inject>
                   </an-component>
                </div>
 
-               <!-- Overrides icon and label slots -->
+               <!-- an-comment: Overrides icon and label slots -->
                <div>
-                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Icon + Label:</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Icon +
+                     Label:</div>
                   <an-component src="./components/custom-btn.html">
                      <an-inject name="icon">🚀</an-inject>
                      <an-inject name="label">Launch Production</an-inject>
@@ -95,28 +102,30 @@
             </div>
          </section>
 
-         <!-- Section 2: Reusable Cards (Default vs Overridden) -->
+         <!-- an-comment: Section 2: Reusable Cards (Default vs Overridden) -->
          <section class="section-card">
             <div class="section-header">
-               <h2 class="section-title">2. Reusable Cards (&lt;an-component src="./components/custom-card.html"&gt;)</h2>
+               <h2 class="section-title">2. Reusable Cards (&lt;an-component src="./components/custom-card.html"&gt;)
+               </h2>
                <span class="badge">Glassmorphic Cards</span>
             </div>
             <div class="card-grid">
-               <!-- Card 1: Uses Default Values -->
+               <!-- an-comment: Card 1: Uses Default Values -->
                <an-component src="./components/custom-card.html"></an-component>
 
-               <!-- Card 2: Custom Title & Badge, Default Body -->
+               <!-- an-comment: Card 2: Custom Title & Badge, Default Body -->
                <an-component src="./components/custom-card.html">
                   <an-inject name="title">Analytics Engine</an-inject>
                   <an-inject name="badge">v3.1 Beta</an-inject>
                </an-component>
 
-               <!-- Card 3: Fully Overridden Slots -->
+               <!-- an-comment: Card 3: Fully Overridden Slots -->
                <an-component src="./components/custom-card.html">
                   <an-inject name="title">Zero-Dependency Core</an-inject>
                   <an-inject name="badge">Production</an-inject>
                   <an-inject name="body">
-                     Andalina runs directly in your browser without requiring Node.js, Webpack, or any server-side compilation pipeline.
+                     Andalina runs directly in your browser without requiring Node.js, Webpack, or any server-side
+                     compilation pipeline.
                   </an-inject>
                   <an-inject name="action">
                      <button class="btn btn-accent">View Documentation</button>
@@ -125,17 +134,18 @@
             </div>
          </section>
 
-         <!-- Section 3: Reusable Form Text Fields -->
+         <!-- an-comment: Section 3: Reusable Form Text Fields -->
          <section class="section-card">
             <div class="section-header">
-               <h2 class="section-title">3. Reusable Form Text Fields (&lt;an-component src="./components/text-field.html"&gt;)</h2>
+               <h2 class="section-title">3. Reusable Form Text Fields (&lt;an-component
+                  src="./components/text-field.html"&gt;)</h2>
                <span class="badge">Form Controls</span>
             </div>
             <div style="max-width: 600px;">
-               <!-- Field 1: Default Values -->
+               <!-- an-comment: Field 1: Default Values -->
                <an-component src="./components/text-field.html"></an-component>
 
-               <!-- Field 2: Custom Label + Helper -->
+               <!-- an-comment: Field 2: Custom Label + Helper -->
                <an-component src="./components/text-field.html">
                   <an-inject name="label">Project Workspace URI</an-inject>
                   <an-inject name="helper">Must start with file:/// or a valid relative path.</an-inject>
@@ -146,4 +156,5 @@
    </an-layout>
 
 </body>
+
 </html>

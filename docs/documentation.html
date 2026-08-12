@@ -146,9 +146,13 @@
                      <a href="#template">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-template&gt;</span></a>
                   </li>
-                  <li title="&lt;an-code&gt;" class="sidelist">
+                  <li title="<an-code>" class="sidelist">
                      <a href="#code">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-code&gt;</span></a>
+                  </li>
+                  <li title="<!-- an-comment:  -->" class="sidelist">
+                     <a href="#comments"><span class="an-tag">&lt;!-- </span><span class="an-prefix">an</span><span
+                           class="an-tag">-comment: --&gt;</span></a>
                   </li>
 
                   <li title="Configuration" class="sidelist">
@@ -422,6 +426,16 @@
                      </div>
 
 
+                     <div id="comments">
+                        <h3><span class="an-tag">&lt;!-- </span><span class="an-prefix">an</span><span class="an-tag">-comment: --&gt;</span></h3>
+                        <p>Andalina provides a specialized HTML comment syntax for development notes that are automatically stripped out when you compile your project using the Andalina Builder.</p>
+                        <h4>Syntax:</h4>
+                        <p><code>&lt;!-- an-comment: Your note here --&gt;</code></p>
+                        <h4>Example:</h4>
+                        <pre><code class="language-html">&lt;!-- an-comment: This is a note for developers that won't appear in the final HTML --&gt;
+&lt;div&gt;Visible Content&lt;/div&gt;</code></pre>
+                     </div>
+
                      <div id="configuration">
 
                         <h3>Configuration</h3>
@@ -514,14 +528,31 @@
                         <pre><code class="language-javascript"><an-code src="codes/safe-initialization-example-01.txt"></an-code></code></pre>
                      </div>
 
+                     <div id="builder">
+                        <h3>Andalina Builder</h3>
+                        <p>The Andalina Builder is a powerful VS Code Extension that compiles your dynamic Andalina project into static HTML/CSS/JS files, perfectly ready for production deployment.</p>
+                        <h4>Features:</h4>
+                        <ul>
+                           <li><strong>GUI Configuration:</strong> Manage your build targets natively in VS Code without editing JSON files manually.</li>
+                           <li><strong>Static Compilation:</strong> Resolves all tags into standard HTML files.</li>
+                           <li><strong>Asset Copying:</strong> Automatically copies your images, CSS, and JS files to the output directory.</li>
+                           <li><strong>Auto Build on Save:</strong> Optionally watch your source files and automatically rebuild when changes are detected.</li>
+                        </ul>
+                        <h4>How to Use:</h4>
+                        <p>1. Install the <strong>Andalina Builder</strong> extension in VS Code.<br>
+                        2. Look for the <strong>Andalina Build</strong> view in your VS Code Explorer sidebar.<br>
+                        3. Click the <strong>+</strong> icon to add a new Action.<br>
+                        4. Specify your <strong>Source Folder</strong> and <strong>Target Folder</strong>.<br>
+                        5. Click the play button on your Action in the sidebar to build your static site!</p>
+                     </div>
+
                   </div>
 
                   <!-- navigation -->
                   <nav class="pagination mt-5">
                      <a class="nav nav-prev" href="index.html"><i class="ti-arrow-left mr-2"></i>
                         <span class="d-none d-md-block">Back to Home</span></a>
-                  </nav>
-               </div>
+                  </nav>               </div>  
             </div>
          </div>
       </div>

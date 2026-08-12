@@ -35,12 +35,12 @@
    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CQ8C1189H"></script>
    <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-9CQ8C1189H');
 
       // Enhanced download and link click tracking
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
          const link = e.target.closest('a');
          if (!link) return;
          const href = link.getAttribute('href') || '';
@@ -100,7 +100,8 @@
 
             <div class="navbar-end ml-0">
                <div class="navbar-item py-0">
-                  <a href="https://github.com/Moataz-Aldawood/andalina" class="btn btn-sm btn-outline-primary ml-4" target="_blank">Source</a>
+                  <a href="https://github.com/Moataz-Aldawood/andalina" class="btn btn-sm btn-outline-primary ml-4"
+                     target="_blank">Source</a>
                   <a href="download.html" class="btn btn-sm btn-primary ml-2">Download</a>
                </div>
             </div>
@@ -113,119 +114,185 @@
          <div class="columns is-multiline is-centered">
             <div class="column is-10-desktop is-12-tablet">
                <div class="px-4">
-               <div class="p-6 shadow rounded content has-text-centered">
-                  <h1 class="mb-4">Download Andalina</h1>
-                  <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default configuration.</p>
-                  <a href="downloads/andalina-v1.2.0.zip" class="btn btn-primary mb-3" style="font-size: 1.25rem; padding: 15px 30px;">
-                      <i class="ti-download mr-2"></i> Download v1.2.0 (.zip)
-                  </a>
-                  <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and <code>andalina.config.json</code> &bull; Licensed under <strong>GNU LGPL-3.0</strong></small></p>
-               </div>
-               <div class="p-6 shadow rounded content mt-5">
-                  <h2 class="mb-4 border-bottom pb-3">Changelog</h2>
-                  <div class="mt-4">
+                  <div class="p-6 shadow rounded content has-text-centered">
+                     <h1 class="mb-4">Download Andalina</h1>
+                     <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default
+                        configuration.</p>
+                     <a href="downloads/andalina-v1.2.0.zip" class="btn btn-primary mb-3"
+                        style="font-size: 1.25rem; padding: 15px 30px;">
+                        <i class="ti-download mr-2"></i> Download v1.2.0 (.zip)
+                     </a>
+                     <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and
+                           <code>andalina.config.json</code> &bull; Licensed under <strong>GNU LGPL-3.0</strong></small>
+                     </p>
+                  </div>
 
-                     <!-- changelog post -->
-                     <h3 id="v1-2-0">v1.2.0 &ndash; Structured Syntax &amp; Core Optimization</h3>
-                     <p><strong>July 28, 2026</strong></p>
-                     <p>Major architecture upgrade enforcing Structured Syntax for components and layouts, plus significant core engine optimizations.</p>
-                     <div class="mt-5">
-                        <div class="badge added">Added</div>
-                        <ul>
-                           <li>
-                              <p><strong>Structured Syntax Support:</strong> Added canonical wrapper tags <code>&lt;an-component-def&gt;</code> and <code>&lt;an-layout-def&gt;</code>, cleanly separating metadata (<code>&lt;an-attributes&gt;</code>) from DOM markup (<code>&lt;an-body&gt;</code>).</p>
-                           </li>
-                           <li>
-                              <p><strong>Instant O(1) Metadata Lookup:</strong> Replaced regex string stripping with native DOM queries (<code>doc.querySelector('an-attributes')</code>), extracting prop defaults and flags instantly without temporary innerHTML divs.</p>
-                           </li>
-                           <li>
-                              <p><strong>Mandatory Prop Checking:</strong> Calling tags are now validated against <code>mandatory="true"</code> attributes with descriptive warnings if omitted.</p>
-                           </li>
-                        </ul>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge changed">Changed</div>
-                        <ul>
-                           <li>
-                              <p><strong>Core Engine Optimization:</strong> Benchmarked against v1.1.0 showing a <strong>26.2% speed improvement (1.36x faster)</strong> in component parse and render cycles.</p>
-                           </li>
-                           <li>
-                              <p><strong>Strict Architecture Enforcement:</strong> Flat/unstructured components now log a helpful console error guiding developers to structured syntax.</p>
-                           </li>
-                           <li>
-                              <p><strong>LGPL-3.0 License:</strong> Officially licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0-or-later).</p>
-                           </li>
-                        </ul>
-                     </div>
+                  <div class="p-6 shadow rounded content has-text-centered mt-5">
+                     <h2 class="mb-4">Andalina Builder (VS Code Extension)</h2>
+                     <p class="is-size-5 has-text-grey mb-5">Compile your dynamic Andalina projects into static HTML
+                        sites for production.</p>
 
-                     <hr>
-
-                     <!-- changelog post -->
-                     <h3 id="v1-1-0">v1.1.0 &ndash; Global Versioning &amp; Cache Busting</h3>
-                     <p><strong>July 27, 2026</strong></p>
-                     <p>Introduced global versioning, cache-busting query parameters, and pre-parse attribute extraction.</p>
-                     <div class="mt-5">
-                        <div class="badge added">Added</div>
-                        <ul>
-                           <li>
-                              <p><strong>Global Cache Busting:</strong> Added <code>globalConfig.version</code> and <code>data-version</code> support to automatically append <code>?v=VERSION</code> to fetched URLs.</p>
-                           </li>
-                           <li>
-                              <p><strong>Cache-Control Headers:</strong> Injected <code>no-cache</code> meta headers across documentation and download pages.</p>
-                           </li>
-                        </ul>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge fixed">Fixed</div>
-                        <ul>
-                           <li>
-                              <p><strong>Head Parsing Protection:</strong> Prevented browser DOM parsers from moving component metadata into the body during fragment loading.</p>
-                           </li>
-                        </ul>
-                     </div>
-
-                     <hr>
-
-                     <!-- changelog post -->
-                     <h3 id="v1-0-0">v1.0.0 &ndash; Initial Release</h3>
-                     <p><strong>July 20, 2026</strong></p>
-                     <p>First public release of Andalina HTML Composition Engine.</p>
-                     <div class="mt-5">
-                        <div class="badge added">Added</div>
-                        <ul>
-                           <li>
-                              <p>Zero-dependency client-side HTML composition engine supporting <code>&lt;an-include&gt;</code>, <code>&lt;an-layout&gt;</code>, <code>&lt;an-component&gt;</code>, <code>&lt;an-template&gt;</code>, and <code>&lt;an-repeat&gt;</code>.</p>
-                           </li>
-                        </ul>
-                     </div>
-
-                     <hr>
-
-                     <!-- changelog post -->
-                     <h3 id="changelog-label">Changelog label</h3>
-                     <div class="mt-5">
-                        <div class="badge added">Added</div>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge changed">Changed</div>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge depricated">Depricated</div>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge removed">Removed</div>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge fixed">Fixed</div>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge security">Security</div>
-                     </div>
-                     <div class="mt-5">
-                        <div class="badge unreleased">Unreleased</div>
+                     <div class="is-flex is-justify-content-center" style="gap: 15px; flex-wrap: wrap;">
+                        <a href="https://marketplace.visualstudio.com/items?itemName=moataz-aldawood.andalina-builder"
+                           target="_blank" class="btn btn-outline-primary mb-3"
+                           style="font-size: 1.1rem; padding: 10px 20px;">
+                           VS Code Marketplace
+                        </a>
+                        <a href="https://open-vsx.org/user-settings/extensions/moataz-aldawood/andalina-builder" target="_blank"
+                           class="btn btn-outline-primary mb-3" style="font-size: 1.1rem; padding: 10px 20px;">
+                           Open VSX Registry
+                        </a>
                      </div>
                   </div>
-               </div>
+                  <div class="p-6 shadow rounded content mt-5">
+                     <h2 class="mb-4 border-bottom pb-3">Changelog</h2>
+                     <div class="mt-4">
+
+                        <!-- changelog post -->
+                        <h3 id="v1-3-0">v1.3.0 &ndash; Andalina Builder &amp; Developer Comments</h3>
+                        <p><strong>August 12, 2026</strong></p>
+                        <p>Introducing the official Andalina Builder extension for VS Code and specialized syntax for
+                           developer notes.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <p><strong>Andalina Builder:</strong> Released the official VS Code Extension. Features
+                                    a native GUI to manage build actions, static compilation of Andalina components,
+                                    automatic asset copying, and auto-build on save.</p>
+                              </li>
+                              <li>
+                                 <p><strong>Developer Comments:</strong> Added a new syntax
+                                    <code>&lt;!-- an-comment: note --&gt;</code> that allows developers to leave
+                                    internal notes which are automatically stripped by the Builder during compilation.
+                                 </p>
+                              </li>
+                           </ul>
+                        </div>
+
+
+                        <hr>
+
+                        <!-- changelog post -->
+                        <h3 id="v1-2-0">v1.2.0 &ndash; Structured Syntax &amp; Core Optimization</h3>
+                        <p><strong>July 28, 2026</strong></p>
+                        <p>Major architecture upgrade enforcing Structured Syntax for components and layouts, plus
+                           significant core engine optimizations.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <p><strong>Structured Syntax Support:</strong> Added canonical wrapper tags
+                                    <code>&lt;an-component-def&gt;</code> and <code>&lt;an-layout-def&gt;</code>,
+                                    cleanly separating metadata (<code>&lt;an-attributes&gt;</code>) from DOM markup
+                                    (<code>&lt;an-body&gt;</code>).</p>
+                              </li>
+                              <li>
+                                 <p><strong>Instant O(1) Metadata Lookup:</strong> Replaced regex string stripping with
+                                    native DOM queries (<code>doc.querySelector('an-attributes')</code>), extracting
+                                    prop defaults and flags instantly without temporary innerHTML divs.</p>
+                              </li>
+                              <li>
+                                 <p><strong>Mandatory Prop Checking:</strong> Calling tags are now validated against
+                                    <code>mandatory="true"</code> attributes with descriptive warnings if omitted.</p>
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge changed">Changed</div>
+                           <ul>
+                              <li>
+                                 <p><strong>Core Engine Optimization:</strong> Benchmarked against v1.1.0 showing a
+                                    <strong>26.2% speed improvement (1.36x faster)</strong> in component parse and
+                                    render cycles.</p>
+                              </li>
+                              <li>
+                                 <p><strong>Strict Architecture Enforcement:</strong> Flat/unstructured components now
+                                    log a helpful console error guiding developers to structured syntax.</p>
+                              </li>
+                              <li>
+                                 <p><strong>LGPL-3.0 License:</strong> Officially licensed under the GNU Lesser General
+                                    Public License v3.0 (LGPL-3.0-or-later).</p>
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
+
+                        <!-- changelog post -->
+                        <h3 id="v1-1-0">v1.1.0 &ndash; Global Versioning &amp; Cache Busting</h3>
+                        <p><strong>July 27, 2026</strong></p>
+                        <p>Introduced global versioning, cache-busting query parameters, and pre-parse attribute
+                           extraction.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <p><strong>Global Cache Busting:</strong> Added <code>globalConfig.version</code> and
+                                    <code>data-version</code> support to automatically append <code>?v=VERSION</code> to
+                                    fetched URLs.</p>
+                              </li>
+                              <li>
+                                 <p><strong>Cache-Control Headers:</strong> Injected <code>no-cache</code> meta headers
+                                    across documentation and download pages.</p>
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge fixed">Fixed</div>
+                           <ul>
+                              <li>
+                                 <p><strong>Head Parsing Protection:</strong> Prevented browser DOM parsers from moving
+                                    component metadata into the body during fragment loading.</p>
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
+
+                        <!-- changelog post -->
+                        <h3 id="v1-0-0">v1.0.0 &ndash; Initial Release</h3>
+                        <p><strong>July 20, 2026</strong></p>
+                        <p>First public release of Andalina HTML Composition Engine.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <p>Zero-dependency client-side HTML composition engine supporting
+                                    <code>&lt;an-include&gt;</code>, <code>&lt;an-layout&gt;</code>,
+                                    <code>&lt;an-component&gt;</code>, <code>&lt;an-template&gt;</code>, and
+                                    <code>&lt;an-repeat&gt;</code>.</p>
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
+
+                        <!-- changelog post -->
+                        <h3 id="changelog-label">Changelog label</h3>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge changed">Changed</div>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge depricated">Depricated</div>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge removed">Removed</div>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge fixed">Fixed</div>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge security">Security</div>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge unreleased">Unreleased</div>
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
          </div>
@@ -254,7 +321,8 @@
          </div>
          <div class="py-4 has-text-centered">
             <small class="text-light">Copyright © 2026 - Invented &amp; Developed by <a
-                  href="https://www.linkedin.com/in/moataz-aldawood/">Moataz Al Dawood</a> &bull; Licensed under GNU LGPLv3</small>
+                  href="https://www.linkedin.com/in/moataz-aldawood/">Moataz Al Dawood</a> &bull; Licensed under GNU
+               LGPLv3</small>
          </div>
       </div>
    </footer>

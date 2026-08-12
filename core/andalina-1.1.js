@@ -410,23 +410,50 @@
                     const html = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
                     const doc = parser.parseFromString(html, 'text/html');
+
                     processProps(includeNode, doc, fetchTime);
 
                     // If included fragment was a full HTML document, optionally merge its head
-                    if (html.toLowerCase().includes('<head>') && doc.head) {
-                        Array.from(doc.head.childNodes).forEach(node => {
-                            if (node.tagName === 'SCRIPT' && node.src.includes('andalina.js')) return;
-                            if (node.tagName === 'TITLE') return; 
-                            document.head.appendChild(cloneNodeSafe(node));
-                        });
-                    }
-
-                    const contentContainer = doc.body ? doc.body : doc.documentElement;
-                    
+                    const parsedHead = doc.querySelector('head');
+                    const parsedBody = doc.querySelector('body');
                     const fragment = document.createDocumentFragment();
-                    Array.from(contentContainer.childNodes).forEach(node => {
-                        fragment.appendChild(cloneNodeSafe(node));
-                    });
+
+                    const isInHead = includeNode.closest('head') !== null;
+
+                    if (isInHead) {
+                        if (parsedHead && parsedHead.childNodes.length > 0) {
+                            Array.from(parsedHead.childNodes).forEach(node => {
+                                if (node.tagName === 'SCRIPT' && node.src.includes('andalina.js')) return;
+                                if (node.tagName === 'TITLE') return; 
+                                fragment.appendChild(cloneNodeSafe(node));
+                            });
+                        }
+                        if (parsedBody && parsedBody.childNodes.length > 0) {
+                            Array.from(parsedBody.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
+                        }
+                        if ((!parsedHead || parsedHead.childNodes.length === 0) && (!parsedBody || parsedBody.childNodes.length === 0)) {
+                            Array.from(doc.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
+                        }
+                    } else {
+                        if (html.toLowerCase().includes('<head>') && parsedHead && document.head) {
+                            Array.from(parsedHead.childNodes).forEach(node => {
+                                if (node.tagName === 'SCRIPT' && node.src.includes('andalina.js')) return;
+                                if (node.tagName === 'TITLE') return; 
+                                document.head.appendChild(cloneNodeSafe(node));
+                            });
+                        }
+
+                        if (parsedBody && parsedBody.childNodes.length > 0) {
+                            Array.from(parsedBody.childNodes).forEach(node => {
+                                fragment.appendChild(cloneNodeSafe(node));
+                            });
+                        } else if (!parsedHead || parsedHead.childNodes.length === 0) {
+                            Array.from(doc.childNodes).forEach(node => {
+                                fragment.appendChild(cloneNodeSafe(node));
+                            });
+                        }
+                    }
+                    
                     includeNode.replaceWith(fragment);
                 } else {
                     includeNode.remove();
@@ -539,7 +566,18 @@
             console.log('%c[Andalina Debug] 🚀 Starting Parser...', 'color: #9b59b6; font-weight: bold;');
         }
 
-        await processNodes(document.body);
+        await processNodes(document.documentElement);
+
+        // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
+        const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
+        const commentsToRemove = [];
+        let commentNode;
+        while ((commentNode = commentWalker.nextNode())) {
+            if (commentNode.nodeValue && commentNode.nodeValue.trim().startsWith('an-comment:')) {
+                commentsToRemove.push(commentNode);
+            }
+        }
+        commentsToRemove.forEach(c => c.remove());
         
         const totalTime = Math.round(performance.now() - startTime);
 
@@ -563,10 +601,18 @@
         }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    // Expose Andalina for programmatic usage (e.g., Node.js Builder)
+    window.Andalina = {
+        init: init
+    };
+
+    // Auto-run only if we are in a real browser (not Node.js)
+    if (typeof process === 'undefined' || !process.versions || !process.versions.node) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     }
 
 })();
