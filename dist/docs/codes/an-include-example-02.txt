@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="andalina.js" defer> </script>
+    <an-include src="head-content.html"></an-include>
+</head>
+<body>
+    <p> Welcome </p>
+</body>
+</html>

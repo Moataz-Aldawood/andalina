@@ -1,0 +1,18 @@
+Andalina Color Palette:
+
+Background: #FDE6C3
+
+Main Color 1: #4C4743
+Main Color 2: #ED6C44
+Main Color 3: #FFB230
+Main Color 4: #C3A279
+
+Natural Colors:
+Dark Gray: #767171
+Light Gray: #A5A5A5
+White:#FFFBEC
+
+Other Colors:
+Blue 1 (Dark): #4472C4
+Blue 2 (Light): #5B9BD5
+Green: #70AD47

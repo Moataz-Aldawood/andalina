@@ -49,6 +49,8 @@
       });
    </script>
 
+   <!-- Pre-fetch product data -->
+   <an-data src="data/products.json" name="catalog"></an-data>
 </head>
 <body>
 
@@ -62,63 +64,15 @@
          </div>
 
          <div class="product-grid">
-            <an-repeat times="1">
-               <!-- an-comment: Product 1: Overrides all slots -->
+            <an-repeat data="catalog" item="product">
                <an-component src="./components/product-card.html">
-                  <an-inject name="icon">🚀</an-inject>
-                  <an-inject name="category">Enterprise SaaS</an-inject>
-                  <an-inject name="badge">Best Seller</an-inject>
-                  <an-inject name="title">Andalina Enterprise</an-inject>
-                  <an-inject name="desc">Dedicated SLA, priority support, and infinite slot nesting for large-scale engineering teams.</an-inject>
-                  <an-inject name="price">$199/mo</an-inject>
-                  <an-inject name="button">Start Free Trial</an-inject>
-               </an-component>
-
-               <!-- an-comment: Product 2: Uses default badge ("In Stock") and default button ("Add to Cart") -->
-               <an-component src="./components/product-card.html">
-                  <an-inject name="icon">⚡</an-inject>
-                  <an-inject name="category">Developer Tools</an-inject>
-                  <an-inject name="title">Andalina Studio</an-inject>
-                  <an-inject name="desc">Interactive component previewer and template debugger with live syntax highlighting.</an-inject>
-                  <an-inject name="price">$49/mo</an-inject>
-               </an-component>
-
-               <!-- an-comment: Product 3: Uses default badge and button -->
-               <an-component src="./components/product-card.html">
-                  <an-inject name="icon">🛡️</an-inject>
-                  <an-inject name="category">Security</an-inject>
-                  <an-inject name="title">Zero-XSS Sanitizer</an-inject>
-                  <an-inject name="desc">Automated HTML escaping and attribute sanitization for client-side templates.</an-inject>
-                  <an-inject name="price">$79/mo</an-inject>
-               </an-component>
-
-               <!-- an-comment: Product 4: Overrides all slots -->
-               <an-component src="./components/product-card.html">
-                  <an-inject name="icon">🎨</an-inject>
-                  <an-inject name="category">UI Libraries</an-inject>
-                  <an-inject name="badge">New</an-inject>
-                  <an-inject name="title">Glassmorphism UI Kit</an-inject>
-                  <an-inject name="desc">120+ prebuilt accessible components with dark mode and CSS token customization.</an-inject>
-                  <an-inject name="price">$129/mo</an-inject>
-                  <an-inject name="button">Buy License</an-inject>
-               </an-component>
-
-               <!-- an-comment: Product 5: Default badge -->
-               <an-component src="./components/product-card.html">
-                  <an-inject name="icon">📊</an-inject>
-                  <an-inject name="category">Analytics</an-inject>
-                  <an-inject name="title">Declarative Insights</an-inject>
-                  <an-inject name="desc">Real-time performance metrics and render time benchmarks for Andalina components.</an-inject>
-                  <an-inject name="price">$39/mo</an-inject>
-               </an-component>
-
-               <!-- an-comment: Product 6: Default badge and button -->
-               <an-component src="./components/product-card.html">
-                  <an-inject name="icon">🌐</an-inject>
-                  <an-inject name="category">Hosting</an-inject>
-                  <an-inject name="title">Static CDN Deploy</an-inject>
-                  <an-inject name="desc">Deploy your zero-dependency Andalina app to any edge CDN in under 10 seconds.</an-inject>
-                  <an-inject name="price">$19/mo</an-inject>
+                  <an-inject name="icon">{{ product.icon }}</an-inject>
+                  <an-inject name="category">{{ product.category }}</an-inject>
+                  <an-inject name="badge">{{ product.badge }}</an-inject>
+                  <an-inject name="title">{{ product.title }}</an-inject>
+                  <an-inject name="desc">{{ product.desc }}</an-inject>
+                  <an-inject name="price">{{ product.price }}</an-inject>
+                  <an-inject name="button">{{ product.button }}</an-inject>
                </an-component>
             </an-repeat>
          </div>

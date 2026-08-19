@@ -1,0 +1,34 @@
+<!-- This is layout.html -->
+<an-layout-def><head></head><body><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body>
+    <an-body>
+        <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+            <!-- Simple Include for the Header -->
+            <an-include src="header.html"></an-include>
+
+            <div style="display: flex; gap: 20px; margin-top: 20px;">
+                <main style="flex: 3;">
+                    <p><i>[Template] Start of main section</i></p>
+                    
+                    <!-- Insert main content here -->
+                    <an-place name="main-content">
+                        <p style="color: gray;">Fallback text: No main content provided.</p>
+                    </an-place>
+                    
+                    <p><i>[Template] End of main section</i></p>
+                </main>
+                
+                <aside style="flex: 1;">
+                    <p><i>[Template] Sidebar section</i></p>
+                    
+                    <!-- Insert side content here -->
+                    <an-place name="side-content"></an-place>
+                </aside>
+            </div>
+        </div>
+    </an-body>
+</an-layout-def>
+

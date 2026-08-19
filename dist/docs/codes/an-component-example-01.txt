@@ -1,0 +1,15 @@
+<an-component-def>
+    <an-attributes>
+        <!-- define components attributes that will be passed from the caller -->
+        <an-attribute name="username" mandatory="true" />
+        <an-attribute name="role" default-value="Member" />
+    </an-attributes>
+
+    <an-body>
+        <!-- defining component code structure -->
+        <div class="card">
+            <h2>{{username}}</h2>
+            <p>Role: {{role}}</p>
+        </div>
+    </an-body>
+</an-component-def>

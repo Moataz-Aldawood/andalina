@@ -1,0 +1,19 @@
+<an-layout-def><head></head><body><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body>
+    <an-body>
+        <div class="grid-container">
+            <an-place name="grid-content"></an-place>
+        </div>
+        <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        </style>
+    </an-body>
+</an-layout-def>

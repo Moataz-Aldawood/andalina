@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="zxx">
+
+<head>
+   <meta charset="utf-8">
+   <title>an-dalina</title>
+
+   <!-- mobile responsive meta -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+   <!-- ** Plugins Needed for the Project ** -->
+   <!-- plugins -->
+   <link rel="stylesheet" href="plugins/bulma/bulma.min.css">
+   <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
+   <!-- Main Stylesheet -->
+   <link href="css/style.css" rel="stylesheet">
+
+   <!--Favicon-->
+   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CQ8C1189H"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9CQ8C1189H');
+
+      // Enhanced download and link click tracking
+      document.addEventListener('click', function(e) {
+         const link = e.target.closest('a');
+         if (!link) return;
+         const href = link.getAttribute('href') || '';
+         const linkText = link.innerText.trim() || 'Link';
+         const isZip = href.includes('.zip');
+         const isDownload = isZip || href.includes('download') || link.classList.contains('ti-download') || link.querySelector('.ti-download');
+
+         if (isZip) {
+            gtag('event', 'zip_file_download', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'file_name': href,
+               'value': 1
+            });
+         }
+         if (isDownload) {
+            gtag('event', 'download_click', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'link_url': href,
+               'is_zip': isZip
+            });
+         }
+         gtag('event', 'link_click', {
+            'event_category': 'Navigation',
+            'event_label': linkText,
+            'link_url': href
+         });
+      });
+   </script>
+
+</head>
+
+<body><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body>
+
+</html>

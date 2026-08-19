@@ -1,0 +1,20 @@
+<!-- user-card.html: A simple reusable component -->
+<an-component-def><head></head><body><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body>
+    <an-attributes>
+        <an-attribute name="username" mandatory="true"></an-attribute>
+        <an-attribute name="role" mandatory="false" default-value="Guest"></an-attribute>
+        <an-attribute name="theme-color" mandatory="false" default-value="#3498db"></an-attribute>
+    </an-attributes>
+
+    <an-body>
+        <div style="border: 2px solid {{theme-color}}; padding: 15px; border-radius: 8px; max-width: 300px; font-family: sans-serif; margin-bottom: 15px;">
+            <!-- Notice we can use the props in text and inside attributes! -->
+            <h3 style="margin: 0; color: {{theme-color}};">{{username}}</h3>
+            <p style="margin: 5px 0 0 0; color: #7f8c8d; font-size: 14px;">Role: {{role}}</p>
+        </div>
+    </an-body>
+</an-component-def>

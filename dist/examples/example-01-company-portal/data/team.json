@@ -1,0 +1,38 @@
+[
+  {
+    "avatar": "<span style=\"background: linear-gradient(135deg, #3b82f6, #60a5fa); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;\">SR</span>",
+    "name": "Sarah Rodriguez",
+    "role": "Lead Systems Architect",
+    "bio": "Spearheading zero-dependency front-end frameworks and declarative browser parsing."
+  },
+  {
+    "avatar": "<span style=\"background: linear-gradient(135deg, #10b981, #059669); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;\">MK</span>",
+    "name": "Marcus Klein",
+    "role": "Principal UI/UX Designer",
+    "bio": "Designing stunning glassmorphic interfaces and micro-interactions for modern web apps."
+  },
+  {
+    "avatar": "<span style=\"background: linear-gradient(135deg, #8b5cf6, #6d28d9); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;\">EL</span>",
+    "name": "Elena Lin",
+    "role": "Front-End Engineer",
+    "bio": "Specializing in vanilla HTML component composition and client-side performance."
+  },
+  {
+    "avatar": "<span style=\"background: linear-gradient(135deg, #f59e0b, #d97706); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;\">DP</span>",
+    "name": "David Patel",
+    "role": "Back-End Integrations Lead",
+    "bio": "Ensuring seamless handoff between front-end components and server-side templates."
+  },
+  {
+    "avatar": "<span style=\"background: linear-gradient(135deg, #ec4899, #be185d); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;\">AL</span>",
+    "name": "Amira Laurent",
+    "role": "Developer Advocate",
+    "bio": "Creating interactive documentation, code showcases, and community examples."
+  },
+  {
+    "avatar": "<span style=\"background: linear-gradient(135deg, #06b6d4, #0e7490); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:3rem; text-align:center;\">JD</span>",
+    "name": "Jonathan Doe",
+    "role": "Junior Component Developer",
+    "bio": ""
+  }
+]

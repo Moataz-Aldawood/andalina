@@ -1,0 +1,20 @@
+<!-- an-comment: Using an-component with default vs overridden slots -->
+
+<!-- an-comment: 1. Component with Default Values -->
+<an-component template="custom-card" src="components/ui-controls.html"><head></head><body><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body></an-component>
+
+<!-- an-comment: 2. Component Overriding Specific Slots -->
+<an-component template="custom-card" src="components/ui-controls.html">
+   <span slot="title">Enterprise Analytics Dashboard</span>
+   <span slot="badge">v2.4 Live</span>
+   <span slot="body">
+      Real-time data telemetry powered by zero-dependency HTML composition.
+   </span>
+   <span slot="action">
+      <button class="btn btn-primary">Launch Dashboard</button>
+   </span>
+</an-component>

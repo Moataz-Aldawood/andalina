@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Customer Reviews | Andalina SaaS Catalog</title>
+   
+   <link rel="stylesheet" href="css/style.css">
+   
+
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CQ8C1189H"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9CQ8C1189H');
+
+      // Enhanced download and link click tracking
+      document.addEventListener('click', function(e) {
+         const link = e.target.closest('a');
+         if (!link) return;
+         const href = link.getAttribute('href') || '';
+         const linkText = link.innerText.trim() || 'Link';
+         const isZip = href.includes('.zip');
+         const isDownload = isZip || href.includes('download') || link.classList.contains('ti-download') || link.querySelector('.ti-download');
+
+         if (isZip) {
+            gtag('event', 'zip_file_download', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'file_name': href,
+               'value': 1
+            });
+         }
+         if (isDownload) {
+            gtag('event', 'download_click', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'link_url': href,
+               'is_zip': isZip
+            });
+         }
+         gtag('event', 'link_click', {
+            'event_category': 'Navigation',
+            'event_label': linkText,
+            'link_url': href
+         });
+      });
+   </script>
+
+</head>
+<body>
+
+   
+<header class="store-header">
+   <div class="store-logo">Andalina Cloud Catalog</div>
+   <nav class="store-nav">
+      <a href="index.html" class="store-link">Products</a>
+      <a href="reviews.html" class="store-link">Customer Reviews</a>
+      <a href="../index.html" class="store-link" style="border: 1px solid var(--primary-neon);">← All Examples</a>
+      <span class="cart-pill">🛒 Cart (3)</span>
+   </nav>
+</header>
+
+<main class="main-wrapper">
+   
+         <div class="hero-banner">
+            <h1 class="hero-title">Customer Feedback &amp; Reviews</h1>
+            <p class="hero-subtitle">
+               See what engineering leads and developers say about building zero-dependency frontends with Andalina.
+            </p>
+         </div>
+
+         <div class="reviews-grid">
+            
+               
+               
+
+<div class="review-card">
+   <div class="review-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+      <div class="review-avatar" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;">
+         <span style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">AM</span>
+      </div>
+      <div>
+         <h4 class="review-author" style="margin: 0; font-size: 1rem;">
+            Alex Mercer
+         </h4>
+         <span class="review-role" style="font-size: 0.8rem; color: #94a3b8;">
+            CTO at StackFlow
+         </span>
+      </div>
+      <span class="review-date" style="margin-left: auto; font-size: 0.75rem; color: #64748b;">
+         2 days ago
+      </span>
+   </div>
+   <div class="review-stars" style="color: #f59e0b; margin-bottom: 0.75rem;">
+      â˜…â˜…â˜…â˜…â˜…
+   </div>
+   <p class="review-text" style="color: #e2e8f0; line-height: 1.5; font-style: italic;">
+      "Andalina allowed us to eliminate a 200MB Node_modules folder for our internal company portal. It renders instantly and our designers love working with declarative HTML components."
+   </p>
+</div>
+
+
+               
+               
+
+<div class="review-card">
+   <div class="review-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+      <div class="review-avatar" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;">
+         <span style="background: linear-gradient(135deg, #10b981, #059669); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">SC</span>
+      </div>
+      <div>
+         <h4 class="review-author" style="margin: 0; font-size: 1rem;">
+            Samantha Chen
+         </h4>
+         <span class="review-role" style="font-size: 0.8rem; color: #94a3b8;">
+            Principal Frontend Lead
+         </span>
+      </div>
+      <span class="review-date" style="margin-left: auto; font-size: 0.75rem; color: #64748b;">
+         1 week ago
+      </span>
+   </div>
+   <div class="review-stars" style="color: #f59e0b; margin-bottom: 0.75rem;">
+      â˜…â˜…â˜…â˜…â˜…
+   </div>
+   <p class="review-text" style="color: #e2e8f0; line-height: 1.5; font-style: italic;">
+      "The default slot fallbacks are a game-changer. We define standard buttons and cards once, and only override the slots we need. No JS framework lock-in!"
+   </p>
+</div>
+
+
+               
+               
+
+<div class="review-card">
+   <div class="review-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+      <div class="review-avatar" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;">
+         <span style="background: linear-gradient(135deg, #f59e0b, #d97706); display:inline-block; width:100%; height:100%; border-radius:50%; line-height:48px; text-align:center;">DK</span>
+      </div>
+      <div>
+         <h4 class="review-author" style="margin: 0; font-size: 1rem;">
+            David K.
+         </h4>
+         <span class="review-role" style="font-size: 0.8rem; color: #94a3b8;">
+            Full-Stack Architect
+         </span>
+      </div>
+      <span class="review-date" style="margin-left: auto; font-size: 0.75rem; color: #64748b;">
+         2 weeks ago
+      </span>
+   </div>
+   <div class="review-stars" style="color: #f59e0b; margin-bottom: 0.75rem;">
+      â˜…â˜…â˜…â˜…â˜…
+   </div>
+   <p class="review-text" style="color: #e2e8f0; line-height: 1.5; font-style: italic;">
+      "Andalina completely eliminated our need for server-side HTML template engines. Our frontend and backend teams are finally aligned!"
+   </p>
+</div>
+
+            
+         </div>
+      
+</main>
+
+<footer class="store-footer">
+   <p>Andalina Cloud Catalog • Client-Side Component Composition Demo</p>
+</footer>
+
+
+</body>
+</html>

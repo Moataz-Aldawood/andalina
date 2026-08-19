@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "icon": "🚀",
+    "category": "Enterprise SaaS",
+    "badge": "Best Seller",
+    "title": "Andalina Enterprise",
+    "desc": "Dedicated SLA, priority support, and infinite slot nesting for large-scale engineering teams.",
+    "price": "$199/mo",
+    "button": "Start Free Trial"
+  },
+  {
+    "id": 2,
+    "icon": "⚡",
+    "category": "Developer Tools",
+    "badge": "In Stock",
+    "title": "Andalina Studio",
+    "desc": "Interactive component previewer and template debugger with live syntax highlighting.",
+    "price": "$49/mo",
+    "button": "Add to Cart"
+  },
+  {
+    "id": 3,
+    "icon": "🛡️",
+    "category": "Security",
+    "badge": "In Stock",
+    "title": "Zero-XSS Sanitizer",
+    "desc": "Automated HTML escaping and attribute sanitization for client-side templates.",
+    "price": "$79/mo",
+    "button": "Add to Cart"
+  },
+  {
+    "id": 4,
+    "icon": "🎨",
+    "category": "UI Libraries",
+    "badge": "New",
+    "title": "Glassmorphism UI Kit",
+    "desc": "120+ prebuilt accessible components with dark mode and CSS token customization.",
+    "price": "$129/mo",
+    "button": "Buy License"
+  },
+  {
+    "id": 5,
+    "icon": "📊",
+    "category": "Analytics",
+    "badge": "In Stock",
+    "title": "Declarative Insights",
+    "desc": "Real-time performance metrics and render time benchmarks for Andalina components.",
+    "price": "$39/mo",
+    "button": "Add to Cart"
+  },
+  {
+    "id": 6,
+    "icon": "🌐",
+    "category": "Hosting",
+    "badge": "In Stock",
+    "title": "Static CDN Deploy",
+    "desc": "Deploy your zero-dependency Andalina app to any edge CDN in under 10 seconds.",
+    "price": "$19/mo",
+    "button": "Add to Cart"
+  }
+]

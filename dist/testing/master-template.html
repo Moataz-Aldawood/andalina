@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Master Template</title>
+    <style>
+        body { font-family: system-ui, sans-serif; line-height: 1.6; margin: 0; background-color: #fafafa; }
+        .master-container { max-width: 900px; margin: 0 auto; padding: 20px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); min-height: 100vh;}
+        .master-header { background: #2c3e50; color: #fff; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;}
+    </style>
+    <!-- A test script to ensure external libraries are executed during page swap -->
+    <script>
+        console.log("Master template script executed!");
+    </script>
+</head>
+<body><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body>
+</html>

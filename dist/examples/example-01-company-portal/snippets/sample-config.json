@@ -1,0 +1,16 @@
+{
+  "name": "andalina-ui-portal",
+  "version": "1.1.0",
+  "templateEngine": "Andalina",
+  "features": [
+    "Zero dependency client-side parsing",
+    "Declarative components and slots",
+    "Dynamic CSS and HTML snippet includes",
+    "Grid repeat and master layout support"
+  ],
+  "settings": {
+    "debug": true,
+    "cacheTemplates": true,
+    "defaultTheme": "dark-glass"
+  }
+}

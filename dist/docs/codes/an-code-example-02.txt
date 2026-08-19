@@ -1,0 +1,10 @@
+<head>
+    <script src="andalina.js" defer> </script>
+</head>
+<body>
+    <pre>
+        <code class="language-javascript">
+            <an-code src="js/app.js"></an-code>
+        </code>
+    </pre>
+</body>

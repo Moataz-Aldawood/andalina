@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" data-global-version="1.0">
+<head id="main-head" data-theme="{{theme}}">
+    <an-attributes>
+        <an-attribute name="lang" default-value="en">
+        <an-attribute name="theme" default-value="light">
+    </an-attribute></an-attribute></an-attributes>
+    <title>Test Attributes</title>
+</head>
+<body class="body-theme-{{theme}}" data-test="success"><div style="color:red; padding: 20px; font-family: sans-serif;">
+                <h2>[Andalina] Fatal Configuration Error</h2>
+                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
+                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
+            </div></body>
+</html>
