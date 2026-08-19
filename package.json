@@ -1,6 +1,6 @@
 {
   "name": "andalina",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "Zero-dependency client-side HTML composition engine supporting components, templates, layouts, and repeaters.",
   "main": "core/andalina.js",
   "files": [
