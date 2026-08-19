@@ -245,9 +245,95 @@
    </script>
 
 </head>
-<body><div style="color:red; padding: 20px; font-family: sans-serif;">
-                <h2>[Andalina] Fatal Configuration Error</h2>
-                <p>'propStart' and 'propEnd' delimiters are missing. You must define them in <strong>andalina.config.json</strong> to avoid conflicts with other frameworks.</p>
-                <pre>{ "propStart": "{{", "propEnd": "}}" }</pre>
-            </div></body>
+<body>
+
+   <header class="hub-header">
+      <div class="hub-brand">Andalina Examples Hub</div>
+      <nav class="hub-nav">
+         <a href="../docs/index.html">Documentation Website</a>
+         <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank">GitHub Repository</a>
+      </nav>
+   </header>
+
+   <main class="container">
+      <h1 class="hub-title">Simple Websites Built with Andalina</h1>
+      <p class="hub-subtitle">
+         Explore real-world examples demonstrating zero-dependency client-side HTML composition, declarative slots with default fallbacks, responsive repeat grids, and dynamic source code injection.
+      </p>
+
+      <div class="examples-grid">
+         <!-- an-comment: Example 01: Company Portal & UI Library -->
+         <article class="example-card">
+            <div class="card-header">
+               <span class="example-number">Example 01</span>
+            </div>
+            <h2 class="example-title">Basic Components & Code Injection</h2>
+            <p class="example-description">
+               This example demonstrates how to define reusable components using <code>&lt;an-component-def&gt;</code> and inject dynamic content into them using <code>&lt;an-inject&gt;</code>. It also shows how to display raw code snippets in the browser using <code>&lt;an-code&gt;</code> without HTML entities escaping.
+            </p>
+            <div class="features-list">
+               <span class="feature-tag">&lt;an-component-def&gt;</span>
+               <span class="feature-tag">&lt;an-inject&gt;</span>
+               <span class="feature-tag">&lt;an-place&gt;</span>
+               <span class="feature-tag">&lt;an-code&gt;</span>
+               <span class="feature-tag">&lt;an-include&gt;</span>
+            </div>
+            <div class="card-links">
+               <a href="example-01-company-portal/index.html" class="btn btn-primary">Index Page</a>
+               <a href="example-01-company-portal/team.html" class="btn btn-outline">Team Grid</a>
+               <a href="example-01-company-portal/code-showcase.html" class="btn btn-outline">&lt;an-code&gt;</a>
+               <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-01-company-portal" target="_blank" class="btn btn-outline">Source Code</a>
+            </div>
+         </article>
+
+         <!-- an-comment: Example 02: Modern Product Catalog -->
+         <article class="example-card">
+            <div class="card-header">
+               <span class="example-number" style="color: #c084fc; background: rgba(192, 132, 252, 0.15); border-color: rgba(192, 132, 252, 0.3);">Example 02</span>
+            </div>
+            <h2 class="example-title">Layouts & Default Fallbacks</h2>
+            <p class="example-description">
+               This example focuses on creating master page structures using <code>&lt;an-layout-def&gt;</code> to wrap multiple pages in a single layout. It also highlights how to provide default fallback content inside <code>&lt;an-place&gt;</code> tags when an <code>&lt;an-inject&gt;</code> is omitted by the consumer.
+            </p>
+            <div class="features-list">
+               <span class="feature-tag">&lt;an-layout-def&gt;</span>
+               <span class="feature-tag">&lt;an-layout&gt;</span>
+               <span class="feature-tag">&lt;an-inject&gt;</span>
+               <span class="feature-tag">&lt;an-place&gt; default fallbacks</span>
+            </div>
+            <div class="card-links">
+               <a href="example-02-product-catalog/index.html" class="btn btn-primary" style="background: #c084fc; color: #090d16;">Products Page</a>
+               <a href="example-02-product-catalog/reviews.html" class="btn btn-outline">Reviews Page</a>
+               <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-02-product-catalog" target="_blank" class="btn btn-outline">Source Code</a>
+            </div>
+         </article>
+         
+         <!-- an-comment: Example 03: Data Fetching and Looping -->
+         <article class="example-card">
+            <div class="card-header">
+               <span class="example-number" style="color: #10b981; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">Example 03</span>
+            </div>
+            <h2 class="example-title">Data Fetching & Looping</h2>
+            <p class="example-description">
+               This example introduces <code>&lt;an-data&gt;</code> and <code>&lt;an-repeat&gt;</code>. It shows how to fetch external JSON files locally or from an API, store them globally, and then iterate over the arrays to dynamically render grids and lists of components.
+            </p>
+            <div class="features-list">
+               <span class="feature-tag">&lt;an-data&gt;</span>
+               <span class="feature-tag">&lt;an-repeat&gt;</span>
+               <span class="feature-tag">JSON binding</span>
+               <span class="feature-tag">Double curly braces {{ }}</span>
+            </div>
+            <div class="card-links">
+               <a href="example-03-data-looping/index.html" class="btn btn-primary" style="background: #10b981; color: #090d16;">Launch Example 3 →</a>
+               <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-03-data-looping" target="_blank" class="btn btn-outline">Source Code</a>
+            </div>
+         </article>
+      </div>
+   </main>
+
+   <footer class="hub-footer">
+      <p>Andalina Examples Hub • Client-Side HTML Component Architecture</p>
+   </footer>
+
+</body>
 </html>

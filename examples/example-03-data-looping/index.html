@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Example 3: Data Fetching and Looping</title>
+   
+   <style>
+      body {
+         font-family: system-ui, -apple-system, sans-serif;
+         background: #0f172a;
+         color: #f8fafc;
+         margin: 0;
+         padding: 2rem;
+      }
+      .container {
+         max-width: 800px;
+         margin: 0 auto;
+      }
+      .post-card {
+         background: #1e293b;
+         border: 1px solid #334155;
+         padding: 1.5rem;
+         border-radius: 0.5rem;
+         margin-bottom: 1rem;
+      }
+      .post-title {
+         margin: 0 0 0.5rem 0;
+         color: #38bdf8;
+      }
+      .back-link {
+         display: inline-block;
+         margin-bottom: 2rem;
+         color: #94a3b8;
+         text-decoration: none;
+      }
+      .back-link:hover {
+         color: #f8fafc;
+      }
+      code {
+         background: #0f172a;
+         padding: 0.2rem 0.4rem;
+         border-radius: 0.25rem;
+         color: #f472b6;
+      }
+   </style>
+   
+   <script src="../lib/andalina.js" defer></script>
+   
+   <!-- an-comment: Pre-fetch JSON data and store it as 'blogPosts' -->
+   <an-data src="data/posts.json" name="blogPosts"></an-data>
+</head>
+<body>
+
+   <div class="container">
+      <a href="../index.html" class="back-link">← Back to Examples</a>
+      
+      <h1>Data Fetching and Looping</h1>
+      <p>
+         This example demonstrates how to use <code>&lt;an-data&gt;</code> to fetch an external JSON file, 
+         and how to iterate through that data using <code>&lt;an-repeat&gt;</code>.
+      </p>
+
+      <h2>Recent Posts</h2>
+      
+      <!-- an-comment: Loop over the 'blogPosts' array we fetched -->
+      <an-repeat data="blogPosts" item="post">
+         
+         <div class="post-card">
+            <h3 class="post-title">{{ post.title }}</h3>
+            <p style="margin: 0; color: #cbd5e1;">Author: {{ post.author }}</p>
+         </div>
+         
+      </an-repeat>
+   </div>
+
+</body>
+</html>

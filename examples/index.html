@@ -267,21 +267,22 @@
             <div class="card-header">
                <span class="example-number">Example 01</span>
             </div>
-            <h2 class="example-title">Company Portal & UI Library</h2>
+            <h2 class="example-title">Basic Components & Code Injection</h2>
             <p class="example-description">
-               A comprehensive 3-page website showcasing a reusable component library (buttons, cards, text fields), dynamic multi-stylesheet imports, layout + repeat grids, and raw code injection.
+               This example demonstrates how to define reusable components using <code>&lt;an-component-def&gt;</code> and inject dynamic content into them using <code>&lt;an-inject&gt;</code>. It also shows how to display raw code snippets in the browser using <code>&lt;an-code&gt;</code> without HTML entities escaping.
             </p>
             <div class="features-list">
-               <span class="feature-tag">Multi CSS &lt;an-include&gt;</span>
-               <span class="feature-tag">Default Slot Fallbacks</span>
-               <span class="feature-tag">Layout + &lt;an-repeat&gt; Grid</span>
-               <span class="feature-tag">&lt;an-code&gt; Injection</span>
-               <span class="feature-tag">3 Interconnected Pages</span>
+               <span class="feature-tag">&lt;an-component-def&gt;</span>
+               <span class="feature-tag">&lt;an-inject&gt;</span>
+               <span class="feature-tag">&lt;an-place&gt;</span>
+               <span class="feature-tag">&lt;an-code&gt;</span>
+               <span class="feature-tag">&lt;an-include&gt;</span>
             </div>
             <div class="card-links">
-               <a href="example-01-company-portal/index.html" class="btn btn-primary">Launch Example 1 →</a>
+               <a href="example-01-company-portal/index.html" class="btn btn-primary">Index Page</a>
                <a href="example-01-company-portal/team.html" class="btn btn-outline">Team Grid</a>
                <a href="example-01-company-portal/code-showcase.html" class="btn btn-outline">&lt;an-code&gt;</a>
+               <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-01-company-portal" target="_blank" class="btn btn-outline">Source Code</a>
             </div>
          </article>
 
@@ -290,20 +291,41 @@
             <div class="card-header">
                <span class="example-number" style="color: #c084fc; background: rgba(192, 132, 252, 0.15); border-color: rgba(192, 132, 252, 0.3);">Example 02</span>
             </div>
-            <h2 class="example-title">Modern Product Catalog & Storefront</h2>
+            <h2 class="example-title">Layouts & Default Fallbacks</h2>
             <p class="example-description">
-               A sleek SaaS cloud product catalog and customer review showcase featuring sticky glassmorphism layouts, product badges, pricing tables, and star ratings with default fallback content.
+               This example focuses on creating master page structures using <code>&lt;an-layout-def&gt;</code> to wrap multiple pages in a single layout. It also highlights how to provide default fallback content inside <code>&lt;an-place&gt;</code> tags when an <code>&lt;an-inject&gt;</code> is omitted by the consumer.
             </p>
             <div class="features-list">
-               <span class="feature-tag">&lt;an-layout&gt; Storefront</span>
-               <span class="feature-tag">&lt;an-component&gt; Badges</span>
-               <span class="feature-tag">Pricing Table Grid</span>
-               <span class="feature-tag">Customer Reviews Grid</span>
-               <span class="feature-tag">Default Description Fallbacks</span>
+               <span class="feature-tag">&lt;an-layout-def&gt;</span>
+               <span class="feature-tag">&lt;an-layout&gt;</span>
+               <span class="feature-tag">&lt;an-inject&gt;</span>
+               <span class="feature-tag">&lt;an-place&gt; default fallbacks</span>
             </div>
             <div class="card-links">
-               <a href="example-02-product-catalog/index.html" class="btn btn-primary" style="background: #c084fc; color: #090d16;">Launch Example 2 →</a>
-               <a href="example-02-product-catalog/reviews.html" class="btn btn-outline">Customer Reviews</a>
+               <a href="example-02-product-catalog/index.html" class="btn btn-primary" style="background: #c084fc; color: #090d16;">Products Page</a>
+               <a href="example-02-product-catalog/reviews.html" class="btn btn-outline">Reviews Page</a>
+               <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-02-product-catalog" target="_blank" class="btn btn-outline">Source Code</a>
+            </div>
+         </article>
+         
+         <!-- an-comment: Example 03: Data Fetching and Looping -->
+         <article class="example-card">
+            <div class="card-header">
+               <span class="example-number" style="color: #10b981; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">Example 03</span>
+            </div>
+            <h2 class="example-title">Data Fetching & Looping</h2>
+            <p class="example-description">
+               This example introduces <code>&lt;an-data&gt;</code> and <code>&lt;an-repeat&gt;</code>. It shows how to fetch external JSON files locally or from an API, store them globally, and then iterate over the arrays to dynamically render grids and lists of components.
+            </p>
+            <div class="features-list">
+               <span class="feature-tag">&lt;an-data&gt;</span>
+               <span class="feature-tag">&lt;an-repeat&gt;</span>
+               <span class="feature-tag">JSON binding</span>
+               <span class="feature-tag">Double curly braces {{ }}</span>
+            </div>
+            <div class="card-links">
+               <a href="example-03-data-looping/index.html" class="btn btn-primary" style="background: #10b981; color: #090d16;">Launch Example 3 →</a>
+               <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-03-data-looping" target="_blank" class="btn btn-outline">Source Code</a>
             </div>
          </article>
       </div>
