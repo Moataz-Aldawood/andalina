@@ -1,14 +1,15 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Collect all your async fetch operations
-    const fetchPromises = [
-        fetchComponent('header.html'),
-        fetchComponent('slider.html')
-    ];
-
-    // Wait for everything to finish injecting
-    Promise.all(fetchPromises).then(() => {
-        // Safe to initialize 3rd party libraries now!
-        initializeMySlider();
-        initializeMyLightbox();
-    });
+// Wait for Andalina to finish parsing and injecting the entire DOM
+document.addEventListener('andalina:ready', function(e) {
+    console.log(`Andalina finished in ${e.detail.totalTime}ms`);
+    
+    // It is now safe to initialize React, Angular, Bootstrap, or other libraries
+    // that need to bind to the final DOM structure.
+    
+    // Example: React
+    // const root = ReactDOM.createRoot(document.getElementById('root'));
+    // root.render(<App />);
+    
+    // Example: Bootstrap tooltips
+    // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    // const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 });

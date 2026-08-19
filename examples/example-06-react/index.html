@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>React Integration | Andalina</title>
+   
+   <style>
+      body {
+         font-family: system-ui, -apple-system, sans-serif;
+         margin: 0; background: #0f172a; color: #f8fafc;
+         padding: 2rem;
+      }
+      .container { max-width: 800px; margin: 0 auto; }
+      .header-area { margin-bottom: 2rem; border-bottom: 1px solid #334155; padding-bottom: 1rem; }
+      .react-container {
+         background: #1e293b; border: 1px solid #3b82f6; border-radius: 0.5rem;
+         padding: 2rem; text-align: center;
+      }
+      .back-link { color: #94a3b8; text-decoration: none; margin-bottom: 1rem; display: inline-block; }
+      .back-link:hover { color: #f8fafc; }
+   </style>
+   
+   <!-- Andalina -->
+   <script src="../lib/andalina.js" defer></script>
+   
+   <!-- React Scripts -->
+   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+   
+   <!-- Babel for JSX -->
+   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+
+   <div class="container">
+      <a href="../index.html" class="back-link">← Back to Examples</a>
+      <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/examples/example-06-react" target="_blank" class="back-link" style="margin-left: 1rem;">Source Code</a>
+      
+      <div class="header-area">
+         <an-component src="./components/hero.html">
+            <an-inject name="title">React inside Andalina</an-inject>
+         </an-component>
+      </div>
+
+      <p style="margin-bottom: 2rem; color: #94a3b8;">
+         This page demonstrates how to safely mount a React application inside a layout rendered by Andalina. 
+         We listen for the <code>andalina:ready</code> event before calling <code>ReactDOM.createRoot()</code>.
+      </p>
+
+      <!-- The container for our React app -->
+      <div id="react-root" class="react-container">
+         Loading React...
+      </div>
+   </div>
+
+   <script type="text/babel">
+      // 1. Define your React components
+      function Counter() {
+         const [count, setCount] = React.useState(0);
+         return (
+            <div>
+               <h3 style={{color: '#60a5fa'}}>React Counter Component</h3>
+               <p>Clicked {count} times</p>
+               <button 
+                  onClick={() => setCount(c => c + 1)}
+                  style={{
+                     padding: '0.5rem 1rem', background: '#3b82f6', 
+                     border: 'none', borderRadius: '0.25rem', color: '#fff',
+                     cursor: 'pointer', fontWeight: 'bold'
+                  }}
+               >
+                  Increment
+               </button>
+            </div>
+         );
+      }
+
+      // 2. Wait for Andalina to finish parsing the DOM
+      document.addEventListener('andalina:ready', function() {
+         console.log("Andalina is ready. Mounting React...");
+         const rootNode = document.getElementById('react-root');
+         if (rootNode) {
+            const root = ReactDOM.createRoot(rootNode);
+            root.render(<Counter />);
+         }
+      });
+   </script>
+
+</body>
+</html>

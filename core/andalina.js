@@ -718,6 +718,13 @@
             // Smooth fade in
             document.body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-in' });
         }
+        
+        // Dispatch completion event for 3rd party integrations (React/Angular/etc.)
+        try {
+            document.dispatchEvent(new CustomEvent('andalina:ready', { detail: { totalTime } }));
+        } catch(e) {
+            // Ignore in Node.js / Linkedom builder environments
+        }
     }
 
     // Expose Andalina for programmatic usage (e.g., Node.js Builder)
