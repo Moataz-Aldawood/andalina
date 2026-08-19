@@ -1,7 +1,7 @@
 /**
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
- * Version: 1.1.0
+ * Version: 1.2.0
  * License: GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)
  */
 (function() {
@@ -24,6 +24,12 @@
         version: ''
     };
 
+    const globalData = {};
+
+    function resolvePath(obj, path) {
+        return path.split('.').reduce((acc, part) => acc && acc[part] !== undefined ? acc[part] : undefined, obj);
+    }
+
     function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
@@ -39,7 +45,8 @@
     }
 
     // Tag definitions
-    let tInclude, tLayout, tComponent, tTemplate, tInject, tPlace, tAttribute, tRepeat, tCode;
+    let tInclude, tLayout, tComponent, tTemplate, tInject, tPlace, tAttribute, tRepeat, tCode, tData;
+    let tComponentDef, tLayoutDef, tAttributes, tBody;
 
     function buildTagNames() {
         const p = globalConfig.prefix;
@@ -52,6 +59,11 @@
         tAttribute = `${p}-attribute`;
         tRepeat = `${p}-repeat`;
         tCode = `${p}-code`;
+        tData = `${p}-data`;
+        tComponentDef = `${p}-component-def`;
+        tLayoutDef = `${p}-layout-def`;
+        tAttributes = `${p}-attributes`;
+        tBody = `${p}-body`;
     }
 
     // Cache for fetched fragments
@@ -110,24 +122,41 @@
         });
     }
 
-    // Strips <an-attribute> tags before HTML parsing to prevent them from breaking the <head>
-    function stripAndExtractAttributes(html) {
+    // Extracts <an-attributes> and <an-attribute> tags in O(1) DOM time without regex stripping
+    function extractStructuredMetadata(doc) {
         const defaults = {};
-        const cleanHtml = html.replace(/<an-attribute[^>]*>/gi, (match) => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = match;
-            const tag = tempDiv.firstChild;
-            if (tag) {
-                const name = tag.getAttribute('name');
-                const defaultVal = tag.getAttribute('default-value');
-                if (name && defaultVal !== null) defaults[name] = defaultVal;
-            }
-            return '';
-        });
-        return { cleanHtml, defaults };
+        const mandatoryAttrs = new Set();
+        const attributesNode = doc.querySelector(tAttributes);
+        if (attributesNode) {
+            const attrTags = Array.from(attributesNode.querySelectorAll(tAttribute));
+            attrTags.forEach(attrTag => {
+                const name = attrTag.getAttribute('name');
+                const defaultVal = attrTag.getAttribute('default-value');
+                const mandatory = attrTag.getAttribute('mandatory') === 'true';
+                if (name) {
+                    if (defaultVal !== null) defaults[name] = defaultVal;
+                    if (mandatory) mandatoryAttrs.add(name);
+                }
+            });
+            attributesNode.remove();
+        } else {
+            // Support <an-attribute> in head/body for page templates
+            const strayAttrs = Array.from(doc.querySelectorAll(tAttribute));
+            strayAttrs.forEach(attrTag => {
+                const name = attrTag.getAttribute('name');
+                const defaultVal = attrTag.getAttribute('default-value');
+                const mandatory = attrTag.getAttribute('mandatory') === 'true';
+                if (name) {
+                    if (defaultVal !== null) defaults[name] = defaultVal;
+                    if (mandatory) mandatoryAttrs.add(name);
+                }
+                attrTag.remove();
+            });
+        }
+        return { defaults, mandatoryAttrs };
     }
 
-    function processProps(targetNode, doc, fetchTime, templateDefaults = {}) {        // 1. Gather props from the caller tag
+    function processProps(targetNode, doc, fetchTime, templateDefaults = {}, mandatoryAttrs = new Set()) {        // 1. Gather props from the caller tag
         const props = {};
         Array.from(targetNode.attributes).forEach(attr => {
             if (!['name', 'src'].includes(attr.name)) {
@@ -145,6 +174,14 @@
             if (props[key] === undefined) {
                 props[key] = val;
             }
+        }
+
+        if (mandatoryAttrs.size > 0 && globalConfig.debug) {
+            mandatoryAttrs.forEach(name => {
+                if (props[name] === undefined) {
+                    console.warn(`[Andalina] Mandatory attribute '${name}' missing on <${targetNode.tagName.toLowerCase()}>.`);
+                }
+            });
         }
 
         // Also clean up any that somehow survived (e.g. dynamically injected later)
@@ -207,26 +244,50 @@
                 break;
             }
 
-            // 0. Process Repeats (Development-time loops)
+            // 0. Process Repeats (Development-time loops and Data arrays)
             if (repeatNode) {
+                const dataName = repeatNode.getAttribute('data');
                 const times = parseInt(repeatNode.getAttribute('times'), 10);
                 const indexAs = repeatNode.getAttribute('index-as') || '$index';
+                const itemAs = repeatNode.getAttribute('item') || 'item';
                 
-                if (!isNaN(times) && times > 0) {
-                    const fragment = document.createDocumentFragment();
-                    const escapedStart = escapeRegExp(globalConfig.propStart);
-                    const escapedEnd = escapeRegExp(globalConfig.propEnd);
-                    const regex = new RegExp(`${escapedStart}\\s*${escapeRegExp(indexAs)}\\s*${escapedEnd}`, 'g');
-                    
+                console.log(`[Andalina Debug] an-repeat found. dataName=${dataName}, times=${times}. Array.isArray=${dataName ? Array.isArray(globalData[dataName]) : false}`);
+                
+                const fragment = document.createDocumentFragment();
+                const escapedStart = escapeRegExp(globalConfig.propStart);
+                const escapedEnd = escapeRegExp(globalConfig.propEnd);
+                const indexRegex = new RegExp(`${escapedStart}\\s*${escapeRegExp(indexAs)}\\s*${escapedEnd}`, 'g');
+                
+                if (dataName && globalData[dataName] && Array.isArray(globalData[dataName])) {
+                    const dataArray = globalData[dataName];
+                    const itemRegex = new RegExp(`${escapedStart}\\s*${escapeRegExp(itemAs)}(?:\\.([\\w\\.]+))?\\s*${escapedEnd}`, 'g');
+
+                    for (let i = 0; i < dataArray.length; i++) {
+                        const itemObj = dataArray[i];
+                        const temp = document.createElement('div');
+                        let content = repeatNode.innerHTML;
+                        
+                        // Replace index
+                        content = content.replace(indexRegex, i);
+                        
+                        // Replace item properties using resolvePath
+                        content = content.replace(itemRegex, (match, path) => {
+                            if (!path) return typeof itemObj === 'object' ? JSON.stringify(itemObj) : itemObj;
+                            const val = resolvePath(itemObj, path);
+                            return val !== undefined ? val : match;
+                        });
+                        
+                        temp.innerHTML = content;
+                        Array.from(temp.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
+                    }
+                    repeatNode.replaceWith(fragment);
+                } else if (!isNaN(times) && times > 0) {
                     for (let i = 1; i <= times; i++) {
                         const temp = document.createElement('div');
                         let content = repeatNode.innerHTML;
-                        content = content.replace(regex, i);
+                        content = content.replace(indexRegex, i);
                         temp.innerHTML = content;
-                        
-                        Array.from(temp.childNodes).forEach(node => {
-                            fragment.appendChild(cloneNodeSafe(node));
-                        });
+                        Array.from(temp.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
                     }
                     repeatNode.replaceWith(fragment);
                 } else {
@@ -280,15 +341,19 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    let layoutHtml = await fetchFragment(src);
+                    const pageHtml = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
 
-                    const extracted = stripAndExtractAttributes(layoutHtml);
-                    layoutHtml = extracted.cleanHtml;
+                    let doc = parser.parseFromString(pageHtml, 'text/html');
+                    if (!doc.body && !pageHtml.includes('<body')) {
+                        doc = parser.parseFromString(`<html><body>${pageHtml}</body></html>`, 'text/html');
+                    }
 
-                    const doc = parser.parseFromString(layoutHtml, 'text/html');
+                    // 1. Merge Configs
+                    const configStr = doc.documentElement.getAttribute('data-config');
+                    const extracted = extractStructuredMetadata(doc);
                     
-                    processProps(pageNode, doc, fetchTime, extracted.defaults);
+                    processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
 
                     // Collect <an-inject> blocks from the child template
                     const injects = Array.from(pageNode.querySelectorAll(tInject));
@@ -358,15 +423,30 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    let layoutHtml = await fetchFragment(src);
+                    const layoutHtml = await fetchFragment(src);
                     const fetchTime = Math.round(performance.now() - t0);
-                    
-                    const extracted = stripAndExtractAttributes(layoutHtml);
-                    layoutHtml = extracted.cleanHtml;
 
-                    const doc = parser.parseFromString(layoutHtml, 'text/html');
-                    processProps(targetNode, doc, fetchTime, extracted.defaults);
-                    const layoutContainer = doc.body ? doc.body : doc.documentElement;
+                    let doc = parser.parseFromString(layoutHtml, 'text/html');
+                    if (!doc.body && !layoutHtml.includes('<body')) {
+                        doc = parser.parseFromString(`<html><body>${layoutHtml}</body></html>`, 'text/html');
+                    }
+
+                    // Verify structured syntax for components & layouts
+                    const isComponent = targetNode.tagName.toLowerCase() === tComponent;
+                    const expectedDef = isComponent ? tComponentDef : tLayoutDef;
+                    const defNode = doc.querySelector(expectedDef);
+                    if (!defNode) {
+                        console.error(`[Andalina] Structured Syntax Error: '${src}' must be wrapped in <${expectedDef}> and <${tBody}>.`);
+                    }
+
+                    const extracted = extractStructuredMetadata(doc);
+                    processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+
+                    let layoutContainer = doc.body ? doc.body : doc.documentElement;
+                    const bodyNode = doc.querySelector(tBody);
+                    if (bodyNode) {
+                        layoutContainer = bodyNode;
+                    }
 
                     const injects = Array.from(targetNode.querySelectorAll(tInject));
                     const blocks = {};
@@ -412,7 +492,7 @@
                     const doc = parser.parseFromString(html, 'text/html');
 
                     processProps(includeNode, doc, fetchTime);
-
+                    
                     // If included fragment was a full HTML document, optionally merge its head
                     const parsedHead = doc.querySelector('head');
                     const parsedBody = doc.querySelector('body');
@@ -429,10 +509,14 @@
                             });
                         }
                         if (parsedBody && parsedBody.childNodes.length > 0) {
-                            Array.from(parsedBody.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
+                            Array.from(parsedBody.childNodes).forEach(node => {
+                                fragment.appendChild(cloneNodeSafe(node));
+                            });
                         }
                         if ((!parsedHead || parsedHead.childNodes.length === 0) && (!parsedBody || parsedBody.childNodes.length === 0)) {
-                            Array.from(doc.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
+                            Array.from(doc.childNodes).forEach(node => {
+                                fragment.appendChild(cloneNodeSafe(node));
+                            });
                         }
                     } else {
                         if (html.toLowerCase().includes('<head>') && parsedHead && document.head) {
@@ -566,11 +650,54 @@
             console.log('%c[Andalina Debug] 🚀 Starting Parser...', 'color: #9b59b6; font-weight: bold;');
         }
 
-        await processNodes(document.documentElement);
+        async function prefetchData() {
+            const dataNodes = Array.from(document.querySelectorAll(tData));
+            if (dataNodes.length === 0) return;
 
-        // Remove developer comments before finalizing DOM
-        document.querySelectorAll('an-comment').forEach(c => c.remove());
+            if (globalConfig.debug) {
+                console.log(`%c[Andalina Debug] 📥 Pre-fetching ${dataNodes.length} data sources...`, 'color: #e67e22; font-weight: bold;');
+            }
+
+            const fetchPromises = dataNodes.map(async (node) => {
+                const src = node.getAttribute('src');
+                const name = node.getAttribute('name');
+                if (src && name) {
+                    try {
+                        const t0 = performance.now();
+                        const response = await fetch(src);
+                        if (response.ok) {
+                            const json = await response.json();
+                            globalData[name] = json;
+                            if (globalConfig.debug) {
+                                console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
+                            }
+                        } else {
+                            console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
+                        }
+                    } catch (e) {
+                        console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
+                    }
+                }
+                node.remove();
+            });
+
+            await Promise.all(fetchPromises);
+        }
+
+        await prefetchData();
+        await processNodes(document.documentElement);
         
+        // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
+        const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
+        const commentsToRemove = [];
+        let commentNode;
+        while ((commentNode = commentWalker.nextNode())) {
+            if (commentNode.nodeValue && commentNode.nodeValue.trim().startsWith('an-comment:')) {
+                commentsToRemove.push(commentNode);
+            }
+        }
+        commentsToRemove.forEach(c => c.remove());
+
         const totalTime = Math.round(performance.now() - startTime);
 
         if (globalConfig.debug) {
