@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>UI Control Library & Default Fallbacks | Andalina Portal</title>
+
+   
+   
+   <link rel="stylesheet" href="css/reset.css">
+   <link rel="stylesheet" href="css/theme.css">
+
+
+   
+   
+
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CQ8C1189H"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-9CQ8C1189H');
+
+      // Enhanced download and link click tracking
+      document.addEventListener('click', function (e) {
+         const link = e.target.closest('a');
+         if (!link) return;
+         const href = link.getAttribute('href') || '';
+         const linkText = link.innerText.trim() || 'Link';
+         const isZip = href.includes('.zip');
+         const isDownload = isZip || href.includes('download') || link.classList.contains('ti-download') || link.querySelector('.ti-download');
+
+         if (isZip) {
+            gtag('event', 'zip_file_download', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'file_name': href,
+               'value': 1
+            });
+         }
+         if (isDownload) {
+            gtag('event', 'download_click', {
+               'event_category': 'Downloads',
+               'event_label': linkText,
+               'link_url': href,
+               'is_zip': isZip
+            });
+         }
+         gtag('event', 'link_click', {
+            'event_category': 'Navigation',
+            'event_label': linkText,
+            'link_url': href
+         });
+      });
+   </script>
+
+</head>
+
+<body>
+
+   
+   
+<header class="app-header">
+   <div class="brand-logo">Andalina UI Portal</div>
+   <nav class="nav-links">
+      <a href="index.html" class="nav-link">UI Library &amp; Forms</a>
+      <a href="team.html" class="nav-link">Team Grid (Layout + Repeat)</a>
+      <a href="code-showcase.html" class="nav-link">Code Showcase</a>
+      <a href="../index.html" class="nav-link" style="border: 1px solid var(--primary-color);">← All Examples</a>
+   </nav>
+</header>
+
+<main class="container">
+   
+         <h1 class="page-title">UI Control Library &amp; Default Slot Fallbacks</h1>
+         <p class="page-subtitle">
+            This page loads multiple CSS stylesheets using <code>&lt;an-include&gt;</code> and demonstrates reusable
+            buttons, cards, and text fields where some use default fallback values while others override specific slots.
+         </p>
+
+         
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">1. Reusable Buttons (&lt;an-component src="./components/custom-btn.html"&gt;)
+               </h2>
+               <span class="badge">Default vs Custom</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+               
+               <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Default Values:
+                  </div>
+                  
+
+<button class="btn btn-primary">
+   <span>⚡</span>
+   Default Button Text
+</button>
+
+
+               </div>
+
+               
+               <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Label
+                     Slot:</div>
+                  
+
+<button class="btn btn-primary">
+   <span>⚡</span>
+   Deploy Application
+</button>
+
+
+               </div>
+
+               
+               <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custom Icon +
+                     Label:</div>
+                  
+
+<button class="btn btn-primary">
+   🚀
+   Launch Production
+</button>
+
+
+               </div>
+            </div>
+         </section>
+
+         
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">2. Reusable Cards (&lt;an-component src="./components/custom-card.html"&gt;)
+               </h2>
+               <span class="badge">Glassmorphic Cards</span>
+            </div>
+            <div class="card-grid">
+               
+               
+
+<div class="ui-card">
+   <div class="ui-card-header">
+      <h3 class="ui-card-title">
+         Default Component Card
+      </h3>
+      <span class="badge">
+         Standard
+      </span>
+   </div>
+   <div class="ui-card-body">
+      
+         This card is using the default description fallback value. You can override this content using slot="body".
+      
+   </div>
+   <div>
+      
+         <button class="btn btn-outline">Learn More</button>
+      
+   </div>
+</div>
+
+
+
+               
+               
+
+<div class="ui-card">
+   <div class="ui-card-header">
+      <h3 class="ui-card-title">
+         Analytics Engine
+      </h3>
+      <span class="badge">
+         v3.1 Beta
+      </span>
+   </div>
+   <div class="ui-card-body">
+      
+         This card is using the default description fallback value. You can override this content using slot="body".
+      
+   </div>
+   <div>
+      
+         <button class="btn btn-outline">Learn More</button>
+      
+   </div>
+</div>
+
+
+
+               
+               
+
+<div class="ui-card">
+   <div class="ui-card-header">
+      <h3 class="ui-card-title">
+         Zero-Dependency Core
+      </h3>
+      <span class="badge">
+         Production
+      </span>
+   </div>
+   <div class="ui-card-body">
+      
+                     Andalina runs directly in your browser without requiring Node.js, Webpack, or any server-side
+                     compilation pipeline.
+                  
+   </div>
+   <div>
+      
+                     <button class="btn btn-accent">View Documentation</button>
+                  
+   </div>
+</div>
+
+
+            </div>
+         </section>
+
+         
+         <section class="section-card">
+            <div class="section-header">
+               <h2 class="section-title">3. Reusable Form Text Fields (&lt;an-component
+                  src="./components/text-field.html"&gt;)</h2>
+               <span class="badge">Form Controls</span>
+            </div>
+            <div style="max-width: 600px;">
+               
+               
+
+<div class="form-group">
+   <label class="form-label">
+      Default Input Label
+   </label>
+   <input type="text" class="form-input" placeholder="Enter default text...">
+   <span class="form-helper">
+      Default helper note for this field.
+   </span>
+</div>
+
+
+
+               
+               
+
+<div class="form-group">
+   <label class="form-label">
+      Project Workspace URI
+   </label>
+   <input type="text" class="form-input" placeholder="Enter default text...">
+   <span class="form-helper">
+      Must start with file:/// or a valid relative path.
+   </span>
+</div>
+
+
+            </div>
+         </section>
+      
+</main>
+
+<footer class="app-footer">
+   <p>Built with Andalina • Zero-Dependency Client-Side Template Engine</p>
+</footer>
+
+
+</body>
+
+</html>
