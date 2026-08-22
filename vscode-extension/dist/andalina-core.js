@@ -233,6 +233,7 @@
                 break;
             }
 
+            const dataNode = context.querySelector(tData);
             const repeatNode = context.querySelector(tRepeat);
             const includeNode = context.querySelector(tInclude);
             const layoutNode = context.querySelector(tLayout);
@@ -240,11 +241,36 @@
             const pageNode = context.querySelector(tTemplate);
             const codeNode = context.querySelector(tCode);
 
-            if (!repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+            if (!dataNode && !repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
                 break;
             }
 
-            // 0. Process Repeats (Development-time loops and Data arrays)
+            // 0.1 Process Data tags (Dynamic fetching for components)
+            if (dataNode) {
+                const src = dataNode.getAttribute('src');
+                const name = dataNode.getAttribute('name');
+                if (src && name) {
+                    try {
+                        const t0 = performance.now();
+                        const response = await fetch(src);
+                        if (response.ok) {
+                            const json = await response.json();
+                            globalData[name] = json;
+                            if (globalConfig.debug) {
+                                console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
+                            }
+                        } else {
+                            console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
+                        }
+                    } catch (e) {
+                        console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
+                    }
+                }
+                dataNode.remove();
+                continue;
+            }
+
+            // 0.2 Process Repeats (Development-time loops and Data arrays)
             if (repeatNode) {
                 const dataName = repeatNode.getAttribute('data');
                 const times = parseInt(repeatNode.getAttribute('times'), 10);
@@ -717,6 +743,13 @@
             if (foucStyle) foucStyle.remove();
             // Smooth fade in
             document.body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-in' });
+        }
+        
+        // Dispatch completion event for 3rd party integrations (React/Angular/etc.)
+        try {
+            document.dispatchEvent(new CustomEvent('andalina:ready', { detail: { totalTime } }));
+        } catch(e) {
+            // Ignore in Node.js / Linkedom builder environments
         }
     }
 

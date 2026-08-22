@@ -49,20 +49,19 @@
    <!-- Wrap in Admin Layout -->
    <an-layout src="layouts/admin.html">
       
-      <an-inject name="pageTitle">Analytics Overview</an-inject>
+      <an-inject name="pageTitle">Welcome back, {{ dashboard.user.name }}!</an-inject>
       
       <an-inject name="content">
          <div class="stats-grid">
             <!-- Loop through Dashboard Data -->
-            <an-repeat data="dashboard" item="stat">
+            <an-repeat data="dashboard.stats" item="stat">
                
                <!-- Render a Stat Component for each item -->
-               <an-component src="./components/stat-card.html">
+               <an-component src="./components/stat-card.html" trendColor="{{ stat.trendColor }}">
                   <an-inject name="icon">{{ stat.icon }}</an-inject>
                   <an-inject name="title">{{ stat.title }}</an-inject>
                   <an-inject name="value">{{ stat.value }}</an-inject>
                   <an-inject name="trend">{{ stat.trend }}</an-inject>
-                  <an-inject name="trendColor">{{ stat.trendColor }}</an-inject>
                </an-component>
                
             </an-repeat>

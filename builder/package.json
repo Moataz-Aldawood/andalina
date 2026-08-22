@@ -1,16 +1,28 @@
 {
-  "name": "builder",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "andalina-builder",
+  "version": "1.1.0",
+  "description": "AOT Static Compiler and Production CLI for Andalina HTML composition engine.",
+  "main": "src/builder.js",
+  "bin": {
+    "andalina-builder": "./bin/cli.js",
+    "andalina": "./bin/cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "andalina",
+    "builder",
+    "html",
+    "static-site-generator",
+    "ssg",
+    "cli"
+  ],
+  "author": "Moataz Aldawood",
+  "license": "LGPL-3.0-or-later",
   "type": "commonjs",
   "dependencies": {
+    "andalina": "^1.5.0",
     "linkedom": "^0.18.13"
   }
 }

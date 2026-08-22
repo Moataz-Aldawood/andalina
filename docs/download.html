@@ -119,9 +119,9 @@
                      <h1 class="mb-4">Download Andalina</h1>
                      <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default
                         configuration.</p>
-                     <a href="downloads/andalina-v1.4.0.zip" class="btn btn-primary mb-3"
+                     <a href="downloads/andalina-v1.5.0.zip" class="btn btn-primary mb-3"
                         style="font-size: 1.25rem; padding: 15px 30px;">
-                        <i class="ti-download mr-2"></i> Download v1.4.0 (.zip)
+                        <i class="ti-download mr-2"></i> Download v1.5.0 (.zip)
                      </a>
                      <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and
                            <code>andalina.config.json</code> &bull; Licensed under <strong>GNU LGPL-3.0</strong></small>
@@ -149,6 +149,34 @@
                      <h2 class="mb-4 border-bottom pb-3">Changelog</h2>
                      <div class="mt-4">
 
+                        <!-- changelog post -->
+                        <h3 id="v1-5-0">v1.5.0 &ndash; Global Data Binding & Array Indexing</h3>
+                        <p><strong>August 22, 2026</strong></p>
+                        <p>Introducing global data availability across layouts, and seamless array bracket notation.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <strong>Global Data Binding:</strong> Data fetched using <code>&lt;an-data&gt;</code> is now globally accessible via dot-notation (e.g. <code>{{ appConfig.title }}</code>) without requiring an <code>&lt;an-repeat&gt;</code> loop.
+                              </li>
+                              <li>
+                                 <strong>Array Bracket Notation:</strong> Property resolvers now natively support standard JavaScript bracket notation (e.g. <code>{{ products[0].name }}</code>) alongside dot notation.
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge updated">Updated</div>
+                           <ul>
+                              <li>
+                                 <strong>Andalina Builder (v1.1.0):</strong> The AOT CLI builder and VS Code extension has been updated to compile pages leveraging global data bindings correctly.
+                              </li>
+                              <li>
+                                 <strong>Examples Hub:</strong> Upgraded the Complex Composition example to vividly demonstrate the power of Global Data Binding across nested layout components.
+                              </li>
+                           </ul>
+                        </div>
+                        
+                        <hr>
                         
                         <!-- changelog post -->
                         <h3 id="v1-4-0">v1.4.0 &ndash; Data Fetching &amp; Examples Hub</h3>

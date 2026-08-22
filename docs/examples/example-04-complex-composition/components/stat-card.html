@@ -1,4 +1,7 @@
 <an-component-def>
+<an-attributes>
+   <an-attribute name="trendColor" default="#94a3b8"></an-attribute>
+</an-attributes>
 <an-body>
 <div class="stat-card">
    <div class="stat-icon">
@@ -8,7 +11,7 @@
       <h4 class="stat-title"><an-place name="title">Metric Title</an-place></h4>
       <div class="stat-value"><an-place name="value">0</an-place></div>
       <div class="stat-trend">
-         <span style="color: <an-place name='trendColor'>#94a3b8</an-place>">
+         <span style="color: {{ trendColor }}">
             <an-place name="trend">--</an-place>
          </span>
       </div>

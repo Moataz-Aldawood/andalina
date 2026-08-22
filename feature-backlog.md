@@ -12,7 +12,7 @@
 **Problem:** If a file is missing or a slot is misnamed, it fails silently or falls back to default content.
 **Solution:** Add a `data-debug="true"` option to the script tag. When enabled, print a beautiful, nested component tree in the browser console showing exactly which files loaded, how long they took, and which slots successfully matched.
 
-## 4. Andalina Builder (AOT Static Compiler / Production CLI)
+## ~~4. Andalina Builder (AOT Static Compiler / Production CLI)~~ [COMPLETED]
 **Problem:** Andalina is a dev-time client-side tool. When developers want to export a static site for production (e.g., for GitHub Pages, CDN deployment, or maximum SEO performance), they need an automated build step.
 **Solution:** Develop **Andalina Builder** (`npx andalina build` / `andalina-builder`), an AOT compiler tool that converts Andalina pages into fully composed, optimized normal static HTML files in a `/dist` directory.
 
@@ -25,6 +25,6 @@
 **Solution:** Develop **Andalina Slicer** (`npx andalina slice` / `andalina-slicer`), an intelligent decompiler and migration tool that converts normal static HTML pages into structured Andalina pages (`<an-component-def>`, `<an-layout-def>`, `<an-template>`, `<an-attributes>`, and `<an-body>`).
 
 
-## 7. Native Data-Binding (`<an-data>`)
+## ~~7. Native Data-Binding (`<an-data>`)~~ [COMPLETED]
 **Problem:** Currently, Andalina handles structural HTML composition but does not support fetching external JSON data or iterating over dynamic data from an API out-of-the-box.
 **Solution:** Introduce an `<an-data>` tag (or similar mechanism) that fetches JSON data from a URL and exposes it to `<an-repeat>` or variables, enabling developers to render API results directly in Andalina without needing a 3rd party library.

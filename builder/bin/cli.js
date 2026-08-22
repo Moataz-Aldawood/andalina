@@ -9,7 +9,10 @@ let srcDir = process.cwd();
 let destDir = path.join(process.cwd(), 'dist');
 
 for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--src' && args[i + 1]) {
+    if (args[i] === 'build') {
+        // Just ignore 'build' command as it's the default action
+        continue;
+    } else if (args[i] === '--src' && args[i + 1]) {
         srcDir = path.resolve(process.cwd(), args[i + 1]);
         i++;
     } else if (args[i] === '--dest' && args[i + 1]) {

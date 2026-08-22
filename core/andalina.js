@@ -27,7 +27,8 @@
     const globalData = {};
 
     function resolvePath(obj, path) {
-        return path.split('.').reduce((acc, part) => acc && acc[part] !== undefined ? acc[part] : undefined, obj);
+        const normalizedPath = path.replace(/\[(\d+)\]/g, '.$1');
+        return normalizedPath.split('.').reduce((acc, part) => acc && acc[part] !== undefined ? acc[part] : undefined, obj);
     }
 
     function escapeRegExp(string) {
@@ -233,6 +234,7 @@
                 break;
             }
 
+            const dataNode = context.querySelector(tData);
             const repeatNode = context.querySelector(tRepeat);
             const includeNode = context.querySelector(tInclude);
             const layoutNode = context.querySelector(tLayout);
@@ -240,26 +242,56 @@
             const pageNode = context.querySelector(tTemplate);
             const codeNode = context.querySelector(tCode);
 
-            if (!repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+            if (!dataNode && !repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
                 break;
             }
 
-            // 0. Process Repeats (Development-time loops and Data arrays)
+            // 0.1 Process Data tags (Dynamic fetching for components)
+            if (dataNode) {
+                const src = dataNode.getAttribute('src');
+                const name = dataNode.getAttribute('name');
+                if (src && name) {
+                    try {
+                        const t0 = performance.now();
+                        const response = await fetch(src);
+                        if (response.ok) {
+                            const json = await response.json();
+                            globalData[name] = json;
+                            if (globalConfig.debug) {
+                                console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
+                            }
+                        } else {
+                            console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
+                        }
+                    } catch (e) {
+                        console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
+                    }
+                }
+                dataNode.remove();
+                continue;
+            }
+
+            // 0.2 Process Repeats (Development-time loops and Data arrays)
             if (repeatNode) {
                 const dataName = repeatNode.getAttribute('data');
                 const times = parseInt(repeatNode.getAttribute('times'), 10);
                 const indexAs = repeatNode.getAttribute('index-as') || '$index';
                 const itemAs = repeatNode.getAttribute('item') || 'item';
                 
-                console.log(`[Andalina Debug] an-repeat found. dataName=${dataName}, times=${times}. Array.isArray=${dataName ? Array.isArray(globalData[dataName]) : false}`);
+                let targetDataArray;
+                if (dataName) {
+                    targetDataArray = resolvePath(globalData, dataName);
+                }
+
+                console.log(`[Andalina Debug] an-repeat found. dataName=${dataName}, times=${times}. Array.isArray=${Array.isArray(targetDataArray)}`);
                 
                 const fragment = document.createDocumentFragment();
                 const escapedStart = escapeRegExp(globalConfig.propStart);
                 const escapedEnd = escapeRegExp(globalConfig.propEnd);
                 const indexRegex = new RegExp(`${escapedStart}\\s*${escapeRegExp(indexAs)}\\s*${escapedEnd}`, 'g');
                 
-                if (dataName && globalData[dataName] && Array.isArray(globalData[dataName])) {
-                    const dataArray = globalData[dataName];
+                if (Array.isArray(targetDataArray)) {
+                    const dataArray = targetDataArray;
                     const itemRegex = new RegExp(`${escapedStart}\\s*${escapeRegExp(itemAs)}(?:\\.([\\w\\.]+))?\\s*${escapedEnd}`, 'g');
 
                     for (let i = 0; i < dataArray.length; i++) {
@@ -546,6 +578,58 @@
         }
     }
 
+    function processDataBindings(doc) {
+        const walker = document.createTreeWalker(doc, NodeFilter.SHOW_ALL);
+        const escapedStart = escapeRegExp(globalConfig.propStart);
+        const escapedEnd = escapeRegExp(globalConfig.propEnd);
+        
+        const regex = new RegExp(`${escapedStart}\\s*([\\w\\.\\[\\]]+)\\s*${escapedEnd}`, 'g');
+        
+        let currentNode = walker.nextNode();
+        while (currentNode) {
+            if (currentNode.nodeType === Node.TEXT_NODE) {
+                let text = currentNode.nodeValue;
+                if (text && text.includes(globalConfig.propStart)) {
+                    text = text.replace(regex, (match, path) => {
+                        const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+                        const rootKey = parts[0];
+                        if (globalData[rootKey] !== undefined) {
+                            const val = resolvePath(globalData, path);
+                            if (val !== undefined) {
+                                return typeof val === 'object' ? JSON.stringify(val) : val;
+                            }
+                        }
+                        return match;
+                    });
+                    if (text !== currentNode.nodeValue) {
+                        currentNode.nodeValue = text;
+                    }
+                }
+            } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+                Array.from(currentNode.attributes).forEach(attr => {
+                    let text = attr.value;
+                    if (text && text.includes(globalConfig.propStart)) {
+                        text = text.replace(regex, (match, path) => {
+                            const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+                            const rootKey = parts[0];
+                            if (globalData[rootKey] !== undefined) {
+                                const val = resolvePath(globalData, path);
+                                if (val !== undefined) {
+                                    return typeof val === 'object' ? JSON.stringify(val) : val;
+                                }
+                            }
+                            return match;
+                        });
+                        if (text !== attr.value) {
+                            attr.value = text;
+                        }
+                    }
+                });
+            }
+            currentNode = walker.nextNode();
+        }
+    }
+
     async function init() {
         const startTime = performance.now();
         
@@ -686,6 +770,7 @@
 
         await prefetchData();
         await processNodes(document.documentElement);
+        processDataBindings(document.documentElement);
         
         // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
         const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);

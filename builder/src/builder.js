@@ -107,6 +107,7 @@ async function buildProject(srcDir, destDir, options = {}) {
         global.DOMParser = DOMParser;
         global.HTMLElement = HTMLElement;
         global.customElements = customElements;
+        global.Node = { TEXT_NODE: 3, ELEMENT_NODE: 1, COMMENT_NODE: 8 };
         global.NodeFilter = {
             SHOW_ALL: 4294967295,
             SHOW_ELEMENT: 1,
@@ -161,8 +162,15 @@ async function buildProject(srcDir, destDir, options = {}) {
 
         // 3. Load and Run Andalina Core
         // Delete require cache so we get a fresh instance per file (prevents state leakage)
-        let corePath = path.resolve(__dirname, '../../core/andalina.js');
-        if (!fs.existsSync(corePath)) {
+        let corePath;
+        try {
+            let localPath = path.resolve(__dirname, '../../core/andalina.js');
+            if (fs.existsSync(localPath)) {
+                corePath = localPath;
+            } else {
+                corePath = require.resolve('andalina/core/andalina.js');
+            }
+        } catch (e) {
             // Fallback for VS Code Extension bundle
             corePath = path.resolve(__dirname, 'andalina-core.js');
         }
