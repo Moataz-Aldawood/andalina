@@ -197,6 +197,14 @@
       }
 
       @media (max-width: 768px) {
+         .hub-header {
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+         }
+         .hub-nav {
+            margin-bottom: 0.5rem;
+         }
          .examples-grid {
             grid-template-columns: 1fr;
          }
@@ -248,11 +256,11 @@
 <body>
 
    <header class="hub-header">
-      <div class="hub-brand">Andalina Examples Hub</div>
-      <nav class="hub-nav">
-         <a href="../index.html">Documentation Website</a>
-         <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank">GitHub Repository</a>
+      <nav class="hub-nav" style="flex: 1;">
+         <a href="../index.html" style="margin-left: 0;">&larr; Back to Main Website</a>
       </nav>
+      <div class="hub-brand" style="flex: 1; text-align: center;">Andalina Examples Hub</div>
+      <div style="flex: 1;"></div>
    </header>
 
    <main class="container">
