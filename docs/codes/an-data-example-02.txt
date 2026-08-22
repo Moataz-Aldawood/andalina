@@ -1,0 +1,10 @@
+<!-- store.json contains: { "title": "Tech Haven", "featured": ["Laptops", "Phones"] } -->
+<an-data src="store.json" name="store"></an-data>
+
+<div class="store-info">
+    <!-- Access object properties using dot notation -->
+    <h1>Welcome to {{ store.title }}</h1>
+    
+    <!-- Access array indexes natively using bracket notation -->
+    <p>Today's featured category: {{ store.featured[0] }}</p>
+</div>

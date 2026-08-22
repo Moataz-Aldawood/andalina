@@ -1,0 +1,7 @@
+<div class="store-info">
+    <!-- Access object properties using dot notation -->
+    <h1>Welcome to Tech Haven</h1>
+    
+    <!-- Access array indexes natively using bracket notation -->
+    <p>Today's featured category: Laptops</p>
+</div>
