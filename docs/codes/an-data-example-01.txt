@@ -1,0 +1,2 @@
+<!-- Fetch data from an external JSON file and store it in 'myList' -->
+<an-data src="https://api.example.com/items.json" name="myList" />

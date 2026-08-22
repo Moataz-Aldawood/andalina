@@ -126,6 +126,10 @@
                   <li title="How to use" class="sidelist">
                      <a href="#how-to-use">How to use</a>
                   </li>
+                  <li title="&lt;an-data&gt;" class="sidelist">
+                     <a href="#data">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-data&gt;</span></a>
+                  </li>
                   <li title="&lt;an-repeat&gt;" class="sidelist">
                      <a href="#repeat">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-repeat&gt;</span></a>
@@ -232,24 +236,46 @@
                         </div>
                      </div>
 
+                     <div id="data">
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                              class="an-tag">-data&gt;</span></h3>
+                        <p>Used to fetch external JSON data and store it in memory for your templates to use.</p>
+
+                        <h4>Attributes:</h4>
+                        <ul>
+                           <li><code>src</code> <em>(Required)</em>: The URL or path to the JSON endpoint/file.</li>
+                           <li><code>name</code> <em>(Required)</em>: The variable name to store the fetched data in.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <pre><code class="language-html"><an-code src="codes/an-data-example-01.txt"></an-code></code></pre>
+                     </div>
+
                      <div id="repeat">
 
                         <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                               class="an-tag">-repeat&gt;</span></h3>
-                        <p>Used to loop content dynamically.</p>
+                        <p>Used to loop content dynamically. You can either repeat a specific number of times, or iterate over data fetched with <code>&lt;an-data&gt;</code>.</p>
 
                         <h4>Attributes:</h4>
                         <ul>
-                           <li><code>times</code> <em>(Required)</em>: An integer specifying how many times to repeat
-                              the content block.</li>
-                           <li><code>index-as</code> <em>(Optional, Default: "$index")</em>: The variable name used to
-                              access the current loop iteration index inside the block.</li>
+                           <li><code>times</code> <em>(Optional)</em>: An integer specifying how many times to repeat the content block. (Used for simple numeric loops).</li>
+                           <li><code>data</code> <em>(Optional)</em>: The name of the data array fetched via <code>&lt;an-data&gt;</code> to iterate over.</li>
+                           <li><code>item</code> <em>(Optional, Default: "item")</em>: The local variable name used to access the current object in the <code>data</code> array.</li>
+                           <li><code>index-as</code> <em>(Optional, Default: "$index")</em>: The variable name used to access the current loop iteration index.</li>
                         </ul>
 
-                        <h4>Example:</h4>
+                        <h4>Example 1 (Looping over fetched data):</h4>
+                        <pre><code class="language-html"><an-code src="codes/an-repeat-data-example-01.txt"></an-code></code></pre>
+
+                        <h4>Rendered HTML (Example 1):</h4>
+                        <pre
+                           class="rendered-html-block"><code class="language-html"><an-code src="codes/an-repeat-data-rendered-html-1.txt"></an-code></code></pre>
+
+                        <h4 class="mt-5">Example 2 (Simple numeric loop):</h4>
                         <pre><code class="language-html"><an-code src="codes/an-repeat-example-01.txt"></an-code></code></pre>
 
-                        <h4>Rendered HTML:</h4>
+                        <h4>Rendered HTML (Example 2):</h4>
                         <pre
                            class="rendered-html-block"><code class="language-html"><an-code src="codes/an-repeat-rendered-html-1.txt"></an-code></code></pre>
                      </div>

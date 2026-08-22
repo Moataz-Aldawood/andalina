@@ -1,0 +1,9 @@
+<!-- Assuming data.json contains an array of objects like { "id": 1, "name": "Product A" } -->
+<an-data src="data.json" name="products" />
+
+<an-repeat data="products" item="product">
+    <div class="product-card">
+        <h3>{{ product.name }}</h3>
+        <p>Product ID: {{ product.id }}</p>
+    </div>
+</an-repeat>

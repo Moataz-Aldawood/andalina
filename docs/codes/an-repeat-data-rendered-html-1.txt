@@ -1,0 +1,8 @@
+<div class="product-card">
+    <h3>Product A</h3>
+    <p>Product ID: 1</p>
+</div>
+<div class="product-card">
+    <h3>Product B</h3>
+    <p>Product ID: 2</p>
+</div>
