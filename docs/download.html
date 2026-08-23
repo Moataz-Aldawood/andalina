@@ -119,9 +119,9 @@
                      <h1 class="mb-4">Download Andalina</h1>
                      <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default
                         configuration.</p>
-                     <a href="downloads/andalina-v1.5.0.zip" class="btn btn-primary mb-3"
+                     <a href="downloads/andalina-v1.6.0.zip" class="btn btn-primary mb-3"
                         style="font-size: 1.25rem; padding: 15px 30px;">
-                        <i class="ti-download mr-2"></i> Download v1.5.0 (.zip)
+                        <i class="ti-download mr-2"></i> Download v1.6.0 (.zip)
                      </a>
                      <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and
                            <code>andalina.config.json</code> &bull; Licensed under <strong>GNU LGPL-3.0</strong></small>
@@ -148,6 +148,32 @@
                   <div class="p-6 shadow rounded content mt-5">
                      <h2 class="mb-4 border-bottom pb-3">Changelog</h2>
                      <div class="mt-4">
+
+                        <!-- changelog post -->
+                        <h3 id="v1-6-0">v1.6.0 &ndash; Advanced Templating &amp; JS Expressions</h3>
+                        <p><strong>August 23, 2026</strong></p>
+                        <p>Introducing logic control flow and JavaScript expressions into the templating engine.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <strong>Conditional Logic (<code>&lt;an-if&gt;</code> / <code>&lt;an-else&gt;</code>):</strong> Show or hide template blocks based on JavaScript expressions evaluated against your <code>&lt;an-data&gt;</code> stores. Integrated seamlessly with <code>&lt;an-repeat&gt;</code> for loop-scoping.
+                              </li>
+                              <li>
+                                 <strong>JS Expressions in Bindings:</strong> The double-curly braces parser (<code>{{ }}</code>) has been supercharged to support full JavaScript expressions, fallbacks (e.g. <code>{{ user.name || 'Guest' }}</code>), math, and logic operations.
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge updated">Updated</div>
+                           <ul>
+                              <li>
+                                 <strong>Andalina Builder (v1.6.0):</strong> The CLI and VS Code extension have been bumped to match the engine version and now natively support AOT compilation of conditionals and JS expressions.
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
 
                         <!-- changelog post -->
                         <h3 id="v1-5-0">v1.5.0 &ndash; Global Data Binding & Array Indexing</h3>
