@@ -5,6 +5,7 @@ bootstrap_template_full/
 template/
 scrape.js
 package-lock.json
+AI/
 
 examples/example-01-build/  
 examples/.vscode/ 

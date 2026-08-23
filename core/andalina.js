@@ -222,6 +222,8 @@
         }
     }
 
+
+
     async function processNodes(context) {
         let iterations = 0;
         const maxIterations = 1000;
@@ -241,8 +243,15 @@
             const componentNode = context.querySelector(tComponent);
             const pageNode = context.querySelector(tTemplate);
             const codeNode = context.querySelector(tCode);
+            const ifNode = context.querySelector('an-if');
 
-            if (!dataNode && !repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+            if (!dataNode && !repeatNode && !ifNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+                // If no normal tags are left, cleanup any orphaned <an-else> tags
+                const strayElse = context.querySelector('an-else');
+                if (strayElse) {
+                    strayElse.remove();
+                    continue;
+                }
                 break;
             }
 
@@ -328,6 +337,55 @@
                 continue;
             }
 
+            // 0.3 Process Conditionals
+            if (ifNode) {
+                const condition = ifNode.getAttribute('condition');
+                let isTrue = false;
+                if (condition) {
+                    try {
+                        isTrue = new Function('data', `with(data) { return !!(${condition}); }`)(globalData);
+                    } catch (e) {
+                        if (globalConfig.debug) {
+                            console.warn(`[Andalina] Warning: Failed to evaluate condition: '${condition}'`, e);
+                        }
+                        isTrue = false;
+                    }
+                }
+                
+                // Find adjacent <an-else> by skipping text nodes and comments
+                let nextEl = ifNode.nextSibling;
+                while (nextEl && ((nextEl.nodeType === Node.TEXT_NODE && nextEl.nodeValue.trim() === '') || nextEl.nodeType === Node.COMMENT_NODE)) {
+                    nextEl = nextEl.nextSibling;
+                }
+                let elseNode = null;
+                if (nextEl && nextEl.nodeType === Node.ELEMENT_NODE && nextEl.tagName.toLowerCase() === 'an-else') {
+                    elseNode = nextEl;
+                }
+
+                if (isTrue) {
+                    // Unwrap <an-if>
+                    const fragment = document.createDocumentFragment();
+                    Array.from(ifNode.childNodes).forEach(child => fragment.appendChild(cloneNodeSafe(child)));
+                    ifNode.replaceWith(fragment);
+                    
+                    // Remove adjacent <an-else>
+                    if (elseNode) {
+                        elseNode.remove();
+                    }
+                } else {
+                    // Remove <an-if>
+                    ifNode.remove();
+                    
+                    // Unwrap <an-else>
+                    if (elseNode) {
+                        const fragment = document.createDocumentFragment();
+                        Array.from(elseNode.childNodes).forEach(child => fragment.appendChild(cloneNodeSafe(child)));
+                        elseNode.replaceWith(fragment);
+                    }
+                }
+                continue;
+            }
+
             // 0.5 Process Code inclusions (Raw text fetching)
             if (codeNode) {
                 const src = codeNode.getAttribute('src');
@@ -386,6 +444,7 @@
                     const extracted = extractStructuredMetadata(doc);
                     
                     processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    processConditionals(doc);
 
                     // Collect <an-inject> blocks from the child template
                     const injects = Array.from(pageNode.querySelectorAll(tInject));
@@ -473,6 +532,7 @@
 
                     const extracted = extractStructuredMetadata(doc);
                     processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    processConditionals(doc);
 
                     let layoutContainer = doc.body ? doc.body : doc.documentElement;
                     const bodyNode = doc.querySelector(tBody);
@@ -524,6 +584,7 @@
                     const doc = parser.parseFromString(html, 'text/html');
 
                     processProps(includeNode, doc, fetchTime);
+                    processConditionals(doc);
                     
                     // If included fragment was a full HTML document, optionally merge its head
                     const parsedHead = doc.querySelector('head');
@@ -583,24 +644,27 @@
         const escapedStart = escapeRegExp(globalConfig.propStart);
         const escapedEnd = escapeRegExp(globalConfig.propEnd);
         
-        const regex = new RegExp(`${escapedStart}\\s*([\\w\\.\\[\\]]+)\\s*${escapedEnd}`, 'g');
+        const regex = new RegExp(`${escapedStart}\\s*(.+?)\\s*${escapedEnd}`, 'g');
         
+        const evaluateExpression = (match, expression) => {
+            try {
+                const val = new Function('data', `with(data) { return (${expression}); }`)(globalData);
+                if (val !== undefined) {
+                    return typeof val === 'object' ? JSON.stringify(val) : val;
+                }
+            } catch (e) {
+                // If the expression fails (e.g. undefined variable), we leave it or return match
+                // We could also return an empty string, but match is safer to see unparsed templates
+            }
+            return match;
+        };
+
         let currentNode = walker.nextNode();
         while (currentNode) {
             if (currentNode.nodeType === Node.TEXT_NODE) {
                 let text = currentNode.nodeValue;
                 if (text && text.includes(globalConfig.propStart)) {
-                    text = text.replace(regex, (match, path) => {
-                        const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
-                        const rootKey = parts[0];
-                        if (globalData[rootKey] !== undefined) {
-                            const val = resolvePath(globalData, path);
-                            if (val !== undefined) {
-                                return typeof val === 'object' ? JSON.stringify(val) : val;
-                            }
-                        }
-                        return match;
-                    });
+                    text = text.replace(regex, evaluateExpression);
                     if (text !== currentNode.nodeValue) {
                         currentNode.nodeValue = text;
                     }
@@ -609,17 +673,7 @@
                 Array.from(currentNode.attributes).forEach(attr => {
                     let text = attr.value;
                     if (text && text.includes(globalConfig.propStart)) {
-                        text = text.replace(regex, (match, path) => {
-                            const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
-                            const rootKey = parts[0];
-                            if (globalData[rootKey] !== undefined) {
-                                const val = resolvePath(globalData, path);
-                                if (val !== undefined) {
-                                    return typeof val === 'object' ? JSON.stringify(val) : val;
-                                }
-                            }
-                            return match;
-                        });
+                        text = text.replace(regex, evaluateExpression);
                         if (text !== attr.value) {
                             attr.value = text;
                         }

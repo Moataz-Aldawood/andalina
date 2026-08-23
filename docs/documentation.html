@@ -155,6 +155,10 @@
                      <a href="#code">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-code&gt;</span></a>
                   </li>
+                  <li title="<an-if>" class="sidelist">
+                     <a href="#logic">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
+                           class="an-tag">-if&gt;</span></a>
+                  </li>
                   <li title="<!-- an-comment:  -->" class="sidelist">
                      <a href="#comments"><span class="an-tag">&lt;!-- </span><span class="an-prefix">an</span><span
                            class="an-tag">-comment: --&gt;</span></a>
@@ -464,6 +468,35 @@
                         <pre><code class="language-html"><an-code src="codes/an-code-example-02.txt"></an-code></code></pre>
                      </div>
 
+
+                     <div id="logic">
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span class="an-tag">-if&gt;</span> / <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span class="an-tag">-else&gt;</span></h3>
+                        <p>Evaluate a conditional block. You can use native JavaScript expressions inside the condition against your <code>&lt;an-data&gt;</code> sources.</p>
+                        
+                        <h4>Attributes:</h4>
+                        <ul>
+                           <li><code>condition</code> <em>(Required on an-if)</em>: The JavaScript expression to evaluate. Must resolve to a truthy or falsy value.</li>
+                        </ul>
+
+                        <h4>Example:</h4>
+                        <pre><code class="language-html">&lt;an-if condition="store.isOpen && user.name !== ''"&gt;
+   &lt;p&gt;Welcome to the store!&lt;/p&gt;
+&lt;/an-if&gt;
+&lt;an-else&gt;
+   &lt;p&gt;Sorry, we are closed.&lt;/p&gt;
+&lt;/an-else&gt;</code></pre>
+
+                        <h3 style="margin-top: 30px;">JS Expressions in Bindings</h3>
+                        <p>In Andalina v1.6.0+, standard double-curly bindings fully support native JavaScript expressions, array methods, and fallbacks.</p>
+                        <pre><code class="language-html">&lt;!-- Fallbacks --&gt;
+&lt;p&gt;Welcome, {{ user.name || 'Guest' }}!&lt;/p&gt;
+
+&lt;!-- Math &amp; Logic --&gt;
+&lt;p&gt;Total Price with Tax: {{ price * 1.2 }}&lt;/p&gt;
+&lt;p&gt;Discount: {{ price &gt; 100 ? '20%' : '5%' }}&lt;/p&gt;</code></pre>
+                     </div>
+
+                     <hr>
 
                      <div id="comments">
                         <h3><span class="an-tag">&lt;!-- </span><span class="an-prefix">an</span><span class="an-tag">-comment: --&gt;</span></h3>

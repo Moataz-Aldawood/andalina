@@ -1,0 +1,11 @@
+{
+    "user": {
+        "name": ""
+    },
+    "price": 100,
+    "isOpen": true,
+    "products": [
+        { "name": "Apple", "price": 10 },
+        { "name": "Watch", "price": 200 }
+    ]
+}
