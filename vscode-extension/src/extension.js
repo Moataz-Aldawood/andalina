@@ -123,6 +123,8 @@ async function executeTargetBuild(targetData, forceClear, isSilent = false) {
         return;
     }
 
+    const targetsList = (targetData.targets && targetData.targets.length > 0) ? targetData.targets : ['ssg'];
+
     try {
         if (!isSilent) {
             vscode.window.withProgress({
@@ -130,13 +132,23 @@ async function executeTargetBuild(targetData, forceClear, isSilent = false) {
                 title: `Andalina Builder: ${targetData.name}`,
                 cancellable: false
             }, async (progress) => {
-                progress.report({ message: `Compiling to ${targetData.dest}...` });
-                await buildProject(srcDir, destDir, { clearBeforeBuild });
+                progress.report({ message: `Compiling ${targetsList.length} targets to ${targetData.dest}...` });
+                
+                for (let i = 0; i < targetsList.length; i++) {
+                    const target = targetsList[i];
+                    // Only clear before build on the FIRST iteration, otherwise we wipe out earlier targets
+                    const shouldClear = i === 0 ? clearBeforeBuild : false;
+                    await buildProject(srcDir, destDir, { clearBeforeBuild: shouldClear, target });
+                }
             }).then(() => {
                 vscode.window.showInformationMessage(`Andalina: Action successfully built!`);
             });
         } else {
-            await buildProject(srcDir, destDir, { clearBeforeBuild });
+            for (let i = 0; i < targetsList.length; i++) {
+                const target = targetsList[i];
+                const shouldClear = i === 0 ? clearBeforeBuild : false;
+                await buildProject(srcDir, destDir, { clearBeforeBuild: shouldClear, target });
+            }
             vscode.window.setStatusBarMessage('$(check) Andalina Build Complete', 3000);
         }
     } catch (err) {

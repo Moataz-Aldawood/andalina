@@ -24,15 +24,16 @@ class TargetsProvider {
         const targets = config.get('targets', []);
 
         if (targets.length === 0) {
-            const emptyItem = new vscode.TreeItem('No build targets defined', vscode.TreeItemCollapsibleState.None);
+            const emptyItem = new vscode.TreeItem('No actions defined', vscode.TreeItemCollapsibleState.None);
             emptyItem.description = 'Click + to add one';
             return Promise.resolve([emptyItem]);
         }
 
         return Promise.resolve(targets.map((target, index) => {
-            const label = target.name || 'Unnamed Project';
+            const label = target.name || 'Unnamed Action';
             const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
-            item.tooltip = `Source: ${target.src}\nDestination: ${target.dest}\nClear Before Build: ${!!target.clearBeforeBuild}\nAuto Build on Save: ${!!target.autoBuild}`;
+            const targetsLabel = (target.targets || ['ssg']).join(', ');
+            item.tooltip = `Targets: ${targetsLabel}\nSource: ${target.src}\nDestination: ${target.dest}\nClear Before Build: ${!!target.clearBeforeBuild}\nAuto Build on Save: ${!!target.autoBuild}`;
             
             // This contextValue must match the 'when' clause in package.json's view/item/context
             item.contextValue = 'buildTarget';

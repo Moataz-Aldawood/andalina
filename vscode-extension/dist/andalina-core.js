@@ -27,7 +27,8 @@
     const globalData = {};
 
     function resolvePath(obj, path) {
-        return path.split('.').reduce((acc, part) => acc && acc[part] !== undefined ? acc[part] : undefined, obj);
+        const normalizedPath = path.replace(/\[(\d+)\]/g, '.$1');
+        return normalizedPath.split('.').reduce((acc, part) => acc && acc[part] !== undefined ? acc[part] : undefined, obj);
     }
 
     function escapeRegExp(string) {
@@ -219,9 +220,12 @@
             }
             currentNode = walker.nextNode();
         }
+        return props;
     }
 
-    async function processNodes(context) {
+
+
+    async function processNodes(context, parentTrackerNode = null) {
         let iterations = 0;
         const maxIterations = 1000;
         const parser = new DOMParser();
@@ -240,8 +244,15 @@
             const componentNode = context.querySelector(tComponent);
             const pageNode = context.querySelector(tTemplate);
             const codeNode = context.querySelector(tCode);
+            const ifNode = context.querySelector('an-if');
 
-            if (!dataNode && !repeatNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+            if (!dataNode && !repeatNode && !ifNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+                // If no normal tags are left, cleanup any orphaned <an-else> tags
+                const strayElse = context.querySelector('an-else');
+                if (strayElse) {
+                    strayElse.remove();
+                    continue;
+                }
                 break;
             }
 
@@ -277,15 +288,20 @@
                 const indexAs = repeatNode.getAttribute('index-as') || '$index';
                 const itemAs = repeatNode.getAttribute('item') || 'item';
                 
-                console.log(`[Andalina Debug] an-repeat found. dataName=${dataName}, times=${times}. Array.isArray=${dataName ? Array.isArray(globalData[dataName]) : false}`);
+                let targetDataArray;
+                if (dataName) {
+                    targetDataArray = resolvePath(globalData, dataName);
+                }
+
+                console.log(`[Andalina Debug] an-repeat found. dataName=${dataName}, times=${times}. Array.isArray=${Array.isArray(targetDataArray)}`);
                 
                 const fragment = document.createDocumentFragment();
                 const escapedStart = escapeRegExp(globalConfig.propStart);
                 const escapedEnd = escapeRegExp(globalConfig.propEnd);
                 const indexRegex = new RegExp(`${escapedStart}\\s*${escapeRegExp(indexAs)}\\s*${escapedEnd}`, 'g');
                 
-                if (dataName && globalData[dataName] && Array.isArray(globalData[dataName])) {
-                    const dataArray = globalData[dataName];
+                if (Array.isArray(targetDataArray)) {
+                    const dataArray = targetDataArray;
                     const itemRegex = new RegExp(`${escapedStart}\\s*${escapeRegExp(itemAs)}(?:\\.([\\w\\.]+))?\\s*${escapedEnd}`, 'g');
 
                     for (let i = 0; i < dataArray.length; i++) {
@@ -296,11 +312,19 @@
                         // Replace index
                         content = content.replace(indexRegex, i);
                         
-                        // Replace item properties using resolvePath
-                        content = content.replace(itemRegex, (match, path) => {
-                            if (!path) return typeof itemObj === 'object' ? JSON.stringify(itemObj) : itemObj;
-                            const val = resolvePath(itemObj, path);
-                            return val !== undefined ? val : match;
+                        // Evaluate all JS expressions in context of the loop iteration
+                        const evalRegex = new RegExp(`${escapedStart}\\s*(.+?)\\s*${escapedEnd}`, 'g');
+                        content = content.replace(evalRegex, (match, expression) => {
+                            try {
+                                const mergedData = { ...globalData, [itemAs]: itemObj, [indexAs]: i };
+                                const val = new Function('data', `with(data) { return (${expression}); }`)(mergedData);
+                                if (val !== undefined) {
+                                    return typeof val === 'object' ? JSON.stringify(val) : val;
+                                }
+                            } catch (e) {
+                                // If it fails (e.g. nested repeat variables not yet defined), leave it untouched
+                            }
+                            return match;
                         });
                         
                         temp.innerHTML = content;
@@ -318,6 +342,55 @@
                     repeatNode.replaceWith(fragment);
                 } else {
                     repeatNode.remove();
+                }
+                continue;
+            }
+
+            // 0.3 Process Conditionals
+            if (ifNode) {
+                const condition = ifNode.getAttribute('condition');
+                let isTrue = false;
+                if (condition) {
+                    try {
+                        isTrue = new Function('data', `with(data) { return !!(${condition}); }`)(globalData);
+                    } catch (e) {
+                        if (globalConfig.debug) {
+                            console.warn(`[Andalina] Warning: Failed to evaluate condition: '${condition}'`, e);
+                        }
+                        isTrue = false;
+                    }
+                }
+                
+                // Find adjacent <an-else> by skipping text nodes and comments
+                let nextEl = ifNode.nextSibling;
+                while (nextEl && ((nextEl.nodeType === Node.TEXT_NODE && nextEl.nodeValue.trim() === '') || nextEl.nodeType === Node.COMMENT_NODE)) {
+                    nextEl = nextEl.nextSibling;
+                }
+                let elseNode = null;
+                if (nextEl && nextEl.nodeType === Node.ELEMENT_NODE && nextEl.tagName.toLowerCase() === 'an-else') {
+                    elseNode = nextEl;
+                }
+
+                if (isTrue) {
+                    // Unwrap <an-if>
+                    const fragment = document.createDocumentFragment();
+                    Array.from(ifNode.childNodes).forEach(child => fragment.appendChild(cloneNodeSafe(child)));
+                    ifNode.replaceWith(fragment);
+                    
+                    // Remove adjacent <an-else>
+                    if (elseNode) {
+                        elseNode.remove();
+                    }
+                } else {
+                    // Remove <an-if>
+                    ifNode.remove();
+                    
+                    // Unwrap <an-else>
+                    if (elseNode) {
+                        const fragment = document.createDocumentFragment();
+                        Array.from(elseNode.childNodes).forEach(child => fragment.appendChild(cloneNodeSafe(child)));
+                        elseNode.replaceWith(fragment);
+                    }
                 }
                 continue;
             }
@@ -379,7 +452,17 @@
                     const configStr = doc.documentElement.getAttribute('data-config');
                     const extracted = extractStructuredMetadata(doc);
                     
-                    processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    const props = processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    
+                    const trackerNode = {
+                        name: 'Template',
+                        src: src,
+                        props: props,
+                        fetchTime: fetchTime,
+                        parseTime: 0,
+                        children: []
+                    };
+                    if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
 
                     // Collect <an-inject> blocks from the child template
                     const injects = Array.from(pageNode.querySelectorAll(tInject));
@@ -400,7 +483,15 @@
                         }
                     });
 
-                    // Completely replace the current document's head and body
+                    const tParse0 = performance.now();
+                    await processNodes(doc.documentElement, trackerNode);
+                    trackerNode.parseTime = Math.round(performance.now() - tParse0);
+
+                    // Rebuild entire document
+                    const newHtml = doc.documentElement.outerHTML;
+                    document.open();
+                    document.write(`<!DOCTYPE html>\n${newHtml}`);
+                    document.close(); // Completely replace the current document's head and body
                     copyAttributes(doc.documentElement, document.documentElement);
                     if (doc.head) copyAttributes(doc.head, document.head);
                     if (doc.body) copyAttributes(doc.body, document.body);
@@ -466,7 +557,17 @@
                     }
 
                     const extracted = extractStructuredMetadata(doc);
-                    processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    const props = processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    
+                    const trackerNode = {
+                        name: isComponent ? 'Component' : 'Layout',
+                        src: src,
+                        props: props,
+                        fetchTime: fetchTime,
+                        parseTime: 0,
+                        children: []
+                    };
+                    if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
 
                     let layoutContainer = doc.body ? doc.body : doc.documentElement;
                     const bodyNode = doc.querySelector(tBody);
@@ -490,6 +591,10 @@
                             plc.outerHTML = plc.innerHTML; 
                         }
                     });
+
+                    const tParse0 = performance.now();
+                    await processNodes(layoutContainer, trackerNode);
+                    trackerNode.parseTime = Math.round(performance.now() - tParse0);
 
                     const fragment = document.createDocumentFragment();
                     Array.from(layoutContainer.childNodes).forEach(node => {
@@ -517,7 +622,21 @@
                     const fetchTime = Math.round(performance.now() - t0);
                     const doc = parser.parseFromString(html, 'text/html');
 
-                    processProps(includeNode, doc, fetchTime);
+                    const props = processProps(includeNode, doc, fetchTime);
+                    
+                    const trackerNode = {
+                        name: 'Include',
+                        src: src,
+                        props: props,
+                        fetchTime: fetchTime,
+                        parseTime: 0,
+                        children: []
+                    };
+                    if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
+
+                    const tParse0 = performance.now();
+                    await processNodes(doc, trackerNode);
+                    trackerNode.parseTime = Math.round(performance.now() - tParse0);
                     
                     // If included fragment was a full HTML document, optionally merge its head
                     const parsedHead = doc.querySelector('head');
@@ -569,6 +688,51 @@
                     includeNode.remove();
                 }
             }
+        }
+    }
+
+    function processDataBindings(doc) {
+        const walker = document.createTreeWalker(doc, NodeFilter.SHOW_ALL);
+        const escapedStart = escapeRegExp(globalConfig.propStart);
+        const escapedEnd = escapeRegExp(globalConfig.propEnd);
+        
+        const regex = new RegExp(`${escapedStart}\\s*(.+?)\\s*${escapedEnd}`, 'g');
+        
+        const evaluateExpression = (match, expression) => {
+            try {
+                const val = new Function('data', `with(data) { return (${expression}); }`)(globalData);
+                if (val !== undefined) {
+                    return typeof val === 'object' ? JSON.stringify(val) : val;
+                }
+            } catch (e) {
+                // If the expression fails (e.g. undefined variable), we leave it or return match
+                // We could also return an empty string, but match is safer to see unparsed templates
+            }
+            return match;
+        };
+
+        let currentNode = walker.nextNode();
+        while (currentNode) {
+            if (currentNode.nodeType === Node.TEXT_NODE) {
+                let text = currentNode.nodeValue;
+                if (text && text.includes(globalConfig.propStart)) {
+                    text = text.replace(regex, evaluateExpression);
+                    if (text !== currentNode.nodeValue) {
+                        currentNode.nodeValue = text;
+                    }
+                }
+            } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+                Array.from(currentNode.attributes).forEach(attr => {
+                    let text = attr.value;
+                    if (text && text.includes(globalConfig.propStart)) {
+                        text = text.replace(regex, evaluateExpression);
+                        if (text !== attr.value) {
+                            attr.value = text;
+                        }
+                    }
+                });
+            }
+            currentNode = walker.nextNode();
         }
     }
 
@@ -711,7 +875,20 @@
         }
 
         await prefetchData();
-        await processNodes(document.documentElement);
+
+        window.__andalinaDebugTree = {
+            name: 'Root Document',
+            src: window.location ? window.location.pathname : 'index.html',
+            props: {},
+            fetchTime: 0,
+            parseTime: 0,
+            children: []
+        };
+        const tParseRoot = performance.now();
+        await processNodes(document.documentElement, window.__andalinaDebugTree);
+        window.__andalinaDebugTree.parseTime = Math.round(performance.now() - tParseRoot);
+
+        processDataBindings(document.documentElement);
         
         // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
         const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
@@ -737,6 +914,8 @@
             console.log(document.documentElement.outerHTML);
             console.groupEnd();
         }
+
+        renderDevTools();
 
         if (globalConfig.preventFOUC) {
             const foucStyle = document.getElementById('andalina-fouc');
@@ -767,6 +946,92 @@
         }
     }
 
+
+
+
+
+    function renderDevTools() {
+        if (!globalConfig.debug || !window.__andalinaDebugTree) return;
+        
+        console.groupCollapsed('%c[Andalina] 🌳 Component Tree (Click to expand)', 'color: #3498db; font-size: 13px; font-weight: bold;');
+        
+        function logNode(node, depth, isLast) {
+            const prefix = depth === 0 ? '' : ' '.repeat((depth - 1) * 4) + (isLast ? '└── ' : '├── ');
+            const icon = node.name === 'Template' ? '📄' : (node.name === 'Layout' ? '📦' : '🧩');
+            console.groupCollapsed('%c' + prefix + icon + ' ' + node.src, 'font-weight: bold;');
+            console.log('Name:', node.name);
+            console.log('Props:', node.props);
+            console.log('Fetch Time:', node.fetchTime + 'ms');
+            console.log('Parse Time:', node.parseTime + 'ms');
+            console.log('Children:', node.children.length);
+            console.groupEnd();
+
+            node.children.forEach((child, index) => {
+                logNode(child, depth + 1, index === node.children.length - 1);
+            });
+        }
+
+        logNode(window.__andalinaDebugTree, 0, true);
+        console.groupEnd();
+
+        // Option A: UI Overlay
+        if (!globalConfig.debugUI) return;
+        
+        if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+            return; // Do not render UI overlay in Node.js builder
+        }
+
+        const ui = document.createElement('div');
+        ui.id = 'andalina-devtools';
+        ui.innerHTML = `<style>
+            #andalina-devtools { position: fixed; bottom: 20px; right: 20px; width: 350px; background: #1e1e1e; color: #fff; font-family: monospace; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 999999; display: flex; flex-direction: column; overflow: hidden; }
+            #andalina-dt-header { background: #2d2d2d; padding: 10px 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; }
+            #andalina-dt-body { max-height: 400px; overflow-y: auto; padding: 10px; display: none; }
+            #andalina-dt-body.open { display: block; }
+            .dt-node { margin-left: 15px; border-left: 1px solid #444; padding-left: 10px; margin-top: 5px; }
+            .dt-node-title { cursor: pointer; padding: 3px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+            .dt-node-title:hover { background: #333; }
+            .dt-props { font-size: 11px; color: #aaa; margin: 5px 0 5px 15px; display: none; background: #2a2a2a; padding: 5px; border-radius: 4px; overflow-wrap: break-word; }
+            .dt-props.open { display: block; }
+        </style>
+        <div id="andalina-dt-header">
+            <span>🌳 Andalina DevTools</span>
+            <span style="font-size: 11px; color: #aaa;">v1.6.0</span>
+        </div>
+        <div id="andalina-dt-body"></div>`;
+        
+        function buildUI(node) {
+            const div = document.createElement('div');
+            div.className = 'dt-node';
+            const title = document.createElement('div');
+            title.className = 'dt-node-title';
+            const icon = node.name === 'Template' ? '📄' : (node.name === 'Layout' ? '📦' : '🧩');
+            title.innerHTML = `<span>${icon}</span><span>${node.src}</span> <span style="color:#888;font-size:10px;margin-left:auto;">${node.fetchTime+node.parseTime}ms</span>`;
+            
+            const props = document.createElement('div');
+            props.className = 'dt-props';
+            props.innerHTML = `<strong>Props:</strong><br>${Object.keys(node.props).length ? JSON.stringify(node.props, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;') : 'None'}`;
+            
+            title.onclick = (e) => {
+                e.stopPropagation();
+                props.classList.toggle('open');
+            };
+            
+            div.appendChild(title);
+            div.appendChild(props);
+            
+            node.children.forEach(child => {
+                div.appendChild(buildUI(child));
+            });
+            return div;
+        }
+
+        ui.querySelector('#andalina-dt-body').appendChild(buildUI(window.__andalinaDebugTree));
+        ui.querySelector('#andalina-dt-header').onclick = () => {
+            ui.querySelector('#andalina-dt-body').classList.toggle('open');
+        };
+        
+        document.body.appendChild(ui);
+    }
+
 })();
-
-

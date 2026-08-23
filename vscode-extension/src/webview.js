@@ -50,7 +50,8 @@ function showFormPanel(context, targetData = null) {
                     src: message.data.src,
                     dest: message.data.dest,
                     clearBeforeBuild: message.data.clearBeforeBuild,
-                    autoBuild: message.data.autoBuild
+                    autoBuild: message.data.autoBuild,
+                    targets: message.data.targets
                 };
 
                 if (isEdit && targetData.index !== undefined) {
@@ -264,6 +265,35 @@ function getWebviewContent(targetData) {
         <label for="autoBuild">Auto Build on Save</label>
     </div>
 
+    <div class="form-group" style="margin-top: 25px; border-top: 1px solid var(--vscode-widget-border); padding-top: 15px;">
+        <label style="margin-bottom: 12px; font-size: 14px;">Build Targets (Adapters)</label>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" class="target-cb" value="ssg" ${(!data.targets || data.targets.length === 0 || data.targets.includes('ssg')) ? 'checked' : ''}>
+            <label>Flat HTML (SSG)</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" class="target-cb" value="blade" ${data.targets && data.targets.includes('blade') ? 'checked' : ''}>
+            <label>Laravel Blade</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" class="target-cb" value="jsf" ${data.targets && data.targets.includes('jsf') ? 'checked' : ''}>
+            <label>JavaServer Faces (JSF)</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" class="target-cb" value="django" ${data.targets && data.targets.includes('django') ? 'checked' : ''}>
+            <label>Django Templates</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" class="target-cb" value="thymeleaf" ${data.targets && data.targets.includes('thymeleaf') ? 'checked' : ''}>
+            <label>Thymeleaf</label>
+        </div>
+    </div>
+
     <div class="actions">
         <button class="primary" id="saveBtn">Save Action</button>
         <button class="secondary" id="cancelBtn">Cancel</button>
@@ -281,6 +311,10 @@ function getWebviewContent(targetData) {
                 showError("Source and Target folders are required.");
                 return;
             }
+            
+            // Collect selected targets
+            const targetCbs = document.querySelectorAll('.target-cb:checked');
+            const targets = Array.from(targetCbs).map(cb => cb.value);
 
             // A naive check here, but we also send it to the extension for a robust path resolution check
             vscode.postMessage({
@@ -290,7 +324,8 @@ function getWebviewContent(targetData) {
                     src: src,
                     dest: dest,
                     clearBeforeBuild: document.getElementById('clearBeforeBuild').checked,
-                    autoBuild: document.getElementById('autoBuild').checked
+                    autoBuild: document.getElementById('autoBuild').checked,
+                    targets: targets
                 }
             });
         });

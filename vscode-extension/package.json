@@ -124,13 +124,12 @@
       }
     }
   },
-  "dependencies": {
-    "builder": "file:../builder"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/vscode": "^1.80.0",
     "esbuild": "^0.28.2",
-    "vsce": "^2.15.0"
+    "vsce": "^2.15.0",
+    "builder": "file:../builder"
   },
   "scripts": {
     "vscode:prepublish": "npm run esbuild-base -- --minify",
