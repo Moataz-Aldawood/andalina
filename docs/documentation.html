@@ -230,7 +230,7 @@
                         <p>First, download the latest version of Andalina from the <a href="download.html">Download Page</a> (or our <a href="https://github.com/Moataz-Aldawood/andalina" target="_blank">GitHub Repository</a>). The downloadable archive (<code>.zip</code>) includes:</p>
                         <ul>
                            <li><code>andalina.js</code>: The core zero-dependency client-side template engine.</li>
-                           <li><code>andalina.config.json</code>: Optional configuration file for customizing template paths and behavior.</li>
+                           <li><code>andalina.config.json</code>: Mandatory configuration file for defining paths and framework-safe data binding delimiters.</li>
                         </ul>
 
                         <h4>2. Add to Your HTML Document</h4>
@@ -522,12 +522,11 @@
                               output of the final rendered HTML into the Developer Tools Console.</li>
                            <li><code>debug</code>: <code>{enabled, disabled}</code>. Enables or disables the output of
                               detailed debugging information during the rendering process.</li>
+                           <li><code>debugUI</code>: <code>{true, false}</code>. When <code>debug</code> is enabled, this toggles the floating visual component tree overlay. Defaults to <code>true</code>.</li>
                            <li><code>preventFOUC</code>: <code>{enabled, disabled}</code>. Prevents Flash of Unstyled
                               Content by hiding the page body until rendering completes.</li>
-                           <li><code>propStart</code>: The starting string for properties. Defaults to <code>{{</code>.
-                              It can be any string, but it must be different from the <code>propEnd</code> value.</li>
-                           <li><code>propEnd</code>: The ending string for properties. Defaults to <code>}}</code>. It
-                              can be any string, but it must be different from the <code>propStart</code> value.</li>
+                           <li><code>propStart</code>: <strong>(Mandatory)</strong> The starting string for properties (e.g. <code>{{</code>).</li>
+                           <li><code>propEnd</code>: <strong>(Mandatory)</strong> The ending string for properties (e.g. <code>}}</code>).</li>
                            <li><code>prefix</code>: A custom prefix for Andalina tags. Defaults to <code>an</code>. It
                               can be any string (e.g., <code>an</code>, <code>andalina</code>, <code>aa</code>).</li>
                            <li><code>componentsPath</code>: The directory path where your component files are stored.
