@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Logic & JS Bindings | Andalina Examples</title>
+   <style>
+      body {
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+         background: #f1f5f9;
+         color: #334155;
+         padding: 0;
+         margin: 0;
+      }
+      .container {
+         max-width: 600px;
+         margin: 3rem auto;
+         background: #fff;
+         padding: 2.5rem;
+         border-radius: 1rem;
+         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+         margin-top: 0;
+         color: #0f172a;
+      }
+      .success-box {
+         background: #ecfdf5;
+         color: #047857;
+         padding: 1rem;
+         border-radius: 0.5rem;
+         border-left: 4px solid #10b981;
+         margin-bottom: 1.5rem;
+      }
+      .warning-box {
+         background: #fef2f2;
+         color: #b91c1c;
+         padding: 1rem;
+         border-radius: 0.5rem;
+         border-left: 4px solid #ef4444;
+         margin-bottom: 1.5rem;
+      }
+      .badge {
+         background: #6366f1;
+         color: #fff;
+         padding: 0.25rem 0.75rem;
+         border-radius: 9999px;
+         font-size: 0.85rem;
+         font-weight: 600;
+         display: inline-block;
+         margin-bottom: 1.5rem;
+      }
+      ul {
+         list-style: none;
+         padding: 0;
+      }
+      li {
+         background: #f8fafc;
+         border: 1px solid #e2e8f0;
+         margin-bottom: 0.5rem;
+         padding: 1rem;
+         border-radius: 0.5rem;
+         display: flex;
+         justify-content: space-between;
+      }
+      .price {
+         font-weight: 600;
+         color: #0f172a;
+      }
+      .tax-note {
+         font-size: 0.85rem;
+         color: #64748b;
+      }
+   </style>
+
+   <script src="../lib/andalina.js" defer></script>
+   
+   <!-- Fetch our mock user data -->
+   <an-data src="data/user.json" name="user"></an-data>
+</head>
+<body>
+
+   <!-- Unified Demo Header -->
+   <div style="background: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.9rem; margin: 0; position: sticky; top: 0; z-index: 9999;">
+      <div style="font-weight: 800; font-size: 1.1rem; background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Andalina Examples Hub</div>
+      <div>
+         <a href="../index.html" style="color: #94a3b8; text-decoration: none; margin-right: 1.5rem; font-weight: 600; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">&larr; Back to Hub</a>
+         <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/docs/examples/example-08-logic-and-bindings" target="_blank" style="background: rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">View Source Code</a>
+      </div>
+   </div>
+
+   <div class="container">
+      
+      <!-- Conditional Rendering -->
+      <an-if condition="user.isLoggedIn">
+         
+         <!-- Fallback logic in bindings -->
+         <h2>Welcome back, {{ user.profile.name || 'Guest' }}!</h2>
+         
+         <an-if condition="user.profile.role === 'admin'">
+            <div class="badge">Admin User</div>
+         </an-if>
+
+         <!-- Native JS methods inside bindings -->
+         <p>Your current wallet balance is: <strong>${{ user.profile.balance.toFixed(2) }}</strong></p>
+
+         <!-- Complex conditions in an-if -->
+         <an-if condition="user.profile.balance > 100">
+            <div class="success-box">
+               <strong>Good news!</strong> You have enough balance to upgrade to the premium plan.
+            </div>
+         </an-if>
+         <an-else>
+            <div class="warning-box">
+               <strong>Notice:</strong> Your balance is running low. Please top up your account.
+            </div>
+         </an-else>
+
+         <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #e2e8f0;">
+
+         <h3>Shopping Cart Summary</h3>
+         <ul>
+            <an-repeat data="user.cart" item="product">
+               <li>
+                  <span>{{ product.name }}</span>
+                  <div style="text-align: right;">
+                     <div class="price">${{ product.price.toFixed(2) }}</div>
+                     
+                     <!-- JS Math logic directly in the binding -->
+                     <div class="tax-note">With 20% Tax: ${{ (product.price * 1.2).toFixed(2) }}</div>
+                  </div>
+               </li>
+            </an-repeat>
+         </ul>
+
+      </an-if>
+      <an-else>
+         <h2>Welcome!</h2>
+         <p>Please log in to see your personalized dashboard.</p>
+         <button style="background: #0f172a; color: white; border: 0; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer;">Log In Now</button>
+      </an-else>
+
+   </div>
+
+</body>
+</html>

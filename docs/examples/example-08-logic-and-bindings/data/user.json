@@ -1,0 +1,13 @@
+{
+  "isLoggedIn": true,
+  "profile": {
+    "name": "Alex Costa",
+    "balance": 150.75,
+    "role": "admin"
+  },
+  "cart": [
+    { "id": 1, "name": "Mechanical Keyboard", "price": 120 },
+    { "id": 2, "name": "USB-C Cable", "price": 15 },
+    { "id": 3, "name": "Wireless Mouse", "price": 45 }
+  ]
+}
