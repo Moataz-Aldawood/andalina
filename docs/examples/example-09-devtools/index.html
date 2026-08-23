@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Andalina DevTools Example</title>
+    <!-- We link to the core library so the browser executes the SSG on the fly -->
+    <script src="../lib/andalina.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; max-width: 800px; margin: auto; }
+    </style>
+</head>
+<body>
+    <an-layout name="dashboard" title="Admin Control Panel">
+        <an-inject name="content">
+            <div class="grid">
+                <an-component name="user-card" username="John Doe" role="Admin" active="true"></an-component>
+                <an-component name="user-card" username="Jane Smith" role="Editor" active="false"></an-component>
+                <an-component name="chart" title="Weekly Sales"></an-component>
+                <an-component name="chart" title="Server Load"></an-component>
+            </div>
+        </an-inject>
+    </an-layout>
+</body>
+</html>
