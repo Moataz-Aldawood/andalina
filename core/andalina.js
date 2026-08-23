@@ -220,11 +220,12 @@
             }
             currentNode = walker.nextNode();
         }
+        return props;
     }
 
 
 
-    async function processNodes(context) {
+    async function processNodes(context, parentTrackerNode = null) {
         let iterations = 0;
         const maxIterations = 1000;
         const parser = new DOMParser();
@@ -443,8 +444,17 @@
                     const configStr = doc.documentElement.getAttribute('data-config');
                     const extracted = extractStructuredMetadata(doc);
                     
-                    processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
-                    processConditionals(doc);
+                    const props = processProps(pageNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    
+                    const trackerNode = {
+                        name: 'Template',
+                        src: src,
+                        props: props,
+                        fetchTime: fetchTime,
+                        parseTime: 0,
+                        children: []
+                    };
+                    if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
 
                     // Collect <an-inject> blocks from the child template
                     const injects = Array.from(pageNode.querySelectorAll(tInject));
@@ -465,7 +475,15 @@
                         }
                     });
 
-                    // Completely replace the current document's head and body
+                    const tParse0 = performance.now();
+                    await processNodes(doc.documentElement, trackerNode);
+                    trackerNode.parseTime = Math.round(performance.now() - tParse0);
+
+                    // Rebuild entire document
+                    const newHtml = doc.documentElement.outerHTML;
+                    document.open();
+                    document.write(`<!DOCTYPE html>\n${newHtml}`);
+                    document.close(); // Completely replace the current document's head and body
                     copyAttributes(doc.documentElement, document.documentElement);
                     if (doc.head) copyAttributes(doc.head, document.head);
                     if (doc.body) copyAttributes(doc.body, document.body);
@@ -531,8 +549,17 @@
                     }
 
                     const extracted = extractStructuredMetadata(doc);
-                    processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
-                    processConditionals(doc);
+                    const props = processProps(targetNode, doc, fetchTime, extracted.defaults, extracted.mandatoryAttrs);
+                    
+                    const trackerNode = {
+                        name: isComponent ? 'Component' : 'Layout',
+                        src: src,
+                        props: props,
+                        fetchTime: fetchTime,
+                        parseTime: 0,
+                        children: []
+                    };
+                    if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
 
                     let layoutContainer = doc.body ? doc.body : doc.documentElement;
                     const bodyNode = doc.querySelector(tBody);
@@ -556,6 +583,10 @@
                             plc.outerHTML = plc.innerHTML; 
                         }
                     });
+
+                    const tParse0 = performance.now();
+                    await processNodes(layoutContainer, trackerNode);
+                    trackerNode.parseTime = Math.round(performance.now() - tParse0);
 
                     const fragment = document.createDocumentFragment();
                     Array.from(layoutContainer.childNodes).forEach(node => {
@@ -583,8 +614,21 @@
                     const fetchTime = Math.round(performance.now() - t0);
                     const doc = parser.parseFromString(html, 'text/html');
 
-                    processProps(includeNode, doc, fetchTime);
-                    processConditionals(doc);
+                    const props = processProps(includeNode, doc, fetchTime);
+                    
+                    const trackerNode = {
+                        name: 'Include',
+                        src: src,
+                        props: props,
+                        fetchTime: fetchTime,
+                        parseTime: 0,
+                        children: []
+                    };
+                    if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
+
+                    const tParse0 = performance.now();
+                    await processNodes(doc, trackerNode);
+                    trackerNode.parseTime = Math.round(performance.now() - tParse0);
                     
                     // If included fragment was a full HTML document, optionally merge its head
                     const parsedHead = doc.querySelector('head');
@@ -823,7 +867,19 @@
         }
 
         await prefetchData();
-        await processNodes(document.documentElement);
+
+        window.__andalinaDebugTree = {
+            name: 'Root Document',
+            src: window.location ? window.location.pathname : 'index.html',
+            props: {},
+            fetchTime: 0,
+            parseTime: 0,
+            children: []
+        };
+        const tParseRoot = performance.now();
+        await processNodes(document.documentElement, window.__andalinaDebugTree);
+        window.__andalinaDebugTree.parseTime = Math.round(performance.now() - tParseRoot);
+
         processDataBindings(document.documentElement);
         
         // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
@@ -850,6 +906,8 @@
             console.log(document.documentElement.outerHTML);
             console.groupEnd();
         }
+
+        renderDevTools();
 
         if (globalConfig.preventFOUC) {
             const foucStyle = document.getElementById('andalina-fouc');
@@ -880,6 +938,90 @@
         }
     }
 
+
+
+
+
+    function renderDevTools() {
+        if (!globalConfig.debug || !window.__andalinaDebugTree) return;
+        
+        console.groupCollapsed('%c[Andalina] 🌳 Component Tree (Click to expand)', 'color: #3498db; font-size: 13px; font-weight: bold;');
+        
+        function logNode(node, depth, isLast) {
+            const prefix = depth === 0 ? '' : ' '.repeat((depth - 1) * 4) + (isLast ? '└── ' : '├── ');
+            const icon = node.name === 'Template' ? '📄' : (node.name === 'Layout' ? '📦' : '🧩');
+            console.groupCollapsed('%c' + prefix + icon + ' ' + node.src, 'font-weight: bold;');
+            console.log('Name:', node.name);
+            console.log('Props:', node.props);
+            console.log('Fetch Time:', node.fetchTime + 'ms');
+            console.log('Parse Time:', node.parseTime + 'ms');
+            console.log('Children:', node.children.length);
+            console.groupEnd();
+
+            node.children.forEach((child, index) => {
+                logNode(child, depth + 1, index === node.children.length - 1);
+            });
+        }
+
+        logNode(window.__andalinaDebugTree, 0, true);
+        console.groupEnd();
+
+        // Option A: UI Overlay
+        if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+            return; // Do not render UI overlay in Node.js builder
+        }
+
+        const ui = document.createElement('div');
+        ui.id = 'andalina-devtools';
+        ui.innerHTML = `<style>
+            #andalina-devtools { position: fixed; bottom: 20px; right: 20px; width: 350px; background: #1e1e1e; color: #fff; font-family: monospace; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 999999; display: flex; flex-direction: column; overflow: hidden; }
+            #andalina-dt-header { background: #2d2d2d; padding: 10px 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; }
+            #andalina-dt-body { max-height: 400px; overflow-y: auto; padding: 10px; display: none; }
+            #andalina-dt-body.open { display: block; }
+            .dt-node { margin-left: 15px; border-left: 1px solid #444; padding-left: 10px; margin-top: 5px; }
+            .dt-node-title { cursor: pointer; padding: 3px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+            .dt-node-title:hover { background: #333; }
+            .dt-props { font-size: 11px; color: #aaa; margin: 5px 0 5px 15px; display: none; background: #2a2a2a; padding: 5px; border-radius: 4px; overflow-wrap: break-word; }
+            .dt-props.open { display: block; }
+        </style>
+        <div id="andalina-dt-header">
+            <span>🌳 Andalina DevTools</span>
+            <span style="font-size: 11px; color: #aaa;">v1.6.0</span>
+        </div>
+        <div id="andalina-dt-body"></div>`;
+        
+        function buildUI(node) {
+            const div = document.createElement('div');
+            div.className = 'dt-node';
+            const title = document.createElement('div');
+            title.className = 'dt-node-title';
+            const icon = node.name === 'Template' ? '📄' : (node.name === 'Layout' ? '📦' : '🧩');
+            title.innerHTML = `<span>${icon}</span><span>${node.src}</span> <span style="color:#888;font-size:10px;margin-left:auto;">${node.fetchTime+node.parseTime}ms</span>`;
+            
+            const props = document.createElement('div');
+            props.className = 'dt-props';
+            props.innerHTML = `<strong>Props:</strong><br>${Object.keys(node.props).length ? JSON.stringify(node.props, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;') : 'None'}`;
+            
+            title.onclick = (e) => {
+                e.stopPropagation();
+                props.classList.toggle('open');
+            };
+            
+            div.appendChild(title);
+            div.appendChild(props);
+            
+            node.children.forEach(child => {
+                div.appendChild(buildUI(child));
+            });
+            return div;
+        }
+
+        ui.querySelector('#andalina-dt-body').appendChild(buildUI(window.__andalinaDebugTree));
+        ui.querySelector('#andalina-dt-header').onclick = () => {
+            ui.querySelector('#andalina-dt-body').classList.toggle('open');
+        };
+        
+        document.body.appendChild(ui);
+    }
+
 })();
-
-
