@@ -1,5 +1,7 @@
 {
     "componentsPath": "components",
     "layoutsPath": "layouts",
+    "propStart": "{{",
+    "propEnd": "}}",
     "debug": true
 }
