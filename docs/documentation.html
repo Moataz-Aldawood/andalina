@@ -159,6 +159,9 @@
                      <a href="#logic">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-if&gt;</span></a>
                   </li>
+                  <li title="JS Expressions in Bindings" class="sidelist">
+                     <a href="#js-expressions">JS Expressions in Bindings</a>
+                  </li>
                   <li title="<!-- an-comment:  -->" class="sidelist">
                      <a href="#comments"><span class="an-tag">&lt;!-- </span><span class="an-prefix">an</span><span
                            class="an-tag">-comment: --&gt;</span></a>
@@ -486,7 +489,7 @@
    &lt;p&gt;Sorry, we are closed.&lt;/p&gt;
 &lt;/an-else&gt;</code></pre>
 
-                        <h3 style="margin-top: 30px;">JS Expressions in Bindings</h3>
+                        <h3 id="js-expressions" style="margin-top: 30px;">JS Expressions in Bindings</h3>
                         <p>In Andalina v1.6.0+, standard double-curly bindings fully support native JavaScript expressions, array methods, and fallbacks.</p>
                         <pre><code class="language-html">&lt;!-- Fallbacks --&gt;
 &lt;p&gt;Welcome, {{ user.name || 'Guest' }}!&lt;/p&gt;
