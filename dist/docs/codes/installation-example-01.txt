@@ -1,3 +1,0 @@
-<head>
-    <script src="andalina.js" defer> </script>
-</head>

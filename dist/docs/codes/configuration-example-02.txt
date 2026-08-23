@@ -1,5 +1,0 @@
-<script src="andalina.js" 
-	data-show-rendered-html="enabled" 
-	data-extension=".xhtml" 
-	defer>
-</script>

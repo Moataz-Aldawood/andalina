@@ -1,6 +1,0 @@
-[
-    { "icon": "👥", "title": "Total Users", "value": "10,240", "trend": "+12%", "trendColor": "#10b981" },
-    { "icon": "📈", "title": "Monthly Revenue", "value": "$45,200", "trend": "+8%", "trendColor": "#10b981" },
-    { "icon": "⏳", "title": "Avg. Session", "value": "4m 12s", "trend": "-2%", "trendColor": "#ef4444" },
-    { "icon": "⭐", "title": "Customer Rating", "value": "4.8/5", "trend": "+0.1", "trendColor": "#10b981" }
-]
