@@ -975,6 +975,8 @@
         console.groupEnd();
 
         // Option A: UI Overlay
+        if (!globalConfig.debugUI) return;
+        
         if (typeof process !== 'undefined' && process.versions && process.versions.node) {
             return; // Do not render UI overlay in Node.js builder
         }
