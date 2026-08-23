@@ -312,11 +312,19 @@
                         // Replace index
                         content = content.replace(indexRegex, i);
                         
-                        // Replace item properties using resolvePath
-                        content = content.replace(itemRegex, (match, path) => {
-                            if (!path) return typeof itemObj === 'object' ? JSON.stringify(itemObj) : itemObj;
-                            const val = resolvePath(itemObj, path);
-                            return val !== undefined ? val : match;
+                        // Evaluate all JS expressions in context of the loop iteration
+                        const evalRegex = new RegExp(`${escapedStart}\\s*(.+?)\\s*${escapedEnd}`, 'g');
+                        content = content.replace(evalRegex, (match, expression) => {
+                            try {
+                                const mergedData = { ...globalData, [itemAs]: itemObj, [indexAs]: i };
+                                const val = new Function('data', `with(data) { return (${expression}); }`)(mergedData);
+                                if (val !== undefined) {
+                                    return typeof val === 'object' ? JSON.stringify(val) : val;
+                                }
+                            } catch (e) {
+                                // If it fails (e.g. nested repeat variables not yet defined), leave it untouched
+                            }
+                            return match;
                         });
                         
                         temp.innerHTML = content;

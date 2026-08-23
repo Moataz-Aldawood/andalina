@@ -2,164 +2,157 @@
 <html lang="en">
 <head>
    <meta charset="UTF-8">
-   <title>Complex Composition | Andalina</title>
-   
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Logic & JS Bindings | Andalina Examples</title>
    <style>
       body {
-         font-family: system-ui, -apple-system, sans-serif;
-         margin: 0; background: #f1f5f9; color: #334155;
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+         background: #f1f5f9;
+         color: #334155;
+         padding: 0;
+         margin: 0;
       }
-      .admin-wrapper { display: flex; min-height: 100vh; }
-      .sidebar {
-         width: 250px; background: #0f172a; color: #f8fafc; padding: 1.5rem;
-         display: flex; flex-direction: column;
+      .container {
+         max-width: 600px;
+         margin: 3rem auto;
+         background: #fff;
+         padding: 2.5rem;
+         border-radius: 1rem;
+         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       }
-      .brand { font-size: 1.25rem; font-weight: bold; margin-bottom: 2rem; color: #38bdf8; }
-      .side-nav { display: flex; flex-direction: column; gap: 1rem; }
-      .side-nav a { color: #cbd5e1; text-decoration: none; }
-      .side-nav a.active { color: #fff; font-weight: bold; }
-      .main-content { flex: 1; display: flex; flex-direction: column; }
-      .topbar {
-         background: #fff; padding: 1rem 2rem; border-bottom: 1px solid #e2e8f0;
-         display: flex; justify-content: space-between; align-items: center;
+      h2 {
+         margin-top: 0;
+         color: #0f172a;
       }
-      .page-title { font-size: 1.25rem; font-weight: 600; }
-      .content-area { padding: 2rem; }
-      
-      .stats-grid {
-         display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;
+      .success-box {
+         background: #ecfdf5;
+         color: #047857;
+         padding: 1rem;
+         border-radius: 0.5rem;
+         border-left: 4px solid #10b981;
+         margin-bottom: 1.5rem;
       }
-      .stat-card {
-         background: #fff; border-radius: 0.5rem; padding: 1.5rem;
-         box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: flex-start; gap: 1rem;
+      .warning-box {
+         background: #fef2f2;
+         color: #b91c1c;
+         padding: 1rem;
+         border-radius: 0.5rem;
+         border-left: 4px solid #ef4444;
+         margin-bottom: 1.5rem;
       }
-      .stat-icon { font-size: 2rem; }
-      .stat-title { margin: 0 0 0.5rem 0; color: #64748b; font-size: 0.875rem; text-transform: uppercase; }
-      .stat-value { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.25rem; color: #0f172a; }
-      .stat-trend { font-size: 0.875rem; font-weight: 500; }
+      .badge {
+         background: #6366f1;
+         color: #fff;
+         padding: 0.25rem 0.75rem;
+         border-radius: 9999px;
+         font-size: 0.85rem;
+         font-weight: 600;
+         display: inline-block;
+         margin-bottom: 1.5rem;
+      }
+      ul {
+         list-style: none;
+         padding: 0;
+      }
+      li {
+         background: #f8fafc;
+         border: 1px solid #e2e8f0;
+         margin-bottom: 0.5rem;
+         padding: 1rem;
+         border-radius: 0.5rem;
+         display: flex;
+         justify-content: space-between;
+      }
+      .price {
+         font-weight: 600;
+         color: #0f172a;
+      }
+      .tax-note {
+         font-size: 0.85rem;
+         color: #64748b;
+      }
    </style>
+
    
    
-   
-   <!-- Fetch JSON Data -->
+   <!-- Fetch our mock user data -->
    
 </head>
 <body>
 
-   <!-- Wrap in Admin Layout -->
-   
-<div style="background: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.9rem; margin: 0; position: sticky; top: 0; z-index: 9999;">
-   <div style="font-weight: 800; font-size: 1.1rem; background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Andalina Examples Hub</div>
-   <div>
-      <a href="../index.html" style="color: #94a3b8; text-decoration: none; margin-right: 1.5rem; font-weight: 600; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">← Back to Hub</a>
-      <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/docs/examples/example-04-complex-composition" target="_blank" style="background: rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">View Source Code</a>
-   </div>
-</div>
-<div class="admin-wrapper">
-   <aside class="sidebar">
-      <div class="brand">Admin Dashboard</div>
-      <nav class="side-nav">
-         <a href="index.html" class="active">Overview</a>
-         <a href="../index.html" style="color: #64748b; margin-top: 2rem;">← Back to Examples</a>
-         <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/docs/examples/example-04-complex-composition" target="_blank" style="color: #64748b;">Source Code</a>
-      </nav>
-   </aside>
-   <main class="main-content">
-      <header class="topbar">
-         <div class="page-title">Welcome back, Moataz!</div>
-         <div class="user-profile">Moataz (Admin)</div>
-      </header>
-      <div class="content-area">
-         
-         <div class="stats-grid">
-            <!-- Loop through Dashboard Data -->
-            
-               
-               <!-- Render a Stat Component for each item -->
-               
-<div class="stat-card">
-   <div class="stat-icon">
-      👥
-   </div>
-   <div class="stat-info">
-      <h4 class="stat-title">Total Users</h4>
-      <div class="stat-value">10,240</div>
-      <div class="stat-trend">
-         <span style="color: #10b981">
-            +12%
-         </span>
+   <!-- Unified Demo Header -->
+   <div style="background: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.9rem; margin: 0; position: sticky; top: 0; z-index: 9999;">
+      <div style="font-weight: 800; font-size: 1.1rem; background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Andalina Examples Hub</div>
+      <div>
+         <a href="../index.html" style="color: #94a3b8; text-decoration: none; margin-right: 1.5rem; font-weight: 600; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">← Back to Hub</a>
+         <a href="https://github.com/Moataz-Aldawood/andalina/tree/main/docs/examples/example-08-logic-and-bindings" target="_blank" style="background: rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">View Source Code</a>
       </div>
    </div>
-</div>
 
-               
-            
-               
-               <!-- Render a Stat Component for each item -->
-               
-<div class="stat-card">
-   <div class="stat-icon">
-      📈
-   </div>
-   <div class="stat-info">
-      <h4 class="stat-title">Monthly Revenue</h4>
-      <div class="stat-value">$45,200</div>
-      <div class="stat-trend">
-         <span style="color: #10b981">
-            +8%
-         </span>
-      </div>
-   </div>
-</div>
-
-               
-            
-               
-               <!-- Render a Stat Component for each item -->
-               
-<div class="stat-card">
-   <div class="stat-icon">
-      ⏳
-   </div>
-   <div class="stat-info">
-      <h4 class="stat-title">Avg. Session</h4>
-      <div class="stat-value">4m 12s</div>
-      <div class="stat-trend">
-         <span style="color: #ef4444">
-            -2%
-         </span>
-      </div>
-   </div>
-</div>
-
-               
-            
-               
-               <!-- Render a Stat Component for each item -->
-               
-<div class="stat-card">
-   <div class="stat-icon">
-      ⭐
-   </div>
-   <div class="stat-info">
-      <h4 class="stat-title">Customer Rating</h4>
-      <div class="stat-value">4.8/5</div>
-      <div class="stat-trend">
-         <span style="color: #10b981">
-            +0.1
-         </span>
-      </div>
-   </div>
-</div>
-
-               
-            
-         </div>
+   <div class="container">
       
-      </div>
-   </main>
-</div>
+      <!-- Conditional Rendering -->
+      
+         
+         <!-- Fallback logic in bindings -->
+         <h2>Welcome back, Alex Costa!</h2>
+         
+         
+            <div class="badge">Admin User</div>
+         
 
+         <!-- Native JS methods inside bindings -->
+         <p>Your current wallet balance is: <strong>$150.75</strong></p>
+
+         <!-- Complex conditions in an-if -->
+         
+            <div class="success-box">
+               <strong>Good news!</strong> You have enough balance to upgrade to the premium plan.
+            </div>
+         
+         
+
+         <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #e2e8f0;">
+
+         <h3>Shopping Cart Summary</h3>
+         <ul>
+            
+               <li>
+                  <span>Mechanical Keyboard</span>
+                  <div style="text-align: right;">
+                     <div class="price">$120.00</div>
+                     
+                     <!-- JS Math logic directly in the binding -->
+                     <div class="tax-note">With 20% Tax: $144.00</div>
+                  </div>
+               </li>
+            
+               <li>
+                  <span>USB-C Cable</span>
+                  <div style="text-align: right;">
+                     <div class="price">$15.00</div>
+                     
+                     <!-- JS Math logic directly in the binding -->
+                     <div class="tax-note">With 20% Tax: $18.00</div>
+                  </div>
+               </li>
+            
+               <li>
+                  <span>Wireless Mouse</span>
+                  <div style="text-align: right;">
+                     <div class="price">$45.00</div>
+                     
+                     <!-- JS Math logic directly in the binding -->
+                     <div class="tax-note">With 20% Tax: $54.00</div>
+                  </div>
+               </li>
+            
+         </ul>
+
+      
+      
+
+   </div>
 
 </body>
 </html>
