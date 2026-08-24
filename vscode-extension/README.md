@@ -5,17 +5,24 @@ The official VS Code extension for [Andalina](https://github.com/Moataz-Aldawood
 ## Features
 
 - **GUI Configuration**: Manage your build targets natively in VS Code without editing JSON files manually.
-- **Static Compilation**: Resolves all `<an-component>`, `<an-include>`, and other tags into standard, perfectly formatted static HTML files.
-- **Asset Copying**: Automatically copies your images, CSS, and JS files directly to the output directory.
+- **Multi-Target Transpilation**: Not just for flat HTML! The builder now features **AOT Transpiler Adapters** for Enterprise frameworks. With a single click, convert your raw Andalina project into:
+  - **Static HTML** (Flat SSG)
+  - **JavaServer Faces (JSF)** `[Experimental]` (Outputs a Maven Web App structure with Composite Components and Facelets Templating)
+  - **Laravel Blade** `[Experimental]` (Uses `@component`, `@slot`, `@extends`)
+  - **Django** `[Experimental]` (Uses `{% include %}`, `{% block %}`, `{% extends %}`)
+  - **Thymeleaf** `[Experimental]` (Uses `th:replace`, `th:fragment`, `th:each`)
+- **Advanced Architecture Support**: Resolves `<an-component>`, `<an-layout>`, `<an-template>`, and `<an-inject>` tags directly into native server-side equivalents.
+- **Production Cleanup**: Safely strips Andalina-specific `<script>`, styles, `<an-data>`, and `<!-- an-comment -->` tags from your final production artifacts.
+- **Asset Copying**: Automatically copies your images, CSS, and JS files directly to the target directory.
 - **Auto Build on Save**: Watch your source files and automatically rebuild when any changes are detected.
-- **Developer Comments**: Seamlessly strips out `<!-- an-comment: note -->` development notes from your production build.
 
 ## Getting Started
 
-1. Look for the **Andalina Build** view in your VS Code Explorer sidebar (the lightning bolt icon).
+1. Look for the **Andalina Build** view in your VS Code Explorer sidebar.
 2. Click the **+** icon to add a new Action.
 3. Specify your **Source Folder** and **Target Folder**.
-4. Click the play button on your Action in the sidebar to build your static site!
+4. Check off one or more **Target Platforms** (e.g. Static HTML, JSF, Blade, etc.).
+5. Click the play button on your Action in the sidebar to build your artifacts!
 
 ## Requirements
 
