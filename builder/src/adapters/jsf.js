@@ -115,6 +115,10 @@ class JsfAdapter extends BaseAdapter {
 
         if (html.includes('<html')) {
             html = html.replace('<html', '<html xmlns="http://www.w3.org/1999/xhtml"\n      xmlns:h="http://xmlns.jcp.org/jsf/html"\n      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"\n      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"');
+            html = html.replace(/<head\b/g, '<h:head');
+            html = html.replace(/<\/head>/g, '</h:head>');
+            html = html.replace(/<body\b/g, '<h:body');
+            html = html.replace(/<\/body>/g, '</h:body>');
         }
 
         return html;

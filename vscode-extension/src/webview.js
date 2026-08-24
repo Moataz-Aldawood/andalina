@@ -270,27 +270,27 @@ function getWebviewContent(targetData) {
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="ssg" ${(!data.targets || data.targets.length === 0 || data.targets.includes('ssg')) ? 'checked' : ''}>
-            <label>Flat HTML (SSG)</label>
+            <label>Static HTML website</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="blade" ${data.targets && data.targets.includes('blade') ? 'checked' : ''}>
-            <label>Laravel Blade</label>
+            <label>Laravel Blade [Experimental]</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="jsf" ${data.targets && data.targets.includes('jsf') ? 'checked' : ''}>
-            <label>JavaServer Faces (JSF)</label>
+            <label>JavaServer Faces (JSF) [Experimental]</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="django" ${data.targets && data.targets.includes('django') ? 'checked' : ''}>
-            <label>Django Templates</label>
+            <label>Django Templates [Experimental]</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="thymeleaf" ${data.targets && data.targets.includes('thymeleaf') ? 'checked' : ''}>
-            <label>Thymeleaf</label>
+            <label>Thymeleaf [Experimental]</label>
         </div>
     </div>
 

@@ -27,7 +27,7 @@ var im=Object.create;var gr=Object.defineProperty;var sm=Object.getOwnPropertyDe
 @endsection`)}}this.cleanup(e);let a=e.toString(),c=this.config.propStart?this.config.propStart.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"):"\\{\\{",o=this.config.propEnd?this.config.propEnd.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"):"\\}\\}",d=new RegExp(`${c}\\s*(.+?)\\s*${o}`,"g");return a=a.replace(d,(l,h)=>`{{ ${h.replace(/([a-zA-Z_]\w*)\.([a-zA-Z_]\w*)/g,"$$$1->$2")} }}`),a=a.replace(/&lt;(@[a-zA-Z]+.*?)&gt;/g,"<$1>").replace(/&lt;/g,"<").replace(/&gt;/g,">"),a=a.replace(/^<html><head><\/head><body>([\s\S]*)<\/body><\/html>$/i,"$1"),a}};P1.exports=oc});var K1=A((r5,W1)=>{var _8=Ou(),cc=class extends _8{get extension(){return".xhtml"}shouldProcess(e){return e.endsWith(".html")}async transform(e,u){let r=e.createTreeWalker(e,global.NodeFilter.SHOW_ELEMENT),n,i=[];for(;n=r.nextNode();)i.push(n);let s=(l,h,g={})=>{let b=e.createElement(h);for(let[E,T]of Object.entries(g))b.setAttribute(E,T);for(;l.firstChild;)b.appendChild(l.firstChild);return l.replaceWith(b),b};for(let l of i){if(!l.parentNode)continue;let h=l.tagName?l.tagName.toLowerCase():"";if(h===`${this.config.prefix}-component`){let g=l.getAttribute("name"),b=e.createElement("ui:include");b.setAttribute("src",`/${this.config.componentsPath}/${g}.xhtml`);for(let E of l.attributes)if(E.name!=="name"){let T=e.createElement("ui:param");T.setAttribute("name",E.name),T.setAttribute("value",E.value),b.appendChild(T)}l.replaceWith(b)}else if(h===`${this.config.prefix}-if`){let g=l.getAttribute("condition");g=g.replace(/===/g,"eq").replace(/==/g,"eq").replace(/!==/g,"ne").replace(/!=/g,"ne"),s(l,"ui:fragment",{rendered:`#{${g}}`})}else if(h===`${this.config.prefix}-else`){let g=e.createComment(" JSF WARNING: an-else requires manual conversion to a negated ui:fragment or c:choose ");l.insertBefore(g,l.firstChild),s(l,"ui:fragment")}else if(h===`${this.config.prefix}-repeat`){let g=l.getAttribute("data"),b=l.getAttribute("item")||"item";s(l,"ui:repeat",{value:`#{${g}}`,var:b})}else if(h===`${this.config.prefix}-layout`){let g=l.getAttribute("src");s(l,"ui:composition",{template:`/${this.config.layoutsPath}/${g}.xhtml`})}else if(h===`${this.config.prefix}-template`){let g=l.getAttribute("name");l.innerHTML.trim()===""?s(l,"ui:insert",{name:g}):s(l,"ui:define",{name:g})}}this.cleanup(e);let a=e.toString(),c=this.config.propStart?this.config.propStart.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"):"\\{\\{",o=this.config.propEnd?this.config.propEnd.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"):"\\}\\}",d=new RegExp(`${c}\\s*(.+?)\\s*${o}`,"g");return a=a.replace(d,(l,h)=>`#{${h}}`),a=a.replace(/^<html><head><\/head><body>([\s\S]*)<\/body><\/html>$/i,"$1"),a.includes("<html")&&(a=a.replace("<html",`<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"`)),a}};W1.exports=cc});var Y1=A((n5,U1)=>{var G8=Ou(),lc=class extends G8{get extension(){return".html"}shouldProcess(e){return e.endsWith(".html")}async transform(e,u){let r=e.createTreeWalker(e,global.NodeFilter.SHOW_ELEMENT),n,i=[];for(;n=r.nextNode();)i.push(n);let s=(l,h,g)=>{let b=e.createDocumentFragment();for(h&&b.appendChild(e.createTextNode(h));l.firstChild;)b.appendChild(l.firstChild);g&&b.appendChild(e.createTextNode(g)),l.replaceWith(b)};for(let l of i){if(!l.parentNode)continue;let h=l.tagName?l.tagName.toLowerCase():"";if(h===`${this.config.prefix}-component`){let g=l.getAttribute("name"),b=[];for(let v of l.attributes)v.name!=="name"&&b.push(`${v.name}='${v.value}'`);let E=b.length>0?` with ${b.join(" ")}`:"",T=`{% include "${this.config.componentsPath}/${g}.html"${E} %}`;l.replaceWith(e.createTextNode(T))}else if(h===`${this.config.prefix}-if`){let b=l.getAttribute("condition").replace(/===/g,"==").replace(/!==/g,"!=");s(l,`{% if ${b} %}
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"`),a=a.replace(/<head\b/g,"<h:head"),a=a.replace(/<\/head>/g,"</h:head>"),a=a.replace(/<body\b/g,"<h:body"),a=a.replace(/<\/body>/g,"</h:body>")),a}};W1.exports=cc});var Y1=A((n5,U1)=>{var G8=Ou(),lc=class extends G8{get extension(){return".html"}shouldProcess(e){return e.endsWith(".html")}async transform(e,u){let r=e.createTreeWalker(e,global.NodeFilter.SHOW_ELEMENT),n,i=[];for(;n=r.nextNode();)i.push(n);let s=(l,h,g)=>{let b=e.createDocumentFragment();for(h&&b.appendChild(e.createTextNode(h));l.firstChild;)b.appendChild(l.firstChild);g&&b.appendChild(e.createTextNode(g)),l.replaceWith(b)};for(let l of i){if(!l.parentNode)continue;let h=l.tagName?l.tagName.toLowerCase():"";if(h===`${this.config.prefix}-component`){let g=l.getAttribute("name"),b=[];for(let v of l.attributes)v.name!=="name"&&b.push(`${v.name}='${v.value}'`);let E=b.length>0?` with ${b.join(" ")}`:"",T=`{% include "${this.config.componentsPath}/${g}.html"${E} %}`;l.replaceWith(e.createTextNode(T))}else if(h===`${this.config.prefix}-if`){let b=l.getAttribute("condition").replace(/===/g,"==").replace(/!==/g,"!=");s(l,`{% if ${b} %}
 `,`
 {% endif %}`)}else if(h===`${this.config.prefix}-else`)s(l,`{% else %}
 `,"");else if(h===`${this.config.prefix}-repeat`){let g=l.getAttribute("data"),b=l.getAttribute("item")||"item";s(l,`{% for ${b} in ${g} %}
@@ -208,27 +208,27 @@ Auto Build on Save: ${!!n.autoBuild}`,a.contextValue="buildTarget",a.targetData=
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="ssg" ${!e.targets||e.targets.length===0||e.targets.includes("ssg")?"checked":""}>
-            <label>Flat HTML (SSG)</label>
+            <label>Static HTML website</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="blade" ${e.targets&&e.targets.includes("blade")?"checked":""}>
-            <label>Laravel Blade</label>
+            <label>Laravel Blade [Experimental]</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="jsf" ${e.targets&&e.targets.includes("jsf")?"checked":""}>
-            <label>JavaServer Faces (JSF)</label>
+            <label>JavaServer Faces (JSF) [Experimental]</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="django" ${e.targets&&e.targets.includes("django")?"checked":""}>
-            <label>Django Templates</label>
+            <label>Django Templates [Experimental]</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" class="target-cb" value="thymeleaf" ${e.targets&&e.targets.includes("thymeleaf")?"checked":""}>
-            <label>Thymeleaf</label>
+            <label>Thymeleaf [Experimental]</label>
         </div>
     </div>
 
