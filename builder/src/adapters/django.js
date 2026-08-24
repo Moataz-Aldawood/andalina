@@ -34,17 +34,19 @@ class DjangoAdapter extends BaseAdapter {
             const tagName = node.tagName ? node.tagName.toLowerCase() : '';
 
             if (tagName === `${this.config.prefix}-component`) {
-                const name = node.getAttribute('name');
+                let name = node.getAttribute('name');
+                const srcAttr = node.getAttribute('src');
+                if (!name && srcAttr) name = srcAttr.split('/').pop().replace('.html', '');
+                if (!name) name = 'unknown';
+                
                 const props = [];
                 for (const attr of node.attributes) {
-                    if (attr.name !== 'name') {
+                    if (attr.name !== 'name' && attr.name !== 'src') {
                         props.push(`${attr.name}='${attr.value}'`);
                     }
                 }
                 const propsStr = props.length > 0 ? ` with ${props.join(' ')}` : '';
-                
-                const str = `{% include "${this.config.componentsPath}/${name}.html"${propsStr} %}`;
-                node.replaceWith(document.createTextNode(str));
+                replaceWithDjango(node, `{% include "${this.config.componentsPath || 'components'}/${name}.html"${propsStr} %}\n`, ``);
             }
             
             else if (tagName === `${this.config.prefix}-if`) {
@@ -64,17 +66,24 @@ class DjangoAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-layout`) {
-                const src = node.getAttribute('src');
-                replaceWithDjango(node, `{% extends "${this.config.layoutsPath}/${src}.html" %}\n`, ``);
+                let src = node.getAttribute('src');
+                src = src.replace(/^\.\//, '');
+                if (src.endsWith('.html')) src = src.replace(/\.html$/, '');
+                
+                const layoutsPath = this.config.layoutsPath || 'layouts';
+                if (!src.startsWith(layoutsPath)) src = `${layoutsPath}/${src}`;
+                
+                replaceWithDjango(node, `{% extends "${src}.html" %}\n`, ``);
             }
             
             else if (tagName === `${this.config.prefix}-template`) {
                 const name = node.getAttribute('name');
-                if (node.innerHTML.trim() === '') {
-                    node.replaceWith(document.createTextNode(`{% block ${name} %}{% endblock %}`));
-                } else {
-                    replaceWithDjango(node, `{% block ${name} %}\n`, `\n{% endblock %}`);
-                }
+                replaceWithDjango(node, `{% block ${name} %}\n`, `\n{% endblock %}`);
+            }
+            
+            else if (tagName === `${this.config.prefix}-inject`) {
+                const name = node.getAttribute('name');
+                replaceWithDjango(node, `{% block ${name} %}\n`, `\n{% endblock %}`);
             }
         }
 

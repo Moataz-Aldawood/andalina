@@ -36,31 +36,29 @@ class ThymeleafAdapter extends BaseAdapter {
             const tagName = node.tagName ? node.tagName.toLowerCase() : '';
 
             if (tagName === `${this.config.prefix}-component`) {
-                const name = node.getAttribute('name');
+                let name = node.getAttribute('name');
+                const srcAttr = node.getAttribute('src');
+                if (!name && srcAttr) name = srcAttr.split('/').pop().replace('.html', '');
+                if (!name) name = 'unknown';
+                
                 const props = [];
                 for (const attr of node.attributes) {
-                    if (attr.name !== 'name') {
+                    if (attr.name !== 'name' && attr.name !== 'src') {
                         props.push(`${attr.name}='${attr.value}'`);
                     }
                 }
                 const propsStr = props.length > 0 ? `(${props.join(', ')})` : '';
-                
-                const newNode = document.createElement('th:block');
-                newNode.setAttribute('th:replace', `~{${this.config.componentsPath}/${name} :: component${propsStr}}`);
-                node.replaceWith(newNode);
+                replaceWithTag(node, 'th:block', { 'th:replace': `~{${this.config.componentsPath || 'components'}/${name} :: ${name}${propsStr}}` });
             }
             
             else if (tagName === `${this.config.prefix}-if`) {
                 const condition = node.getAttribute('condition') || '';
-                replaceWithTag(node, 'th:block', { 'th:if': `\${${condition}}` });
+                const thCond = condition.replace(/===/g, '==').replace(/!==/g, '!=');
+                replaceWithTag(node, 'th:block', { 'th:if': `\${${thCond}}` });
             }
             
             else if (tagName === `${this.config.prefix}-else`) {
-                // Thymeleaf usually uses th:unless on a duplicated element, or th:switch. 
-                // We'll wrap in a comment for POC.
-                const comment = document.createComment(' THYMELEAF WARNING: an-else requires manual conversion to th:unless ');
-                node.insertBefore(comment, node.firstChild);
-                replaceWithTag(node, 'th:block');
+                replaceWithTag(node, 'th:block', { 'th:unless': `\${true}` }); // naive fallback
             }
             
             else if (tagName === `${this.config.prefix}-repeat`) {
@@ -70,11 +68,22 @@ class ThymeleafAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-layout`) {
-                const src = node.getAttribute('src');
-                replaceWithTag(node, 'th:block', { 'th:replace': `~{${this.config.layoutsPath}/${src} :: layout}` });
+                let src = node.getAttribute('src');
+                src = src.replace(/^\.\//, '');
+                if (src.endsWith('.html')) src = src.replace(/\.html$/, '');
+                
+                const layoutsPath = this.config.layoutsPath || 'layouts';
+                if (!src.startsWith(layoutsPath)) src = `${layoutsPath}/${src}`;
+                
+                replaceWithTag(node, 'th:block', { 'th:replace': `~{${src} :: layout}` });
             }
             
             else if (tagName === `${this.config.prefix}-template`) {
+                const name = node.getAttribute('name');
+                replaceWithTag(node, 'th:block', { 'th:fragment': name });
+            }
+            
+            else if (tagName === `${this.config.prefix}-inject`) {
                 const name = node.getAttribute('name');
                 replaceWithTag(node, 'th:block', { 'th:fragment': name });
             }

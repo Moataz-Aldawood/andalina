@@ -34,17 +34,19 @@ class BladeAdapter extends BaseAdapter {
             const tagName = node.tagName ? node.tagName.toLowerCase() : '';
 
             if (tagName === `${this.config.prefix}-component`) {
-                const name = node.getAttribute('name');
+                let name = node.getAttribute('name');
+                const srcAttr = node.getAttribute('src');
+                if (!name && srcAttr) name = srcAttr.split('/').pop().replace('.html', '');
+                if (!name) name = 'unknown';
+                
                 const props = [];
                 for (const attr of node.attributes) {
-                    if (attr.name !== 'name') {
+                    if (attr.name !== 'name' && attr.name !== 'src') {
                         props.push(`'${attr.name}' => '${attr.value}'`);
                     }
                 }
                 const propsStr = props.length > 0 ? `, [${props.join(', ')}]` : '';
-                
-                const phpStr = `@include('${this.config.componentsPath}.${name}'${propsStr})`;
-                node.replaceWith(document.createTextNode(phpStr));
+                replaceWithBlade(node, `@component('${this.config.componentsPath || 'components'}.${name}'${propsStr})\n`, `\n@endcomponent`);
             }
             
             else if (tagName === `${this.config.prefix}-if`) {
@@ -64,14 +66,32 @@ class BladeAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-layout`) {
-                const src = node.getAttribute('src');
-                replaceWithBlade(node, `@extends('${this.config.layoutsPath}.${src}')\n`, ``);
+                let src = node.getAttribute('src');
+                src = src.replace(/^\.\//, '');
+                if (src.endsWith('.html')) src = src.replace(/\.html$/, '');
+                
+                const layoutsPath = this.config.layoutsPath || 'layouts';
+                if (!src.startsWith(layoutsPath)) src = `${layoutsPath}/${src}`;
+                src = src.replace(/\//g, '.');
+                
+                replaceWithBlade(node, `@extends('${src}')\n`, ``);
             }
             
             else if (tagName === `${this.config.prefix}-template`) {
                 const name = node.getAttribute('name');
                 if (node.innerHTML.trim() === '') {
                     node.replaceWith(document.createTextNode(`@yield('${name}')`));
+                } else {
+                    replaceWithBlade(node, `@section('${name}')\n`, `\n@show`);
+                }
+            }
+            
+            else if (tagName === `${this.config.prefix}-inject`) {
+                const name = node.getAttribute('name');
+                const parentTag = node.parentNode ? node.parentNode.tagName.toLowerCase() : '';
+                
+                if (parentTag === `${this.config.prefix}-component`) {
+                    replaceWithBlade(node, `@slot('${name}')\n`, `\n@endslot`);
                 } else {
                     replaceWithBlade(node, `@section('${name}')\n`, `\n@endsection`);
                 }

@@ -36,6 +36,13 @@ class JsfAdapter extends BaseAdapter {
     }
 
     async transform(document, context) {
+        let posixRelPath = context.relativePath.replace(/\\/g, '/');
+        const compPrefix = this.config.componentsPath ? this.config.componentsPath + '/' : 'components/';
+        const layPrefix = this.config.layoutsPath ? this.config.layoutsPath + '/' : 'layouts/';
+
+        const isComponent = posixRelPath.startsWith(compPrefix);
+        const isLayout = posixRelPath.startsWith(layPrefix);
+
         const walker = document.createTreeWalker(document, global.NodeFilter.SHOW_ELEMENT);
         let currentNode;
         
@@ -117,15 +124,35 @@ class JsfAdapter extends BaseAdapter {
             
             // 5. Layout Definitions
             else if (tagName === `${this.config.prefix}-layout`) {
-                const src = node.getAttribute('src');
-                replaceWithTag(node, 'ui:composition', { template: `/WEB-INF/${this.config.layoutsPath || 'layouts'}/${src}.xhtml` });
+                let src = node.getAttribute('src');
+                src = src.replace(/^\.\//, ''); // remove leading ./
+                if (src.endsWith('.html')) src = src.replace(/\.html$/, '');
+                
+                const layoutsPath = this.config.layoutsPath || 'layouts';
+                if (!src.startsWith(layoutsPath)) {
+                    src = `${layoutsPath}/${src}`;
+                }
+                
+                replaceWithTag(node, 'ui:composition', { template: `/WEB-INF/${src}.xhtml` });
             }
             
             // 6. Template Definitions
             else if (tagName === `${this.config.prefix}-template`) {
                 const name = node.getAttribute('name');
-                if (node.innerHTML.trim() === '') {
+                if (isComponent) {
+                    replaceWithTag(node, 'cc:insertFacet', { name });
+                } else {
                     replaceWithTag(node, 'ui:insert', { name });
+                }
+            }
+            
+            // 7. Inject Definitions
+            else if (tagName === `${this.config.prefix}-inject`) {
+                const name = node.getAttribute('name');
+                const parentTag = node.parentNode ? node.parentNode.tagName.toLowerCase() : '';
+                
+                if (parentTag.startsWith('components:')) {
+                    replaceWithTag(node, 'f:facet', { name });
                 } else {
                     replaceWithTag(node, 'ui:define', { name });
                 }
@@ -133,13 +160,6 @@ class JsfAdapter extends BaseAdapter {
         }
 
         this.cleanup(document);
-        
-        let posixRelPath = context.relativePath.replace(/\\/g, '/');
-        const compPrefix = this.config.componentsPath ? this.config.componentsPath + '/' : 'components/';
-        const layPrefix = this.config.layoutsPath ? this.config.layoutsPath + '/' : 'layouts/';
-
-        const isComponent = posixRelPath.startsWith(compPrefix);
-        const isLayout = posixRelPath.startsWith(layPrefix);
 
         let innerHtml = document.toString();
         innerHtml = innerHtml.replace(/^<html><head><\/head><body>([\s\S]*)<\/body><\/html>$/i, '$1');
