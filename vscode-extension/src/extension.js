@@ -127,7 +127,7 @@ async function executeTargetBuild(targetData, forceClear, isSilent = false) {
 
     try {
         if (!isSilent) {
-            vscode.window.withProgress({
+            await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
                 title: `Andalina Builder: ${targetData.name}`,
                 cancellable: false
@@ -136,18 +136,25 @@ async function executeTargetBuild(targetData, forceClear, isSilent = false) {
                 
                 for (let i = 0; i < targetsList.length; i++) {
                     const target = targetsList[i];
-                    // Only clear before build on the FIRST iteration, otherwise we wipe out earlier targets
-                    const shouldClear = i === 0 ? clearBeforeBuild : false;
-                    await buildProject(srcDir, destDir, { clearBeforeBuild: shouldClear, target });
+                    // Name the subdirectories nicely based on target
+                    let targetSubDir = target;
+                    if (target === 'ssg') targetSubDir = 'flat-html';
+                    if (target === 'blade') targetSubDir = 'blade-laravel';
+                    const targetDest = path.join(destDir, targetSubDir);
+                    
+                    await buildProject(srcDir, targetDest, { clearBeforeBuild, target });
                 }
-            }).then(() => {
-                vscode.window.showInformationMessage(`Andalina: Action successfully built!`);
             });
+            vscode.window.showInformationMessage(`Andalina: Action successfully built!`);
         } else {
             for (let i = 0; i < targetsList.length; i++) {
                 const target = targetsList[i];
-                const shouldClear = i === 0 ? clearBeforeBuild : false;
-                await buildProject(srcDir, destDir, { clearBeforeBuild: shouldClear, target });
+                let targetSubDir = target;
+                if (target === 'ssg') targetSubDir = 'flat-html';
+                if (target === 'blade') targetSubDir = 'blade-laravel';
+                const targetDest = path.join(destDir, targetSubDir);
+                
+                await buildProject(srcDir, targetDest, { clearBeforeBuild, target });
             }
             vscode.window.setStatusBarMessage('$(check) Andalina Build Complete', 3000);
         }

@@ -1,0 +1,1 @@
+<html><body><an-data src="data.json" name="posts"></an-data><an-repeat data="posts" item="post"><div>${post.title}</div></an-repeat></body></html>

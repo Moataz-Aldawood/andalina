@@ -2,7 +2,7 @@
   "name": "andalina-builder",
   "displayName": "Andalina Builder",
   "description": "The official VS Code extension for building Andalina UI projects into static HTML.",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "publisher": "moataz-aldawood",
   "license": "LGPL-3.0-or-later",
   "icon": "logo.png",

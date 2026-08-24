@@ -102,8 +102,8 @@ class JsfAdapter extends BaseAdapter {
 
         let html = document.toString();
 
-        const escapedStart = this.config.propStart ? this.config.propStart.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') : '\\\\{\\\\{';
-        const escapedEnd = this.config.propEnd ? this.config.propEnd.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') : '\\\\}\\\\}';
+        const escapedStart = this.config.propStart ? this.config.propStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\{\\{';
+        const escapedEnd = this.config.propEnd ? this.config.propEnd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\}\\}';
         
         const regex = new RegExp(`${escapedStart}\\s*(.+?)\\s*${escapedEnd}`, 'g');
         html = html.replace(regex, (match, expression) => {

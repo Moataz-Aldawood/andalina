@@ -30,6 +30,9 @@ async function buildProject(srcDir, destDir, options = {}) {
 
     // Load config if it exists to know which directories to ignore
     let config = {
+        prefix: 'an',
+        propStart: '{{',
+        propEnd: '}}',
         componentsPath: 'components',
         codesPath: '',
         layoutsPath: '',
@@ -43,6 +46,25 @@ async function buildProject(srcDir, destDir, options = {}) {
             config = { ...config, ...JSON.parse(fs.readFileSync(configPath, 'utf8')) };
         } catch (err) {
             console.error(`[Builder] Error reading config: ${err.message}`);
+        }
+    }
+
+    // Fallback: extract propStart/propEnd/prefix from index.html script tag
+    const indexPath = path.join(srcDir, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        const indexHtml = fs.readFileSync(indexPath, 'utf8');
+        const matchStart = indexHtml.match(/<script[^>]*propStart\s*=\s*['"](.*?)['"]/);
+        const matchEnd = indexHtml.match(/<script[^>]*propEnd\s*=\s*['"](.*?)['"]/);
+        const matchPrefix = indexHtml.match(/<script[^>]*prefix\s*=\s*['"](.*?)['"]/);
+        
+        if (matchStart && (!fs.existsSync(configPath) || !JSON.parse(fs.readFileSync(configPath, 'utf8')).propStart)) {
+            config.propStart = matchStart[1];
+        }
+        if (matchEnd && (!fs.existsSync(configPath) || !JSON.parse(fs.readFileSync(configPath, 'utf8')).propEnd)) {
+            config.propEnd = matchEnd[1];
+        }
+        if (matchPrefix && (!fs.existsSync(configPath) || !JSON.parse(fs.readFileSync(configPath, 'utf8')).prefix)) {
+            config.prefix = matchPrefix[1];
         }
     }
 

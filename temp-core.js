@@ -1,0 +1,1 @@
+console.log('loaded'); module.exports = { a: 1 };
