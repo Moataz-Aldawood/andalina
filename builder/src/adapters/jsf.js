@@ -1,4 +1,5 @@
 const BaseAdapter = require('./base.js');
+const path = require('path');
 
 class JsfAdapter extends BaseAdapter {
     get extension() {
@@ -7,6 +8,31 @@ class JsfAdapter extends BaseAdapter {
 
     shouldProcess(filePath) {
         return filePath.endsWith('.html');
+    }
+
+    getOutputPath(relativePath, type) {
+        let posixPath = relativePath.replace(/\\/g, '/');
+        
+        if (type === 'asset') {
+            return `src/main/webapp/resources/${posixPath}`;
+        }
+        
+        // It's a page
+        const ext = path.extname(posixPath);
+        posixPath = posixPath.slice(0, -ext.length) + this.extension;
+        
+        const compPrefix = this.config.componentsPath ? this.config.componentsPath + '/' : 'components/';
+        const layPrefix = this.config.layoutsPath ? this.config.layoutsPath + '/' : 'layouts/';
+        
+        if (posixPath.startsWith(compPrefix)) {
+            // e.g. components/stat-card.xhtml -> src/main/webapp/resources/components/stat-card.xhtml
+            return `src/main/webapp/resources/${posixPath}`;
+        } else if (posixPath.startsWith(layPrefix)) {
+            // e.g. layouts/dashboard.xhtml -> src/main/webapp/WEB-INF/layouts/dashboard.xhtml
+            return `src/main/webapp/WEB-INF/${posixPath}`;
+        } else {
+            return `src/main/webapp/${posixPath}`;
+        }
     }
 
     async transform(document, context) {
@@ -30,27 +56,38 @@ class JsfAdapter extends BaseAdapter {
             oldNode.replaceWith(newNode);
             return newNode;
         };
+        
+        let hasCompositeComponent = false;
 
         // Process elements
         for (const node of nodesToProcess) {
-            // Because we replaced nodes, we need to check if the node is still in the document
             if (!node.parentNode) continue;
 
             const tagName = node.tagName ? node.tagName.toLowerCase() : '';
 
             // 1. <an-component name="card" title="Hello">
             if (tagName === `${this.config.prefix}-component`) {
-                const name = node.getAttribute('name');
-                const newNode = document.createElement('ui:include');
-                newNode.setAttribute('src', `/${this.config.componentsPath}/${name}.xhtml`);
+                let name = node.getAttribute('name');
+                const srcAttr = node.getAttribute('src');
+                
+                if (!name && srcAttr) {
+                    // Extract name from src (e.g. ./components/stat-card.html -> stat-card)
+                    const srcBase = srcAttr.split('/').pop();
+                    name = srcBase.replace('.html', '');
+                }
+
+                if (!name) name = 'unknown-component';
+
+                const newNode = document.createElement(`components:${name}`);
+                hasCompositeComponent = true;
                 
                 for (const attr of node.attributes) {
-                    if (attr.name !== 'name') {
-                        const paramNode = document.createElement('ui:param');
-                        paramNode.setAttribute('name', attr.name);
-                        paramNode.setAttribute('value', attr.value);
-                        newNode.appendChild(paramNode);
+                    if (attr.name !== 'name' && attr.name !== 'src') {
+                        newNode.setAttribute(attr.name, attr.value);
                     }
+                }
+                while (node.firstChild) {
+                    newNode.appendChild(node.firstChild);
                 }
                 node.replaceWith(newNode);
             }
@@ -65,11 +102,9 @@ class JsfAdapter extends BaseAdapter {
             
             // 3. <an-else>
             else if (tagName === `${this.config.prefix}-else`) {
-                // Convert to a comment for POC
                 const comment = document.createComment(' JSF WARNING: an-else requires manual conversion to a negated ui:fragment or c:choose ');
                 node.insertBefore(comment, node.firstChild);
-                
-                replaceWithTag(node, 'ui:fragment'); // Just make it a fragment so children remain visible
+                replaceWithTag(node, 'ui:fragment');
             }
             
             // 4. <an-repeat data="store.products" item="product">
@@ -81,17 +116,14 @@ class JsfAdapter extends BaseAdapter {
             }
             
             // 5. Layout Definitions
-            // <an-layout src="dashboard">
             else if (tagName === `${this.config.prefix}-layout`) {
                 const src = node.getAttribute('src');
-                replaceWithTag(node, 'ui:composition', { template: `/${this.config.layoutsPath}/${src}.xhtml` });
+                replaceWithTag(node, 'ui:composition', { template: `/WEB-INF/${this.config.layoutsPath || 'layouts'}/${src}.xhtml` });
             }
             
             // 6. Template Definitions
-            // <an-template name="content">
             else if (tagName === `${this.config.prefix}-template`) {
                 const name = node.getAttribute('name');
-                
                 if (node.innerHTML.trim() === '') {
                     replaceWithTag(node, 'ui:insert', { name });
                 } else {
@@ -101,20 +133,40 @@ class JsfAdapter extends BaseAdapter {
         }
 
         this.cleanup(document);
-        let html = document.toString();
-
-        const escapedStart = this.config.propStart ? this.config.propStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\{\\{';
-        const escapedEnd = this.config.propEnd ? this.config.propEnd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\}\\}';
         
-        const regex = new RegExp(`${escapedStart}\\s*(.+?)\\s*${escapedEnd}`, 'g');
-        html = html.replace(regex, (match, expression) => {
-            return `#{${expression}}`;
-        });
+        let posixRelPath = context.relativePath.replace(/\\/g, '/');
+        const compPrefix = this.config.componentsPath ? this.config.componentsPath + '/' : 'components/';
+        const layPrefix = this.config.layoutsPath ? this.config.layoutsPath + '/' : 'layouts/';
+
+        const isComponent = posixRelPath.startsWith(compPrefix);
+        const isLayout = posixRelPath.startsWith(layPrefix);
+
+        let innerHtml = document.toString();
+        innerHtml = innerHtml.replace(/^<html><head><\/head><body>([\s\S]*)<\/body><\/html>$/i, '$1');
+        innerHtml = innerHtml.replace(/^<html><body>([\s\S]*)<\/body><\/html>$/i, '$1');
+
+        if (isComponent) {
+            let html = `<ui:component\n    xmlns="http://www.w3.org/1999/xhtml"\n    xmlns:f="http://xmlns.jcp.org/jsf/core"\n    xmlns:h="http://xmlns.jcp.org/jsf/html"\n    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"\n    xmlns:cc="http://xmlns.jcp.org/jsf/composite">\n    <cc:interface>\n        <!-- Define your cc:attribute here -->\n    </cc:interface>\n    <cc:implementation>\n${innerHtml}\n    </cc:implementation>\n</ui:component>`;
+            return this.applyRegex(html, true);
+        } else if (isLayout) {
+            let html = `<ui:composition\n    xmlns="http://www.w3.org/1999/xhtml"\n    xmlns:f="http://xmlns.jcp.org/jsf/core"\n    xmlns:h="http://xmlns.jcp.org/jsf/html"\n    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"\n    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">\n${innerHtml}\n</ui:composition>`;
+            return this.applyRegex(html, false);
+        }
+
+        // Standard Page
+        let html = document.toString();
+        html = this.applyRegex(html);
 
         html = html.replace(/^<html><head><\/head><body>([\s\S]*)<\/body><\/html>$/i, '$1');
 
         if (html.includes('<html')) {
-            html = html.replace('<html', '<html xmlns="http://www.w3.org/1999/xhtml"\n      xmlns:h="http://xmlns.jcp.org/jsf/html"\n      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"\n      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"');
+            let xmlns = '<html xmlns="http://www.w3.org/1999/xhtml"\n      xmlns:h="http://xmlns.jcp.org/jsf/html"\n      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"\n      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"';
+            
+            if (hasCompositeComponent) {
+                xmlns += '\n      xmlns:components="http://xmlns.jcp.org/jsf/composite/components"';
+            }
+            
+            html = html.replace('<html', xmlns);
             html = html.replace(/<head\b/g, '<h:head');
             html = html.replace(/<\/head>/g, '</h:head>');
             html = html.replace(/<body\b/g, '<h:body');
@@ -122,6 +174,20 @@ class JsfAdapter extends BaseAdapter {
         }
 
         return html;
+    }
+    
+    applyRegex(html, isComponent = false) {
+        const escapedStartStr = this.config.propStart ? this.config.propStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\{\\{';
+        const escapedEndStr = this.config.propEnd ? this.config.propEnd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\}\\}';
+
+        const regex = new RegExp(`${escapedStartStr}\\s*(.+?)\\s*${escapedEndStr}`, 'g');
+        return html.replace(regex, (match, expression) => {
+            const isSimpleProp = /^[a-zA-Z_]\w*$/.test(expression);
+            if (isComponent && isSimpleProp) {
+                return `#{cc.attrs.${expression}}`;
+            }
+            return `#{${expression}}`;
+        });
     }
 }
 

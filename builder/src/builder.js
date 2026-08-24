@@ -202,11 +202,15 @@ async function buildProject(srcDir, destDir, options = {}) {
         const outputCode = await adapter.transform(document, { filePath, relativePath: path.relative(srcDir, filePath) });
         
         let relativePath = path.relative(srcDir, filePath);
-        // Rename output extension based on adapter
-        const ext = path.extname(relativePath);
-        relativePath = relativePath.slice(0, -ext.length) + adapter.extension;
         
-        const outPath = path.join(destDir, relativePath);
+        let outPath;
+        if (typeof adapter.getOutputPath === 'function') {
+            outPath = path.join(destDir, adapter.getOutputPath(relativePath, 'page'));
+        } else {
+            const ext = path.extname(relativePath);
+            relativePath = relativePath.slice(0, -ext.length) + adapter.extension;
+            outPath = path.join(destDir, relativePath);
+        }
 
         // Ensure output dir exists
         fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -216,8 +220,13 @@ async function buildProject(srcDir, destDir, options = {}) {
     if (assetFiles.length > 0) {
         console.log(`[Builder] Copying ${assetFiles.length} asset files...`);
         for (const assetPath of assetFiles) {
-            const relativePath = path.relative(srcDir, assetPath);
-            const outPath = path.join(destDir, relativePath);
+            let relativePath = path.relative(srcDir, assetPath);
+            let outPath;
+            if (typeof adapter.getOutputPath === 'function') {
+                outPath = path.join(destDir, adapter.getOutputPath(relativePath, 'asset'));
+            } else {
+                outPath = path.join(destDir, relativePath);
+            }
             fs.mkdirSync(path.dirname(outPath), { recursive: true });
             fs.copyFileSync(assetPath, outPath);
         }
