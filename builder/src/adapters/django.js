@@ -78,6 +78,7 @@ class DjangoAdapter extends BaseAdapter {
             }
         }
 
+        this.cleanup(document);
         let html = document.toString();
 
         const escapedStart = this.config.propStart ? this.config.propStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '\\{\\{';

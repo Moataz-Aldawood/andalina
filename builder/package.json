@@ -1,6 +1,6 @@
 {
   "name": "andalina-builder",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "AOT Static Compiler and Production CLI for Andalina HTML composition engine.",
   "main": "src/builder.js",
   "bin": {

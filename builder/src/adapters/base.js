@@ -29,6 +29,40 @@ class BaseAdapter {
     shouldProcess(filePath) {
         return filePath.endsWith('.html');
     }
+    /**
+     * Removes Andalina-specific development artifacts from the DOM before generating output.
+     * @param {Document} document 
+     */
+    cleanup(document) {
+        const prefix = this.config.prefix || 'an';
+        
+        // Remove andalina script tags
+        const scripts = document.querySelectorAll('script');
+        scripts.forEach(script => {
+            if (script.src && script.src.includes('andalina.js')) {
+                script.remove();
+            }
+        });
+
+        // Remove Andalina FOUC style
+        const foucStyle = document.getElementById('andalina-fouc');
+        if (foucStyle) foucStyle.remove();
+
+        // Remove <an-data> tags
+        const dataNodes = document.querySelectorAll(`${prefix}-data`);
+        dataNodes.forEach(node => node.remove());
+
+        // Remove Andalina comments (<!-- an-comment: ... -->)
+        const walker = document.createTreeWalker(document, 128); // NodeFilter.SHOW_COMMENT = 128
+        const commentsToRemove = [];
+        let currentNode;
+        while ((currentNode = walker.nextNode())) {
+            if (currentNode.nodeValue.trim().startsWith(`${prefix}-comment`)) {
+                commentsToRemove.push(currentNode);
+            }
+        }
+        commentsToRemove.forEach(node => node.remove());
+    }
 }
 
 module.exports = BaseAdapter;

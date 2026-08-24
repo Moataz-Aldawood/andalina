@@ -58,14 +58,7 @@ class SsgAdapter extends BaseAdapter {
         await window.Andalina.init();
 
         // Cleanup: Remove Andalina runtime tags for pure static output
-        const scripts = document.querySelectorAll('script');
-        scripts.forEach(script => {
-            if (script.src && script.src.includes('andalina')) {
-                script.remove();
-            }
-        });
-        const foucStyle = document.getElementById('andalina-fouc');
-        if (foucStyle) foucStyle.remove();
+        this.cleanup(document);
 
         delete window.Andalina;
 
