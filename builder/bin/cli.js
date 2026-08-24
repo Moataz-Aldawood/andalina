@@ -7,6 +7,7 @@ const { buildProject } = require('../src/builder.js');
 const args = process.argv.slice(2);
 let srcDir = process.cwd();
 let destDir = path.join(process.cwd(), 'dist');
+let target = 'ssg';
 
 for (let i = 0; i < args.length; i++) {
     if (args[i] === 'build') {
@@ -18,6 +19,9 @@ for (let i = 0; i < args.length; i++) {
     } else if (args[i] === '--dest' && args[i + 1]) {
         destDir = path.resolve(process.cwd(), args[i + 1]);
         i++;
+    } else if (args[i] === '--target' && args[i + 1]) {
+        target = args[i + 1];
+        i++;
     } else if (args[i] === '--help') {
         console.log(`
 Andalina Builder CLI
@@ -28,6 +32,7 @@ Usage:
 Options:
   --src <dir>     The source directory of your Andalina project (default: current directory)
   --dest <dir>    The output directory for compiled HTML (default: ./dist)
+  --target <name> The target adapter to use (e.g., ssg, blade, jsf) (default: ssg)
   --help          Show this help message
         `);
         process.exit(0);
@@ -35,7 +40,7 @@ Options:
 }
 
 // Run the builder
-buildProject(srcDir, destDir)
+buildProject(srcDir, destDir, { target })
     .then(() => {
         process.exit(0);
     })

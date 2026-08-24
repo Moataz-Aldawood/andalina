@@ -55,13 +55,22 @@ async function buildProject(srcDir, destDir, options = {}) {
         config.includesPath
     ].filter(Boolean).map(p => path.resolve(srcDir, p));
 
+    const adapterName = options.target || 'ssg';
+    let AdapterClass;
+    try {
+        AdapterClass = require(`./adapters/${adapterName}.js`);
+    } catch (err) {
+        console.error(`[Builder] Error loading adapter '${adapterName}':`, err.message);
+        throw err;
+    }
+    const adapter = new AdapterClass({ ...config, srcDir, destDir });
+
     // Find all public HTML files and static assets
     const publicFiles = [];
     const assetFiles = [];
 
-    // Common dev files/folders to ignore from asset copying
     const ignoredNames = new Set([
-        '.git', 'node_modules', '.vscode', '.DS_Store', 
+        '.git', 'node_modules', '.vscode', '.DS_Store', '.agents', '.gemini',
         'package.json', 'package-lock.json', 'andalina.config.json',
         'README.md', 'LICENSE'
     ]);
@@ -81,7 +90,7 @@ async function buildProject(srcDir, destDir, options = {}) {
             const stat = fs.statSync(fullPath);
             if (stat.isDirectory()) {
                 walk(fullPath);
-            } else if (fullPath.endsWith('.html')) {
+            } else if (adapter.shouldProcess(fullPath)) {
                 publicFiles.push(fullPath);
             } else {
                 assetFiles.push(fullPath);
@@ -197,14 +206,19 @@ async function buildProject(srcDir, destDir, options = {}) {
         // Remove the exposed init function from the window just to be clean
         delete window.Andalina;
 
-        // 4. Serialize and write output
-        const finalHtml = document.toString(); // linkedom serialization
-        const relativePath = path.relative(srcDir, filePath);
+        // 4. Transform via Adapter
+        const outputCode = await adapter.transform(document, { filePath, relativePath: path.relative(srcDir, filePath) });
+        
+        let relativePath = path.relative(srcDir, filePath);
+        // Rename output extension based on adapter
+        const ext = path.extname(relativePath);
+        relativePath = relativePath.slice(0, -ext.length) + adapter.extension;
+        
         const outPath = path.join(destDir, relativePath);
 
         // Ensure output dir exists
         fs.mkdirSync(path.dirname(outPath), { recursive: true });
-        fs.writeFileSync(outPath, finalHtml, 'utf8');
+        fs.writeFileSync(outPath, outputCode, 'utf8');
     }
 
     if (assetFiles.length > 0) {
