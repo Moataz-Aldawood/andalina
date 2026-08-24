@@ -48,20 +48,27 @@ async function buildProject(srcDir, destDir, options = {}) {
 
     const protectedDirs = [
         destDir,
-        config.componentsPath,
-        config.codesPath,
-        config.layoutsPath,
-        config.templatesPath,
-        config.includesPath
-    ].filter(Boolean).map(p => path.resolve(srcDir, p));
+        path.join(srcDir, 'node_modules'),
+        path.join(srcDir, '.git'),
+        path.join(srcDir, '.agents'),
+        path.join(srcDir, '.gemini'),
+        path.join(srcDir, 'test-dist')
+    ].map(p => path.resolve(srcDir, p));
+
+    const adapters = {
+        ssg: require('./adapters/ssg.js'),
+        blade: require('./adapters/blade.js'),
+        jsf: require('./adapters/jsf.js'),
+        django: require('./adapters/django.js'),
+        thymeleaf: require('./adapters/thymeleaf.js')
+    };
 
     const adapterName = options.target || 'ssg';
-    let AdapterClass;
-    try {
-        AdapterClass = require(`./adapters/${adapterName}.js`);
-    } catch (err) {
-        console.error(`[Builder] Error loading adapter '${adapterName}':`, err.message);
-        throw err;
+    const AdapterClass = adapters[adapterName];
+    if (!AdapterClass) {
+        const msg = `Unknown adapter target: ${adapterName}`;
+        console.error(`[Builder] ${msg}`);
+        throw new Error(msg);
     }
     const adapter = new AdapterClass({ ...config, srcDir, destDir });
 
@@ -169,44 +176,7 @@ async function buildProject(srcDir, destDir, options = {}) {
             }
         };
 
-        // 3. Load and Run Andalina Core
-        // Delete require cache so we get a fresh instance per file (prevents state leakage)
-        let corePath;
-        try {
-            let localPath = path.resolve(__dirname, '../../core/andalina.js');
-            if (fs.existsSync(localPath)) {
-                corePath = localPath;
-            } else {
-                corePath = require.resolve('andalina/core/andalina.js');
-            }
-        } catch (e) {
-            // Fallback for VS Code Extension bundle
-            corePath = path.resolve(__dirname, 'andalina-core.js');
-        }
-        delete require.cache[require.resolve(corePath)];
-        require(corePath);
-
-        if (!window.Andalina || !window.Andalina.init) {
-            throw new Error("Andalina.init is not exported. Did you update core/andalina.js?");
-        }
-
-        // Wait for composition to finish
-        await window.Andalina.init();
-
-        // 3.5 Cleanup: Remove Andalina runtime tags for pure static output
-        const scripts = document.querySelectorAll('script');
-        scripts.forEach(script => {
-            if (script.src && script.src.includes('andalina')) {
-                script.remove();
-            }
-        });
-        const foucStyle = document.getElementById('andalina-fouc');
-        if (foucStyle) foucStyle.remove();
-
-        // Remove the exposed init function from the window just to be clean
-        delete window.Andalina;
-
-        // 4. Transform via Adapter
+        // 3. Transform via Adapter
         const outputCode = await adapter.transform(document, { filePath, relativePath: path.relative(srcDir, filePath) });
         
         let relativePath = path.relative(srcDir, filePath);

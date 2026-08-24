@@ -41,7 +41,7 @@ class SsgAdapter extends BaseAdapter {
                 corePath = require.resolve('andalina/core/andalina.js');
             }
         } catch (e) {
-            corePath = path.resolve(__dirname, '../andalina-core.js');
+            corePath = path.resolve(__dirname, 'andalina-core.js');
         }
         
         // Clear require cache for a fresh instance per file
