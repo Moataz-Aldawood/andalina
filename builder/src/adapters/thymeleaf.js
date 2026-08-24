@@ -51,7 +51,7 @@ class ThymeleafAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-if`) {
-                const condition = node.getAttribute('condition');
+                const condition = node.getAttribute('condition') || '';
                 replaceWithTag(node, 'th:block', { 'th:if': `\${${condition}}` });
             }
             
@@ -64,7 +64,7 @@ class ThymeleafAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-repeat`) {
-                const dataName = node.getAttribute('data');
+                const dataName = node.getAttribute('data') || '';
                 const itemAs = node.getAttribute('item') || 'item';
                 replaceWithTag(node, 'th:block', { 'th:each': `${itemAs} : \${${dataName}}` });
             }

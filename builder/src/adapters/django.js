@@ -48,7 +48,7 @@ class DjangoAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-if`) {
-                const condition = node.getAttribute('condition');
+                const condition = node.getAttribute('condition') || '';
                 const pyCond = condition.replace(/===/g, '==').replace(/!==/g, '!=');
                 replaceWithDjango(node, `{% if ${pyCond} %}\n`, `\n{% endif %}`);
             }
@@ -58,7 +58,7 @@ class DjangoAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-repeat`) {
-                const dataName = node.getAttribute('data');
+                const dataName = node.getAttribute('data') || '';
                 const itemAs = node.getAttribute('item') || 'item';
                 replaceWithDjango(node, `{% for ${itemAs} in ${dataName} %}\n`, `\n{% endfor %}`);
             }

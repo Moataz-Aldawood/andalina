@@ -57,7 +57,7 @@ class JsfAdapter extends BaseAdapter {
             
             // 2. <an-if condition="user.active === true">
             else if (tagName === `${this.config.prefix}-if`) {
-                let condition = node.getAttribute('condition');
+                let condition = node.getAttribute('condition') || '';
                 condition = condition.replace(/===/g, 'eq').replace(/==/g, 'eq').replace(/!==/g, 'ne').replace(/!=/g, 'ne');
                 
                 replaceWithTag(node, 'ui:fragment', { rendered: `#{${condition}}` });
@@ -74,7 +74,7 @@ class JsfAdapter extends BaseAdapter {
             
             // 4. <an-repeat data="store.products" item="product">
             else if (tagName === `${this.config.prefix}-repeat`) {
-                const dataName = node.getAttribute('data');
+                const dataName = node.getAttribute('data') || '';
                 const itemAs = node.getAttribute('item') || 'item';
                 
                 replaceWithTag(node, 'ui:repeat', { value: `#{${dataName}}`, var: itemAs });

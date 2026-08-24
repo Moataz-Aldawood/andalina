@@ -48,7 +48,7 @@ class BladeAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-if`) {
-                const condition = node.getAttribute('condition');
+                const condition = node.getAttribute('condition') || '';
                 const phpCond = condition.replace(/([a-zA-Z_]\w*)/g, '$$$1').replace(/\$\$/g, '$').replace(/\$true/g, 'true').replace(/\$false/g, 'false');
                 replaceWithBlade(node, `@if(${phpCond})\n`, `\n@endif`);
             }
@@ -58,7 +58,7 @@ class BladeAdapter extends BaseAdapter {
             }
             
             else if (tagName === `${this.config.prefix}-repeat`) {
-                const dataName = node.getAttribute('data');
+                const dataName = node.getAttribute('data') || '';
                 const itemAs = node.getAttribute('item') || 'item';
                 replaceWithBlade(node, `@foreach($${dataName.replace(/\./g, '->')} as $${itemAs})\n`, `\n@endforeach`);
             }
