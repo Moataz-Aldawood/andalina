@@ -1,6 +1,6 @@
 # Andalina Builder
 
-The official VS Code extension for [Andalina](https://github.com/Moataz-Aldawood/andalina) — a zero-dependency, development-time HTML composition engine.
+The official VS Code extension for [Andalina](https://moataz-aldawood.github.io/andalina/) — a zero-dependency, development-time HTML composition engine.
 
 ## Features
 
