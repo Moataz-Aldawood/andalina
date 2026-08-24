@@ -1,1 +1,0 @@
-const r = require.resolve('./temp-core.js'); require(r); delete require.cache[r]; require(r);
