@@ -42,14 +42,18 @@
       gtag('js', new Date());
       gtag('config', 'G-9CQ8C1189H');
 
-      // Enhanced download and link click tracking
-      document.addEventListener('click', function(e) {
+            // Enhanced download and link click tracking (with navigation delay for accuracy)
+      document.addEventListener('click', function (e) {
          const link = e.target.closest('a');
          if (!link) return;
+         
          const href = link.getAttribute('href') || '';
          const linkText = link.innerText.trim() || 'Link';
          const isZip = href.includes('.zip');
          const isDownload = isZip || href.includes('download') || link.classList.contains('ti-download') || link.querySelector('.ti-download');
+         
+         const isAnchor = href.startsWith('#');
+         const isBlank = link.target === '_blank';
 
          if (isZip) {
             gtag('event', 'zip_file_download', {
@@ -59,14 +63,36 @@
                'value': 1
             });
          }
+         
          if (isDownload) {
-            gtag('event', 'download_click', {
-               'event_category': 'Downloads',
-               'event_label': linkText,
-               'link_url': href,
-               'is_zip': isZip
-            });
+            if (!isZip && !isAnchor && !isBlank) {
+               e.preventDefault();
+               let navigated = false;
+               const navigate = () => {
+                  if (!navigated) {
+                     navigated = true;
+                     window.location.href = href;
+                  }
+               };
+               
+               gtag('event', 'download_click', {
+                  'event_category': 'Downloads',
+                  'event_label': linkText,
+                  'link_url': href,
+                  'is_zip': isZip,
+                  'event_callback': navigate
+               });
+               setTimeout(navigate, 400); // Fallback timeout
+            } else {
+               gtag('event', 'download_click', {
+                  'event_category': 'Downloads',
+                  'event_label': linkText,
+                  'link_url': href,
+                  'is_zip': isZip
+               });
+            }
          }
+         
          gtag('event', 'link_click', {
             'event_category': 'Navigation',
             'event_label': linkText,
