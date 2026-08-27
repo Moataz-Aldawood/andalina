@@ -741,8 +741,13 @@ pre .copy-to-clipboard {
   color: var(--white);
 }
 
+.badge.updated {
+  background: var(--color-main-3);
+  color: var(--white);
+}
+
 .badge.fixed {
-  background: var(--unapproved-color-9);
+  background: var(--blue-light);
   color: var(--white);
 }
 
@@ -752,22 +757,22 @@ pre .copy-to-clipboard {
 }
 
 .badge.depricated {
-  background: var(--white0);
+  background: var(--gray-light);
   color: var(--white);
 }
 
 .badge.removed {
-  background: var(--blue-light);
+  background: var(--color-main-2);
   color: var(--white);
 }
 
 .badge.security {
-  background: var(--white1);
+  background: var(--color-main-1);
   color: var(--white);
 }
 
 .badge.unreleased {
-  background: var(--white2);
+  background: var(--gray-dark);
   color: var(--white);
 }
 
