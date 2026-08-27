@@ -630,20 +630,33 @@
 
                      <div id="builder">
                         <h3>Andalina Builder</h3>
-                        <p>The Andalina Builder is a powerful VS Code Extension that compiles your dynamic Andalina project into static HTML/CSS/JS files, perfectly ready for production deployment.</p>
+                        <p>The Andalina Builder is a powerful VS Code Extension that performs <strong>AOT (Ahead of Time) Transpilation</strong>. It seamlessly converts your raw Andalina project directly into static SSG files or native Enterprise framework views.</p>
+                        
                         <h4>Features:</h4>
                         <ul>
                            <li><strong>GUI Configuration:</strong> Manage your build targets natively in VS Code without editing JSON files manually.</li>
-                           <li><strong>Static Compilation:</strong> Resolves all tags into standard HTML files.</li>
-                           <li><strong>Asset Copying:</strong> Automatically copies your images, CSS, and JS files to the output directory.</li>
+                           <li><strong>Multi-Target Transpilation:</strong> With a single click, convert your Andalina UI into:
+                              <ul>
+                                 <li><strong>Static HTML</strong> (Flat SSG)</li>
+                                 <li><strong>JavaServer Faces (JSF)</strong> <code>[Experimental]</code> (Outputs a Maven Web App structure with Composite Components and Facelets Templating)</li>
+                                 <li><strong>Laravel Blade</strong> <code>[Experimental]</code> (Uses <code>@component</code>, <code>@slot</code>, <code>@extends</code>)</li>
+                                 <li><strong>Django</strong> <code>[Experimental]</code> (Uses <code>{% include %}</code>, <code>{% block %}</code>, <code>{% extends %}</code>)</li>
+                                 <li><strong>Thymeleaf</strong> <code>[Experimental]</code> (Uses <code>th:replace</code>, <code>th:fragment</code>, <code>th:each</code>)</li>
+                              </ul>
+                           </li>
+                           <li><strong>Advanced Architecture Support:</strong> Resolves <code>&lt;an-component&gt;</code>, <code>&lt;an-layout&gt;</code>, <code>&lt;an-template&gt;</code>, and <code>&lt;an-inject&gt;</code> tags directly into native server-side equivalents.</li>
+                           <li><strong>Production Cleanup:</strong> Safely strips Andalina-specific scripts, styles, <code>&lt;an-data&gt;</code>, and <code>&lt;!-- an-comment --&gt;</code> tags from your final production artifacts.</li>
+                           <li><strong>Asset Copying:</strong> Automatically copies your images, CSS, and JS files to the target directory.</li>
                            <li><strong>Auto Build on Save:</strong> Optionally watch your source files and automatically rebuild when changes are detected.</li>
                         </ul>
+                        
                         <h4>How to Use:</h4>
                         <p>1. Install the <strong>Andalina Builder</strong> extension in VS Code.<br>
                         2. Look for the <strong>Andalina Build</strong> view in your VS Code Explorer sidebar.<br>
                         3. Click the <strong>+</strong> icon to add a new Action.<br>
                         4. Specify your <strong>Source Folder</strong> and <strong>Target Folder</strong>.<br>
-                        5. Click the play button on your Action in the sidebar to build your static site!</p>
+                        5. Check off one or more <strong>Target Platforms</strong> (e.g. Static HTML, JSF, Blade, etc.).<br>
+                        6. Click the play button on your Action in the sidebar to build your artifacts!</p>
                      </div>
 
                   </div>
