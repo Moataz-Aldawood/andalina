@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const file = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
+const file = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
 let content = fs.readFileSync(file, 'utf8');
 
 const nameAttrText = `                           <li><code>name</code> <em>(Optional)</em>: The name of the file (resolves to <code>[configuredPath]/[name].html</code>). <em>Note: You must provide either <code>src</code> or <code>name</code>.</em></li>`;

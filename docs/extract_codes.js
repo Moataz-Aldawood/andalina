@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const file = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
-const codesDir = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/codes';
+const file = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
+const codesDir = 'R:/projects/Coding/Js/Andalina/website2/codes';
 let content = fs.readFileSync(file, 'utf8');
 
 // Also process <pre class="rendered-html-block"> that don't have <code> tags but represent code

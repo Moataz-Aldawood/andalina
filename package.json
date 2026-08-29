@@ -1,7 +1,7 @@
 {
   "name": "andalina",
   "version": "1.6.0",
-  "description": "Zero-dependency client-side HTML composition engine supporting components, templates, layouts, and repeaters.",
+  "description": "A zero-dependency, client-side template engine bringing component architecture to vanilla HTML.",
   "main": "core/andalina.js",
   "files": [
     "core",
@@ -17,12 +17,14 @@
   },
   "keywords": [
     "html",
+    "template-engine",
     "components",
-    "templates",
-    "composition",
-    "layout",
+    "vanilla-js",
     "zero-dependency",
-    "andalina"
+    "frontend",
+    "ssg",
+    "no-build",
+    "web-components"
   ],
   "author": "Moataz Aldawood",
   "license": "LGPL-3.0-or-later",

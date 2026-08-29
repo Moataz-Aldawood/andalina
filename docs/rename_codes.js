@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const codesDir = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/codes';
-const docFile = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
+const codesDir = 'R:/projects/Coding/Js/Andalina/website2/codes';
+const docFile = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
 
 const mappings = {
     'code-1.txt': 'installation-example-01.txt',

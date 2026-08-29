@@ -1,5 +1,5 @@
 const fs = require('fs');
-const file = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
+const file = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
 let content = fs.readFileSync(file, 'utf8');
 
 // The layout-template section has `<p><strong>1. The Parent Layout (master.html)</strong></p>`

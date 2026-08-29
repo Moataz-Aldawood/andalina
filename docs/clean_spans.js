@@ -1,5 +1,5 @@
 const fs = require('fs');
-const file = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
+const file = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
 let content = fs.readFileSync(file, 'utf8');
 
 // Replace the complex span structures with plain text

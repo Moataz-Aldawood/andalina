@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const file = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
+const file = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
 let content = fs.readFileSync(file, 'utf8');
 
 // Wrap the <an-code> inside <pre class="rendered-html-block"> with a <code class="language-html"> tag

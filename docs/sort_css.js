@@ -1,7 +1,7 @@
 const postcss = require('postcss');
 const fs = require('fs');
 
-const css = fs.readFileSync('c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/css/style_purged.css', 'utf8');
+const css = fs.readFileSync('R:/projects/Coding/Js/Andalina/website2/css/style_purged.css', 'utf8');
 
 const variables = [];
 const reset = [];
@@ -76,7 +76,7 @@ ${utilities.join('\n\n')}
 ${mediaQueries.join('\n\n')}
 `;
 
-    fs.writeFileSync('c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/css/style.css', sortedCSS.trim(), 'utf8');
+    fs.writeFileSync('R:/projects/Coding/Js/Andalina/website2/css/style.css', sortedCSS.trim(), 'utf8');
     console.log('CSS successfully logically sorted and saved to style.css.');
 }).catch(err => {
     console.error('Error sorting CSS:', err);

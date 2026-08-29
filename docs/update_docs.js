@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const file = 'c:/Users/moata/OneDrive/MOATAZ/Projects/Coding/Js/Andalina/website2/documentation.html';
+const file = 'R:/projects/Coding/Js/Andalina/website2/documentation.html';
 let content = fs.readFileSync(file, 'utf8');
 
 // 1. Remove the old warning note from "How to Use"
