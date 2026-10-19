@@ -491,9 +491,8 @@
 
                      <div id="code">
 
-                        <h3>&lt;an-code&gt;</h3>
-                        <p>Used to inject unparsed source code directly from a file, perfectly formatted and safely
-                           escaped for documentation blocks.</p>
+                        <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span class="an-tag">-code&gt;</span></h3>
+                        <p>Used to inject and safely escape source code inside documentation blocks—either by fetching an external file (<code>src="js/app.js"</code>) or by extracting a live element directly from the current page (<code>src="#element-id"</code>).</p>
                         <div class="andalina-important-card" style="margin-top: 15px;">
                            <strong>Syntax Highlighting Warning:</strong> If you are using a code highlighter like
                            <code>highlight.js</code> or <code>Prism.js</code>, you must ensure it only runs
@@ -505,17 +504,42 @@
 
                         <h4>Attributes:</h4>
                         <ul>
-                           <li><code>src</code> <em>(Required)</em>: The exact path to the source code file. If
-                              <code>codesPath</code> is configured, it resolves relative to that directory.
+                           <li><code>src</code> <em>(Required)</em>:
+                              <ul>
+                                 <li><strong>File Path</strong> (e.g. <code>src="js/app.js"</code>): Fetches the external source file (relative to <code>codesPath</code> if configured). External files are injected <strong>as-is without formatting</strong> by default to preserve language-specific indentation (Java, Python, XML, JS, etc.).</li>
+                                 <li><strong>In-Page Element Selector</strong> (e.g. <code>src="#button-demo"</code>): Clones the matching element from the current page, strips its demo <code>id</code> attribute by default, and <strong>auto-formats</strong> the HTML indentation.</li>
+                              </ul>
                            </li>
+                           <li><code>stage</code> <em>(Optional, default: <code>"after"</code>)</em>: Controls <em>when</em> an in-page element (<code>src="#id"</code>) is captured:
+                              <ul>
+                                 <li><code>stage="before"</code>: Captures the raw, unrendered Andalina markup (e.g., <code>&lt;an-component&gt;</code>, <code>&lt;an-repeat&gt;</code>, <code>{{ prop }}</code>) <em>before</em> Andalina processes it.</li>
+                                 <li><code>stage="after"</code>: Captures the final rendered HTML <em>after</em> all Andalina components, loops, conditionals, and data bindings have resolved.</li>
+                              </ul>
+                           </li>
+                           <li><code>unwrap</code> <em>(Optional, default: <code>"false"</code>)</em>: When set to <code>"true"</code>, extracts only the inner content (<code>innerHTML</code>) of the target wrapper element instead of including the wrapper tag itself (<code>outerHTML</code>).</li>
+                           <li><code>keep-id</code> <em>(Optional, default: <code>"false"</code>)</em>: By default, Andalina strips the <code>id</code> attribute from the cloned root element so demo selector IDs do not clutter your documentation snippets. Set <code>keep-id="true"</code> to preserve the <code>id</code> attribute.</li>
+                           <li><code>format</code> <em>(Optional)</em>: Controls HTML auto-formatting (<code>"true"</code> or <code>"false"</code>). Defaults to <code>"true"</code> for in-page elements (<code>src="#id"</code>) and <code>"false"</code> for external files.</li>
                         </ul>
 
-                        <h4>Example:</h4>
+                        <h4>Example 1: Loading Code from an External File</h4>
                         <p><strong>1. The Source Code (js/app.js)</strong></p>
                         <pre><code class="language-javascript"><an-code src="codes/an-code-example-01.txt"></an-code></code></pre>
 
                         <p><strong>2. The Call (index.html)</strong></p>
                         <pre><code class="language-html"><an-code src="codes/an-code-example-02.txt"></an-code></code></pre>
+
+                        <h4>Example 2: Extracting Live In-Page Demo Code (Two-Tab Pattern)</h4>
+                        <p>You can point multiple <code>&lt;an-code&gt;</code> tags to the same demo container using <code>stage="before"</code> and <code>stage="after"</code> to showcase both the Andalina component call and the final compiled HTML output:</p>
+                        <pre><code class="language-html">&lt;!-- 1. Live Demo Container --&gt;
+&lt;div id="button-demo"&gt;
+   &lt;an-component name="primary-button" label="Save Changes"&gt;&lt;/an-component&gt;
+&lt;/div&gt;
+
+&lt;!-- 2. Tab 1: Show Raw Andalina Code (Pre-Engine) --&gt;
+&lt;pre&gt;&lt;code class="language-html"&gt;&lt;an-code src="#button-demo" stage="before" unwrap="true"&gt;&lt;/an-code&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;!-- 3. Tab 2: Show Final Rendered HTML (Post-Engine) --&gt;
+&lt;pre&gt;&lt;code class="language-html"&gt;&lt;an-code src="#button-demo" stage="after" unwrap="true"&gt;&lt;/an-code&gt;&lt;/code&gt;&lt;/pre&gt;</code></pre>
                      </div>
 
 

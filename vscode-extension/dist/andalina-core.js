@@ -1,12 +1,12 @@
 /**
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
- * Version: 1.2.0
+ * Version: 1.8.0
  * License: GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)
  */
 (function() {
     // 1. Configuration (Prefix detection)
-    const scriptTag = document.currentScript || document.querySelector('script[src*="andalina.js"]');
+    const scriptTag = document.currentScript || Array.from(document.querySelectorAll('script')).find(s => (s.getAttribute('src') || '').includes('andalina.js'));
 
     let globalConfig = {
         showRenderedHtml: false,
@@ -25,6 +25,8 @@
     };
 
     const globalData = {};
+    const rawSnapshots = new Map();
+    const renderedSnapshots = new Map();
 
     function resolvePath(obj, path) {
         const normalizedPath = path.replace(/\[(\d+)\]/g, '.$1');
@@ -36,13 +38,132 @@
     }
 
     function isEnabled(val) {
-        return val === 'enabled' || val === true;
+        return val === 'enabled' || val === true || val === 'true';
+    }
+
+    function formatHTML(html) {
+        if (!html) return '';
+        // Clean up extra whitespaces between tags
+        html = html.replace(/>\s*</g, '><');
+
+        // Split on tags
+        const reg = /(<[^>]+>)/g;
+        const parts = html.split(reg).filter(Boolean);
+        let formatted = '';
+        let indent = '';
+        const tab = '    '; // 4 spaces
+        const voidElements = ['input', 'img', 'br', 'hr', 'link', 'meta', 'use', 'col', 'base', 'area', 'embed', 'param', 'source', 'track', 'wbr'];
+
+        parts.forEach(part => {
+            if (part.startsWith('</')) {
+                // Closing tag
+                indent = indent.substring(tab.length);
+                formatted += indent + part + '\n';
+            } else if (part.startsWith('<') && !part.endsWith('/>') && !part.startsWith('<!')) {
+                // Opening tag
+                const tagNameMatch = part.match(/^<([\w:-]+)/);
+                const tagName = tagNameMatch ? tagNameMatch[1].toLowerCase() : '';
+                const isVoid = voidElements.includes(tagName);
+
+                formatted += indent + part + '\n';
+                if (!isVoid) {
+                    indent += tab;
+                }
+            } else if (part.startsWith('<') && (part.endsWith('/>') || part.startsWith('<!'))) {
+                // Self-closing tag or comment/doctype
+                formatted += indent + part + '\n';
+            } else {
+                // Text node
+                if (part.trim()) {
+                    formatted += indent + part.trim() + '\n';
+                }
+            }
+        });
+
+        // Post-processing to join inline text tags and empty tag pairs back to a single line
+        formatted = formatted
+            .replace(/(<([\w:-]+)[^>]*>)\n\s*([^<]+)\n\s*(<\/\2>)/g, '$1$3$4')
+            .replace(/(<([\w:-]+)[^>]*>)\n\s*(<\/\2>)/g, '$1$3');
+
+        return formatted.trim();
+    }
+
+    function findElementById(root, id) {
+        if (!root || !id) return null;
+        if (root.getElementById) {
+            const found = root.getElementById(id);
+            if (found) return found;
+        }
+        if (typeof document !== 'undefined' && document.getElementById) {
+            const found = document.getElementById(id);
+            if (found) return found;
+        }
+        if (typeof document !== 'undefined' && document.createTreeWalker) {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+            let node = walker.nextNode();
+            while (node) {
+                if (node.getAttribute && node.getAttribute('id') === id) {
+                    return node;
+                }
+                node = walker.nextNode();
+            }
+        }
+        return null;
+    }
+
+    function captureRawSnapshots(root) {
+        if (!root || typeof document === 'undefined' || !document.createTreeWalker) return;
+        if (root.nodeType === Node.ELEMENT_NODE && root.getAttribute) {
+            const rootId = root.getAttribute('id');
+            if (rootId && !rawSnapshots.has(rootId)) {
+                rawSnapshots.set(rootId, root.cloneNode(true));
+            }
+        }
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+        let el = walker.nextNode();
+        while (el) {
+            if (el.getAttribute) {
+                const id = el.getAttribute('id');
+                if (id && !rawSnapshots.has(id)) {
+                    rawSnapshots.set(id, el.cloneNode(true));
+                }
+            }
+            el = walker.nextNode();
+        }
+    }
+
+    function recordRenderedSnapshot(id, fragment) {
+        if (!id || !fragment) return;
+        const wrapper = document.createElement('div');
+        wrapper.setAttribute('data-an-unwrap', 'true');
+        Array.from(fragment.childNodes).forEach(n => wrapper.appendChild(n.cloneNode(true)));
+        renderedSnapshots.set(id, wrapper);
+    }
+
+    function clearFOUC() {
+        if (!globalConfig.preventFOUC) return;
+        if (typeof document === 'undefined') return;
+        const foucStyle = document.getElementById('andalina-fouc');
+        if (foucStyle) {
+            foucStyle.remove();
+            if (document.body && typeof document.body.animate === 'function') {
+                document.body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-in' });
+            }
+        }
     }
 
     // Aggressively prevent FOUC if script tag dictates it (before async config load)
     if (scriptTag && (isEnabled(scriptTag.getAttribute('prevent-fouc')) || isEnabled(scriptTag.getAttribute('data-prevent-fouc')))) {
         globalConfig.preventFOUC = true;
         document.head.insertAdjacentHTML('beforeend', '<style id="andalina-fouc">body { opacity: 0 !important; }</style>');
+        if (typeof window !== 'undefined') {
+            setTimeout(() => {
+                if (document.getElementById('andalina-fouc')) {
+                    console.warn('[Andalina] FOUC safety timeout reached (4s). Revealing page body.');
+                    clearFOUC();
+                }
+            }, 4000);
+        }
     }
 
     // Tag definitions
@@ -69,6 +190,13 @@
 
     // Cache for fetched fragments
     const cache = new Map();
+
+    // Expands XML-style self-closing Andalina tags (<an-tag ... />) into explicit pairs (<an-tag ...></an-tag>)
+    // This prevents HTML5 parsers (DOMParser) from nesting subsequent sibling elements inside non-void custom tags.
+    function expandSelfClosingTags(html) {
+        if (!html) return html;
+        return html.replace(/<((?:an-[a-z0-9_-]+))((?:\s+[^=>"']+(?:=(?:"[^"]*"|'[^']*'|[^>\s]+))?)*)\s*\/>/gi, '<$1$2></$1>');
+    }
 
     async function fetchFragment(url) {
         if (cache.has(url)) {
@@ -151,6 +279,12 @@
                     if (defaultVal !== null) defaults[name] = defaultVal;
                     if (mandatory) mandatoryAttrs.add(name);
                 }
+                // Safely unwrap any swallowed sibling DOM nodes before removing
+                if (attrTag.parentNode) {
+                    while (attrTag.firstChild) {
+                        attrTag.parentNode.insertBefore(attrTag.firstChild, attrTag);
+                    }
+                }
                 attrTag.remove();
             });
         }
@@ -187,7 +321,14 @@
 
         // Also clean up any that somehow survived (e.g. dynamically injected later)
         const attributeTags = Array.from(doc.querySelectorAll(tAttribute));
-        attributeTags.forEach(attrTag => attrTag.remove());
+        attributeTags.forEach(attrTag => {
+            if (attrTag.parentNode) {
+                while (attrTag.firstChild) {
+                    attrTag.parentNode.insertBefore(attrTag.firstChild, attrTag);
+                }
+            }
+            attrTag.remove();
+        });
 
         if (Object.keys(props).length === 0) return;
 
@@ -230,6 +371,8 @@
         const maxIterations = 1000;
         const parser = new DOMParser();
 
+        captureRawSnapshots(context);
+
         while (true) {
             iterations++;
             if (iterations > maxIterations) {
@@ -243,10 +386,9 @@
             const layoutNode = context.querySelector(tLayout);
             const componentNode = context.querySelector(tComponent);
             const pageNode = context.querySelector(tTemplate);
-            const codeNode = context.querySelector(tCode);
             const ifNode = context.querySelector('an-if');
 
-            if (!dataNode && !repeatNode && !ifNode && !includeNode && !layoutNode && !componentNode && !pageNode && !codeNode) {
+            if (!dataNode && !repeatNode && !ifNode && !includeNode && !layoutNode && !componentNode && !pageNode) {
                 // If no normal tags are left, cleanup any orphaned <an-else> tags
                 const strayElse = context.querySelector('an-else');
                 if (strayElse) {
@@ -287,6 +429,7 @@
                 const times = parseInt(repeatNode.getAttribute('times'), 10);
                 const indexAs = repeatNode.getAttribute('index-as') || '$index';
                 const itemAs = repeatNode.getAttribute('item') || 'item';
+                const repeatId = repeatNode.getAttribute('id');
                 
                 let targetDataArray;
                 if (dataName) {
@@ -330,6 +473,7 @@
                         temp.innerHTML = content;
                         Array.from(temp.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
                     }
+                    if (repeatId) recordRenderedSnapshot(repeatId, fragment);
                     repeatNode.replaceWith(fragment);
                 } else if (!isNaN(times) && times > 0) {
                     for (let i = 1; i <= times; i++) {
@@ -339,6 +483,7 @@
                         temp.innerHTML = content;
                         Array.from(temp.childNodes).forEach(node => fragment.appendChild(cloneNodeSafe(node)));
                     }
+                    if (repeatId) recordRenderedSnapshot(repeatId, fragment);
                     repeatNode.replaceWith(fragment);
                 } else {
                     repeatNode.remove();
@@ -349,6 +494,7 @@
             // 0.3 Process Conditionals
             if (ifNode) {
                 const condition = ifNode.getAttribute('condition');
+                const ifId = ifNode.getAttribute('id');
                 let isTrue = false;
                 if (condition) {
                     try {
@@ -375,6 +521,7 @@
                     // Unwrap <an-if>
                     const fragment = document.createDocumentFragment();
                     Array.from(ifNode.childNodes).forEach(child => fragment.appendChild(cloneNodeSafe(child)));
+                    if (ifId) recordRenderedSnapshot(ifId, fragment);
                     ifNode.replaceWith(fragment);
                     
                     // Remove adjacent <an-else>
@@ -387,42 +534,12 @@
                     
                     // Unwrap <an-else>
                     if (elseNode) {
+                        const elseId = elseNode.getAttribute('id') || ifId;
                         const fragment = document.createDocumentFragment();
                         Array.from(elseNode.childNodes).forEach(child => fragment.appendChild(cloneNodeSafe(child)));
+                        if (elseId) recordRenderedSnapshot(elseId, fragment);
                         elseNode.replaceWith(fragment);
                     }
-                }
-                continue;
-            }
-
-            // 0.5 Process Code inclusions (Raw text fetching)
-            if (codeNode) {
-                const src = codeNode.getAttribute('src');
-                if (src) {
-                    const t0 = performance.now();
-                    const basePath = globalConfig.codesPath.replace(/\/$/, '');
-                    const fullPath = basePath ? `${basePath}/${src}` : src;
-                    
-                    const codeText = await fetchFragment(fullPath);
-                    const fetchTime = Math.round(performance.now() - t0);
-                    
-                    if (globalConfig.debug) {
-                        console.log(`%c[Andalina Debug] 📄 Code: ${fullPath} (fetch: ${fetchTime}ms)`, 'color: #3498db;');
-                    }
-                    
-                    // Clean up surrounding empty text nodes (prevents HTML template indentation from leaking into the code block)
-                    const prev = codeNode.previousSibling;
-                    if (prev && prev.nodeType === Node.TEXT_NODE && prev.nodeValue.trim() === '') {
-                        prev.remove();
-                    }
-                    const next = codeNode.nextSibling;
-                    if (next && next.nodeType === Node.TEXT_NODE && next.nodeValue.trim() === '') {
-                        next.remove();
-                    }
-
-                    codeNode.replaceWith(document.createTextNode(codeText.trim()));
-                } else {
-                    codeNode.remove();
                 }
                 continue;
             }
@@ -440,13 +557,15 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const pageHtml = await fetchFragment(src);
+                    const pageHtml = expandSelfClosingTags(await fetchFragment(src));
                     const fetchTime = Math.round(performance.now() - t0);
 
                     let doc = parser.parseFromString(pageHtml, 'text/html');
                     if (!doc.body && !pageHtml.includes('<body')) {
                         doc = parser.parseFromString(`<html><body>${pageHtml}</body></html>`, 'text/html');
                     }
+
+                    captureRawSnapshots(doc);
 
                     // 1. Merge Configs
                     const configStr = doc.documentElement.getAttribute('data-config');
@@ -487,27 +606,42 @@
                     await processNodes(doc.documentElement, trackerNode);
                     trackerNode.parseTime = Math.round(performance.now() - tParse0);
 
-                    // Rebuild entire document
-                    const newHtml = doc.documentElement.outerHTML;
-                    document.open();
-                    document.write(`<!DOCTYPE html>\n${newHtml}`);
-                    document.close(); // Completely replace the current document's head and body
-                    copyAttributes(doc.documentElement, document.documentElement);
-                    if (doc.head) copyAttributes(doc.head, document.head);
-                    if (doc.body) copyAttributes(doc.body, document.body);
+                    // Rebuild entire document cleanly via DOM (replaces document.write)
+                    if (doc.documentElement) {
+                        Array.from(doc.documentElement.attributes).forEach(attr => {
+                            document.documentElement.setAttribute(attr.name, attr.value);
+                        });
+                    }
 
-                    // We do NOT clear document.head.innerHTML anymore!
-                    // This perfectly preserves the caller page's <title>, <meta>, and <script> tags.
                     if (doc.head) {
+                        Array.from(doc.head.attributes).forEach(attr => {
+                            document.head.setAttribute(attr.name, attr.value);
+                        });
+
                         Array.from(doc.head.childNodes).forEach(node => {
-                            if (node.tagName === 'SCRIPT' && node.src.includes('andalina.js')) return; // Don't reload andalina
-                            if (node.tagName === 'TITLE' && document.querySelector('head > title')) return; // Caller title wins
+                            if (node.nodeType === Node.TEXT_NODE && !node.nodeValue.trim()) return;
+                            if (node.tagName === 'SCRIPT' && (node.getAttribute('src') || '').includes('andalina.js')) return; // Don't reload andalina
+                            if (node.tagName === 'TITLE') {
+                                if (document.head.querySelector('title')) return; // Caller title wins
+                            }
+                            if (node.tagName === 'LINK' && node.getAttribute('href')) {
+                                const href = node.getAttribute('href');
+                                if (Array.from(document.head.querySelectorAll('link')).some(l => l.getAttribute('href') === href)) return;
+                            }
+                            if (node.tagName === 'SCRIPT' && node.getAttribute('src')) {
+                                const src = node.getAttribute('src');
+                                if (Array.from(document.head.querySelectorAll('script')).some(s => s.getAttribute('src') === src)) return;
+                            }
                             document.head.appendChild(cloneNodeSafe(node));
                         });
                     }
 
-                    document.body.innerHTML = '';
                     if (doc.body) {
+                        Array.from(doc.body.attributes).forEach(attr => {
+                            document.body.setAttribute(attr.name, attr.value);
+                        });
+
+                        document.body.innerHTML = '';
                         Array.from(doc.body.childNodes).forEach(node => {
                             document.body.appendChild(cloneNodeSafe(node));
                         });
@@ -523,6 +657,7 @@
             // 2. Process Layouts and Components (Inner Body Composition)
             else if (layoutNode || componentNode) {
                 const targetNode = layoutNode || componentNode;
+                const targetId = targetNode.getAttribute('id');
                 let src = targetNode.getAttribute('src');
                 
                 if (!src) {
@@ -540,13 +675,15 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const layoutHtml = await fetchFragment(src);
+                    const layoutHtml = expandSelfClosingTags(await fetchFragment(src));
                     const fetchTime = Math.round(performance.now() - t0);
 
                     let doc = parser.parseFromString(layoutHtml, 'text/html');
                     if (!doc.body && !layoutHtml.includes('<body')) {
                         doc = parser.parseFromString(`<html><body>${layoutHtml}</body></html>`, 'text/html');
                     }
+
+                    captureRawSnapshots(doc);
 
                     // Verify structured syntax for components & layouts
                     const isComponent = targetNode.tagName.toLowerCase() === tComponent;
@@ -600,6 +737,7 @@
                     Array.from(layoutContainer.childNodes).forEach(node => {
                         fragment.appendChild(cloneNodeSafe(node));
                     });
+                    if (targetId) recordRenderedSnapshot(targetId, fragment);
                     targetNode.replaceWith(fragment);
                 } else {
                     targetNode.remove();
@@ -607,6 +745,7 @@
             }
             // 3. Process plain includes
             else if (includeNode) {
+                const includeId = includeNode.getAttribute('id');
                 let src = includeNode.getAttribute('src');
                 if (!src) {
                     const name = includeNode.getAttribute('name');
@@ -618,9 +757,11 @@
                 
                 if (src) {
                     const t0 = performance.now();
-                    const html = await fetchFragment(src);
+                    const html = expandSelfClosingTags(await fetchFragment(src));
                     const fetchTime = Math.round(performance.now() - t0);
                     const doc = parser.parseFromString(html, 'text/html');
+
+                    captureRawSnapshots(doc);
 
                     const props = processProps(includeNode, doc, fetchTime);
                     
@@ -683,11 +824,99 @@
                         }
                     }
                     
+                    if (includeId) recordRenderedSnapshot(includeId, fragment);
                     includeNode.replaceWith(fragment);
                 } else {
                     includeNode.remove();
                 }
             }
+        }
+    }
+
+    async function processCodeNodes(root) {
+        if (!root || !root.querySelectorAll) return;
+        const codeNodes = Array.from(root.querySelectorAll(tCode));
+        for (const codeNode of codeNodes) {
+            const src = (codeNode.getAttribute('src') || '').trim();
+            if (!src) {
+                codeNode.remove();
+                continue;
+            }
+
+            const formatAttr = codeNode.getAttribute('format');
+            const keepId = isEnabled(codeNode.getAttribute('keep-id'));
+            const unwrap = isEnabled(codeNode.getAttribute('unwrap'));
+            const stage = (codeNode.getAttribute('stage') || codeNode.getAttribute('mode') || 'after').toLowerCase();
+
+            let finalCode = '';
+
+            if (src.startsWith('#')) {
+                const targetId = src.slice(1);
+                let sourceNode = null;
+                let forceUnwrap = false;
+
+                if (stage === 'before' || stage === 'raw' || stage === 'pre') {
+                    if (rawSnapshots.has(targetId)) {
+                        sourceNode = rawSnapshots.get(targetId).cloneNode(true);
+                    } else {
+                        const liveEl = findElementById(root, targetId);
+                        if (liveEl) sourceNode = liveEl.cloneNode(true);
+                    }
+                } else {
+                    const liveEl = findElementById(root, targetId);
+                    if (liveEl) {
+                        sourceNode = liveEl.cloneNode(true);
+                    } else if (renderedSnapshots.has(targetId)) {
+                        sourceNode = renderedSnapshots.get(targetId).cloneNode(true);
+                        processDataBindings(sourceNode);
+                        forceUnwrap = true;
+                    } else if (rawSnapshots.has(targetId)) {
+                        sourceNode = rawSnapshots.get(targetId).cloneNode(true);
+                    }
+                }
+
+                if (sourceNode) {
+                    if (!keepId && sourceNode.removeAttribute) {
+                        sourceNode.removeAttribute('id');
+                    }
+                    const rawHtml = (unwrap || forceUnwrap) ? sourceNode.innerHTML : sourceNode.outerHTML;
+                    const shouldFormat = formatAttr === null ? true : (formatAttr !== 'false' && formatAttr !== 'disabled');
+                    finalCode = shouldFormat ? formatHTML(rawHtml) : rawHtml.trim();
+
+                    if (globalConfig.debug) {
+                        console.log(`%c[Andalina Debug] 📄 In-Page Code: ${src} (stage: ${stage}, format: ${shouldFormat})`, 'color: #3498db;');
+                    }
+                } else {
+                    console.warn(`[Andalina] <${tCode}> target element '${src}' not found.`);
+                    finalCode = `<!-- [Andalina] Target '${src}' not found -->`;
+                }
+            } else {
+                const t0 = performance.now();
+                const basePath = globalConfig.codesPath.replace(/\/$/, '');
+                const fullPath = basePath ? `${basePath}/${src}` : src;
+
+                const codeText = await fetchFragment(fullPath);
+                const fetchTime = Math.round(performance.now() - t0);
+
+                if (globalConfig.debug) {
+                    console.log(`%c[Andalina Debug] 📄 Code: ${fullPath} (fetch: ${fetchTime}ms)`, 'color: #3498db;');
+                }
+
+                const shouldFormat = isEnabled(formatAttr);
+                finalCode = shouldFormat ? formatHTML(codeText) : codeText.trim();
+            }
+
+            // Clean up surrounding empty text nodes (prevents HTML template indentation from leaking into the code block)
+            const prev = codeNode.previousSibling;
+            if (prev && prev.nodeType === Node.TEXT_NODE && prev.nodeValue.trim() === '') {
+                prev.remove();
+            }
+            const next = codeNode.nextSibling;
+            if (next && next.nodeType === Node.TEXT_NODE && next.nodeValue.trim() === '') {
+                next.remove();
+            }
+
+            codeNode.replaceWith(document.createTextNode(finalCode));
         }
     }
 
@@ -821,12 +1050,21 @@
         // Apply FOUC prevention if it was enabled via config (and wasn't already added aggressively)
         if (globalConfig.preventFOUC && !document.getElementById('andalina-fouc')) {
             document.head.insertAdjacentHTML('beforeend', '<style id="andalina-fouc">body { opacity: 0 !important; }</style>');
+            if (typeof window !== 'undefined') {
+                setTimeout(() => {
+                    if (document.getElementById('andalina-fouc')) {
+                        console.warn('[Andalina] FOUC safety timeout reached (4s). Revealing page body.');
+                        clearFOUC();
+                    }
+                }, 4000);
+            }
         } else if (!globalConfig.preventFOUC && document.getElementById('andalina-fouc')) {
             // Remove if config or override disabled it
-            document.getElementById('andalina-fouc').remove();
+            clearFOUC();
         }
 
         if (!globalConfig.propStart || !globalConfig.propEnd) {
+            clearFOUC();
             console.error("[Andalina] FATAL ERROR: 'propStart' and 'propEnd' delimiters MUST be explicitly defined in andalina.config.json or as script tag attributes.");
             document.body.innerHTML = `<div style="color:red; padding: 20px; font-family: sans-serif;">
                 <h2>[Andalina] Fatal Configuration Error</h2>
@@ -836,105 +1074,110 @@
             return;
         }
 
-        if (globalConfig.debug) {
-            console.log('%c[Andalina Debug] 🚀 Starting Parser...', 'color: #9b59b6; font-weight: bold;');
-        }
+        try {
+            if (globalConfig.debug) {
+                console.log('%c[Andalina Debug] 🚀 Starting Parser...', 'color: #9b59b6; font-weight: bold;');
+            }
 
-        async function prefetchData() {
-            const dataNodes = Array.from(document.querySelectorAll(tData));
-            if (dataNodes.length === 0) return;
+            rawSnapshots.clear();
+            renderedSnapshots.clear();
+            captureRawSnapshots(document.documentElement);
+
+            async function prefetchData() {
+                const dataNodes = Array.from(document.querySelectorAll(tData));
+                if (dataNodes.length === 0) return;
+
+                if (globalConfig.debug) {
+                    console.log(`%c[Andalina Debug] 📥 Pre-fetching ${dataNodes.length} data sources...`, 'color: #e67e22; font-weight: bold;');
+                }
+
+                const fetchPromises = dataNodes.map(async (node) => {
+                    const src = node.getAttribute('src');
+                    const name = node.getAttribute('name');
+                    if (src && name) {
+                        try {
+                            const t0 = performance.now();
+                            const response = await fetch(src);
+                            if (response.ok) {
+                                const json = await response.json();
+                                globalData[name] = json;
+                                if (globalConfig.debug) {
+                                    console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
+                                }
+                            } else {
+                                console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
+                            }
+                        } catch (e) {
+                            console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
+                        }
+                    }
+                    node.remove();
+                });
+
+                await Promise.all(fetchPromises);
+            }
+
+            await prefetchData();
+
+            window.__andalinaDebugTree = {
+                name: 'Root Document',
+                src: window.location ? window.location.pathname : 'index.html',
+                props: {},
+                fetchTime: 0,
+                parseTime: 0,
+                children: []
+            };
+            const tParseRoot = performance.now();
+            await processNodes(document.documentElement, window.__andalinaDebugTree);
+            window.__andalinaDebugTree.parseTime = Math.round(performance.now() - tParseRoot);
+
+            processDataBindings(document.documentElement);
+            await processCodeNodes(document.documentElement);
+            
+            // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
+            const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
+            const commentsToRemove = [];
+            let commentNode;
+            while ((commentNode = commentWalker.nextNode())) {
+                if (commentNode.nodeValue && commentNode.nodeValue.trim().startsWith('an-comment:')) {
+                    commentsToRemove.push(commentNode);
+                }
+            }
+            commentsToRemove.forEach(c => c.remove());
+
+            const totalTime = Math.round(performance.now() - startTime);
 
             if (globalConfig.debug) {
-                console.log(`%c[Andalina Debug] 📥 Pre-fetching ${dataNodes.length} data sources...`, 'color: #e67e22; font-weight: bold;');
+                console.log(`%c[Andalina Debug] ✅ Parsing complete in ${totalTime}ms.`, 'color: #9b59b6; font-weight: bold;');
+            } else {
+                console.log(`[Andalina] Parsing complete in ${totalTime}ms.`);
+            }
+            
+            if (globalConfig.showRenderedHtml) {
+                console.groupCollapsed('%c[Andalina] ✨ Final Rendered HTML (Click to expand)', 'color: #2ecc71; font-size: 13px; font-weight: bold;');
+                console.log(document.documentElement.outerHTML);
+                console.groupEnd();
             }
 
-            const fetchPromises = dataNodes.map(async (node) => {
-                const src = node.getAttribute('src');
-                const name = node.getAttribute('name');
-                if (src && name) {
-                    try {
-                        const t0 = performance.now();
-                        const response = await fetch(src);
-                        if (response.ok) {
-                            const json = await response.json();
-                            globalData[name] = json;
-                            if (globalConfig.debug) {
-                                console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
-                            }
-                        } else {
-                            console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
-                        }
-                    } catch (e) {
-                        console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
-                    }
-                }
-                node.remove();
-            });
+            renderDevTools();
 
-            await Promise.all(fetchPromises);
-        }
-
-        await prefetchData();
-
-        window.__andalinaDebugTree = {
-            name: 'Root Document',
-            src: window.location ? window.location.pathname : 'index.html',
-            props: {},
-            fetchTime: 0,
-            parseTime: 0,
-            children: []
-        };
-        const tParseRoot = performance.now();
-        await processNodes(document.documentElement, window.__andalinaDebugTree);
-        window.__andalinaDebugTree.parseTime = Math.round(performance.now() - tParseRoot);
-
-        processDataBindings(document.documentElement);
-        
-        // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
-        const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
-        const commentsToRemove = [];
-        let commentNode;
-        while ((commentNode = commentWalker.nextNode())) {
-            if (commentNode.nodeValue && commentNode.nodeValue.trim().startsWith('an-comment:')) {
-                commentsToRemove.push(commentNode);
+            // Dispatch completion event for 3rd party integrations (React/Angular/etc.)
+            try {
+                document.dispatchEvent(new CustomEvent('andalina:ready', { detail: { totalTime } }));
+            } catch(e) {
+                // Ignore in Node.js / Linkedom builder environments
             }
-        }
-        commentsToRemove.forEach(c => c.remove());
-
-        const totalTime = Math.round(performance.now() - startTime);
-
-        if (globalConfig.debug) {
-            console.log(`%c[Andalina Debug] ✅ Parsing complete in ${totalTime}ms.`, 'color: #9b59b6; font-weight: bold;');
-        } else {
-            console.log(`[Andalina] Parsing complete in ${totalTime}ms.`);
-        }
-        
-        if (globalConfig.showRenderedHtml) {
-            console.groupCollapsed('%c[Andalina] ✨ Final Rendered HTML (Click to expand)', 'color: #2ecc71; font-size: 13px; font-weight: bold;');
-            console.log(document.documentElement.outerHTML);
-            console.groupEnd();
-        }
-
-        renderDevTools();
-
-        if (globalConfig.preventFOUC) {
-            const foucStyle = document.getElementById('andalina-fouc');
-            if (foucStyle) foucStyle.remove();
-            // Smooth fade in
-            document.body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-in' });
-        }
-        
-        // Dispatch completion event for 3rd party integrations (React/Angular/etc.)
-        try {
-            document.dispatchEvent(new CustomEvent('andalina:ready', { detail: { totalTime } }));
-        } catch(e) {
-            // Ignore in Node.js / Linkedom builder environments
+        } catch (fatalError) {
+            console.error('[Andalina] Fatal error during initialization:', fatalError);
+        } finally {
+            clearFOUC();
         }
     }
 
     // Expose Andalina for programmatic usage (e.g., Node.js Builder)
     window.Andalina = {
-        init: init
+        init: init,
+        formatHTML: formatHTML
     };
 
     // Auto-run only if we are in a real browser (not Node.js)
@@ -996,7 +1239,7 @@
         </style>
         <div id="andalina-dt-header">
             <span>🌳 Andalina DevTools</span>
-            <span style="font-size: 11px; color: #aaa;">v1.6.0</span>
+            <span style="font-size: 11px; color: #aaa;">v1.8.0</span>
         </div>
         <div id="andalina-dt-body"></div>`;
         

@@ -151,9 +151,9 @@
                      <h1 class="mb-4">Download Andalina</h1>
                      <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default
                         configuration.</p>
-                     <a href="downloads/andalina-v1.6.0.zip" class="btn btn-primary mb-3"
+                     <a href="downloads/andalina-v1.8.0.zip" class="btn btn-primary mb-3"
                         style="font-size: 1.25rem; padding: 15px 30px;">
-                        <i class="ti-download mr-2"></i> Download v1.6.0 (.zip)
+                        <i class="ti-download mr-2"></i> Download v1.8.0 (.zip)
                      </a>
                      <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and
                            <code>andalina.config.json</code> &bull; Licensed under <strong>GNU LGPL-3.0</strong></small>
@@ -179,6 +179,64 @@
                   <div class="p-6 shadow rounded content mt-5">
                      <h2 class="mb-4 border-bottom pb-3">Changelog</h2>
                      <div class="mt-4">
+
+                        <!-- changelog post -->
+                        <h3 id="v1-8-0">v1.8.0 &ndash; In-Page Demo Code Extraction &amp; Two-Stage Lifecycle</h3>
+                        <p><strong>October 19, 2026</strong></p>
+                        <p>Introducing live in-page DOM code extraction and two-stage snapshot support for <code>&lt;an-code&gt;</code>.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Added</div>
+                           <ul>
+                              <li>
+                                 <strong>In-Page Code Extraction (<code>src="#element-id"</code>):</strong> <code>&lt;an-code&gt;</code> can now reference any element on the current page via an ID selector (e.g., <code>&lt;an-code src="#button-demo"&gt;</code>), eliminating duplicate external snippet files for UI documentation and interactive demos.
+                              </li>
+                              <li>
+                                 <strong>Two-Stage Capture (<code>stage="before | after"</code>):</strong> Use <code>stage="before"</code> to display the raw, unrendered Andalina syntax (e.g., <code>&lt;an-component&gt;</code>) and <code>stage="after"</code> (default) to display the final compiled HTML output—ideal for side-by-side or tabbed documentation views.
+                              </li>
+                              <li>
+                                 <strong>Built-in HTML Formatter &amp; Snippet Controls:</strong> Automatically formats extracted in-page HTML snippets with clean 4-space indentation while keeping external code files unformatted by default. Includes <code>unwrap="true"</code> (to extract inner markup without the wrapper container), <code>keep-id="true"</code> (to preserve the root element ID), and <code>format="true | false"</code> overrides.
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge updated">Updated</div>
+                           <ul>
+                              <li>
+                                 <strong>Andalina Builder &amp; VS Code Extension (v1.8.0):</strong> Updated the CLI compiler (with Node 20+ ESM LinkeDOM support) and VS Code extension to v1.8.0.
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
+
+                        <!-- changelog post -->
+                        <h3 id="v1-7-0">v1.7.0 &ndash; Template Reconstruction &amp; HTML5 Parsing Reliability</h3>
+                        <p><strong>October 17, 2026</strong></p>
+                        <p>Critical enhancements to document rebuilding, DOM parsing stability, and error resilience.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Fixed</div>
+                           <ul>
+                              <li>
+                                 <strong>Custom Element Parsing &amp; Child Preservation:</strong> Fixed an HTML5 parser quirk where self-closing non-void tags (like <code>&lt;an-attribute /&gt;</code>) swallowed subsequent sibling elements. Self-closing custom tags are now pre-normalized, and any swallowed DOM children are safely unwrapped back into the document before attribute extraction.
+                              </li>
+                              <li>
+                                 <strong>Pure DOM Template Rebuild:</strong> Replaced destructive <code>document.open()</code> and <code>document.write()</code> calls with non-destructive DOM node merging for <code>&lt;an-template&gt;</code>, preventing dev-server live reloading disconnects (VS Code Live Server) and avoiding timing issues with deferred scripts.
+                              </li>
+                              <li>
+                                 <strong>FOUC Error Boundary &amp; Safety Timeout:</strong> Wrapped engine initialization in a <code>try...finally</code> block and added a 4-second safety timeout so the page body is never left hidden at <code>opacity: 0</code> when an unhandled error or resource delay occurs.
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge updated">Updated</div>
+                           <ul>
+                              <li>
+                                 <strong>Andalina Builder &amp; VS Code Extension (v1.7.0):</strong> Updated the CLI package and VS Code extension to align with engine release 1.7.0.
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
 
                         <!-- changelog post -->
                         <h3 id="v1-6-0">v1.6.0 &ndash; Advanced Templating &amp; JS Expressions</h3>

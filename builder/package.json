@@ -1,6 +1,6 @@
 {
   "name": "andalina-builder",
-  "version": "1.6.9",
+  "version": "1.8.0",
   "description": "AOT Static Compiler and Production CLI for Andalina HTML composition engine.",
   "main": "src/builder.js",
   "bin": {
@@ -22,7 +22,7 @@
   "license": "LGPL-3.0-or-later",
   "type": "commonjs",
   "dependencies": {
-    "andalina": "^1.5.0",
+    "andalina": "^1.8.0",
     "linkedom": "^0.18.13"
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
- * Version: 1.2.0
+ * Version: 1.7.0
  * License: GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)
  */
 (function() {
@@ -39,10 +39,30 @@
         return val === 'enabled' || val === true;
     }
 
+    function clearFOUC() {
+        if (!globalConfig.preventFOUC) return;
+        if (typeof document === 'undefined') return;
+        const foucStyle = document.getElementById('andalina-fouc');
+        if (foucStyle) {
+            foucStyle.remove();
+            if (document.body && typeof document.body.animate === 'function') {
+                document.body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-in' });
+            }
+        }
+    }
+
     // Aggressively prevent FOUC if script tag dictates it (before async config load)
     if (scriptTag && (isEnabled(scriptTag.getAttribute('prevent-fouc')) || isEnabled(scriptTag.getAttribute('data-prevent-fouc')))) {
         globalConfig.preventFOUC = true;
         document.head.insertAdjacentHTML('beforeend', '<style id="andalina-fouc">body { opacity: 0 !important; }</style>');
+        if (typeof window !== 'undefined') {
+            setTimeout(() => {
+                if (document.getElementById('andalina-fouc')) {
+                    console.warn('[Andalina] FOUC safety timeout reached (4s). Revealing page body.');
+                    clearFOUC();
+                }
+            }, 4000);
+        }
     }
 
     // Tag definitions
@@ -69,6 +89,13 @@
 
     // Cache for fetched fragments
     const cache = new Map();
+
+    // Expands XML-style self-closing Andalina tags (<an-tag ... />) into explicit pairs (<an-tag ...></an-tag>)
+    // This prevents HTML5 parsers (DOMParser) from nesting subsequent sibling elements inside non-void custom tags.
+    function expandSelfClosingTags(html) {
+        if (!html) return html;
+        return html.replace(/<((?:an-[a-z0-9_-]+))((?:\s+[^=>"']+(?:=(?:"[^"]*"|'[^']*'|[^>\s]+))?)*)\s*\/>/gi, '<$1$2></$1>');
+    }
 
     async function fetchFragment(url) {
         if (cache.has(url)) {
@@ -151,6 +178,12 @@
                     if (defaultVal !== null) defaults[name] = defaultVal;
                     if (mandatory) mandatoryAttrs.add(name);
                 }
+                // Safely unwrap any swallowed sibling DOM nodes before removing
+                if (attrTag.parentNode) {
+                    while (attrTag.firstChild) {
+                        attrTag.parentNode.insertBefore(attrTag.firstChild, attrTag);
+                    }
+                }
                 attrTag.remove();
             });
         }
@@ -187,7 +220,14 @@
 
         // Also clean up any that somehow survived (e.g. dynamically injected later)
         const attributeTags = Array.from(doc.querySelectorAll(tAttribute));
-        attributeTags.forEach(attrTag => attrTag.remove());
+        attributeTags.forEach(attrTag => {
+            if (attrTag.parentNode) {
+                while (attrTag.firstChild) {
+                    attrTag.parentNode.insertBefore(attrTag.firstChild, attrTag);
+                }
+            }
+            attrTag.remove();
+        });
 
         if (Object.keys(props).length === 0) return;
 
@@ -440,7 +480,7 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const pageHtml = await fetchFragment(src);
+                    const pageHtml = expandSelfClosingTags(await fetchFragment(src));
                     const fetchTime = Math.round(performance.now() - t0);
 
                     let doc = parser.parseFromString(pageHtml, 'text/html');
@@ -487,27 +527,42 @@
                     await processNodes(doc.documentElement, trackerNode);
                     trackerNode.parseTime = Math.round(performance.now() - tParse0);
 
-                    // Rebuild entire document
-                    const newHtml = doc.documentElement.outerHTML;
-                    document.open();
-                    document.write(`<!DOCTYPE html>\n${newHtml}`);
-                    document.close(); // Completely replace the current document's head and body
-                    copyAttributes(doc.documentElement, document.documentElement);
-                    if (doc.head) copyAttributes(doc.head, document.head);
-                    if (doc.body) copyAttributes(doc.body, document.body);
+                    // Rebuild entire document cleanly via DOM (replaces document.write)
+                    if (doc.documentElement) {
+                        Array.from(doc.documentElement.attributes).forEach(attr => {
+                            document.documentElement.setAttribute(attr.name, attr.value);
+                        });
+                    }
 
-                    // We do NOT clear document.head.innerHTML anymore!
-                    // This perfectly preserves the caller page's <title>, <meta>, and <script> tags.
                     if (doc.head) {
+                        Array.from(doc.head.attributes).forEach(attr => {
+                            document.head.setAttribute(attr.name, attr.value);
+                        });
+
                         Array.from(doc.head.childNodes).forEach(node => {
-                            if (node.tagName === 'SCRIPT' && node.src.includes('andalina.js')) return; // Don't reload andalina
-                            if (node.tagName === 'TITLE' && document.querySelector('head > title')) return; // Caller title wins
+                            if (node.nodeType === Node.TEXT_NODE && !node.nodeValue.trim()) return;
+                            if (node.tagName === 'SCRIPT' && node.src && node.src.includes('andalina.js')) return; // Don't reload andalina
+                            if (node.tagName === 'TITLE') {
+                                if (document.querySelector('head > title')) return; // Caller title wins
+                            }
+                            if (node.tagName === 'LINK' && node.getAttribute('href')) {
+                                const href = node.getAttribute('href');
+                                if (document.querySelector(`head > link[href="${href}"]`)) return;
+                            }
+                            if (node.tagName === 'SCRIPT' && node.getAttribute('src')) {
+                                const src = node.getAttribute('src');
+                                if (document.querySelector(`head > script[src="${src}"]`)) return;
+                            }
                             document.head.appendChild(cloneNodeSafe(node));
                         });
                     }
 
-                    document.body.innerHTML = '';
                     if (doc.body) {
+                        Array.from(doc.body.attributes).forEach(attr => {
+                            document.body.setAttribute(attr.name, attr.value);
+                        });
+
+                        document.body.innerHTML = '';
                         Array.from(doc.body.childNodes).forEach(node => {
                             document.body.appendChild(cloneNodeSafe(node));
                         });
@@ -540,7 +595,7 @@
 
                 if (src) {
                     const t0 = performance.now();
-                    const layoutHtml = await fetchFragment(src);
+                    const layoutHtml = expandSelfClosingTags(await fetchFragment(src));
                     const fetchTime = Math.round(performance.now() - t0);
 
                     let doc = parser.parseFromString(layoutHtml, 'text/html');
@@ -618,7 +673,7 @@
                 
                 if (src) {
                     const t0 = performance.now();
-                    const html = await fetchFragment(src);
+                    const html = expandSelfClosingTags(await fetchFragment(src));
                     const fetchTime = Math.round(performance.now() - t0);
                     const doc = parser.parseFromString(html, 'text/html');
 
@@ -821,12 +876,21 @@
         // Apply FOUC prevention if it was enabled via config (and wasn't already added aggressively)
         if (globalConfig.preventFOUC && !document.getElementById('andalina-fouc')) {
             document.head.insertAdjacentHTML('beforeend', '<style id="andalina-fouc">body { opacity: 0 !important; }</style>');
+            if (typeof window !== 'undefined') {
+                setTimeout(() => {
+                    if (document.getElementById('andalina-fouc')) {
+                        console.warn('[Andalina] FOUC safety timeout reached (4s). Revealing page body.');
+                        clearFOUC();
+                    }
+                }, 4000);
+            }
         } else if (!globalConfig.preventFOUC && document.getElementById('andalina-fouc')) {
             // Remove if config or override disabled it
-            document.getElementById('andalina-fouc').remove();
+            clearFOUC();
         }
 
         if (!globalConfig.propStart || !globalConfig.propEnd) {
+            clearFOUC();
             console.error("[Andalina] FATAL ERROR: 'propStart' and 'propEnd' delimiters MUST be explicitly defined in andalina.config.json or as script tag attributes.");
             document.body.innerHTML = `<div style="color:red; padding: 20px; font-family: sans-serif;">
                 <h2>[Andalina] Fatal Configuration Error</h2>
@@ -836,99 +900,98 @@
             return;
         }
 
-        if (globalConfig.debug) {
-            console.log('%c[Andalina Debug] 🚀 Starting Parser...', 'color: #9b59b6; font-weight: bold;');
-        }
+        try {
+            if (globalConfig.debug) {
+                console.log('%c[Andalina Debug] 🚀 Starting Parser...', 'color: #9b59b6; font-weight: bold;');
+            }
 
-        async function prefetchData() {
-            const dataNodes = Array.from(document.querySelectorAll(tData));
-            if (dataNodes.length === 0) return;
+            async function prefetchData() {
+                const dataNodes = Array.from(document.querySelectorAll(tData));
+                if (dataNodes.length === 0) return;
+
+                if (globalConfig.debug) {
+                    console.log(`%c[Andalina Debug] 📥 Pre-fetching ${dataNodes.length} data sources...`, 'color: #e67e22; font-weight: bold;');
+                }
+
+                const fetchPromises = dataNodes.map(async (node) => {
+                    const src = node.getAttribute('src');
+                    const name = node.getAttribute('name');
+                    if (src && name) {
+                        try {
+                            const t0 = performance.now();
+                            const response = await fetch(src);
+                            if (response.ok) {
+                                const json = await response.json();
+                                globalData[name] = json;
+                                if (globalConfig.debug) {
+                                    console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
+                                }
+                            } else {
+                                console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
+                            }
+                        } catch (e) {
+                            console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
+                        }
+                    }
+                    node.remove();
+                });
+
+                await Promise.all(fetchPromises);
+            }
+
+            await prefetchData();
+
+            window.__andalinaDebugTree = {
+                name: 'Root Document',
+                src: window.location ? window.location.pathname : 'index.html',
+                props: {},
+                fetchTime: 0,
+                parseTime: 0,
+                children: []
+            };
+            const tParseRoot = performance.now();
+            await processNodes(document.documentElement, window.__andalinaDebugTree);
+            window.__andalinaDebugTree.parseTime = Math.round(performance.now() - tParseRoot);
+
+            processDataBindings(document.documentElement);
+            
+            // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
+            const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
+            const commentsToRemove = [];
+            let commentNode;
+            while ((commentNode = commentWalker.nextNode())) {
+                if (commentNode.nodeValue && commentNode.nodeValue.trim().startsWith('an-comment:')) {
+                    commentsToRemove.push(commentNode);
+                }
+            }
+            commentsToRemove.forEach(c => c.remove());
+
+            const totalTime = Math.round(performance.now() - startTime);
 
             if (globalConfig.debug) {
-                console.log(`%c[Andalina Debug] 📥 Pre-fetching ${dataNodes.length} data sources...`, 'color: #e67e22; font-weight: bold;');
+                console.log(`%c[Andalina Debug] ✅ Parsing complete in ${totalTime}ms.`, 'color: #9b59b6; font-weight: bold;');
+            } else {
+                console.log(`[Andalina] Parsing complete in ${totalTime}ms.`);
+            }
+            
+            if (globalConfig.showRenderedHtml) {
+                console.groupCollapsed('%c[Andalina] ✨ Final Rendered HTML (Click to expand)', 'color: #2ecc71; font-size: 13px; font-weight: bold;');
+                console.log(document.documentElement.outerHTML);
+                console.groupEnd();
             }
 
-            const fetchPromises = dataNodes.map(async (node) => {
-                const src = node.getAttribute('src');
-                const name = node.getAttribute('name');
-                if (src && name) {
-                    try {
-                        const t0 = performance.now();
-                        const response = await fetch(src);
-                        if (response.ok) {
-                            const json = await response.json();
-                            globalData[name] = json;
-                            if (globalConfig.debug) {
-                                console.log(`%c[Andalina Debug] ✓ Fetched data '${name}' from ${src} (${Math.round(performance.now() - t0)}ms)`, 'color: #2ecc71;');
-                            }
-                        } else {
-                            console.error(`[Andalina] Failed to fetch data '${name}' from ${src}: ${response.status}`);
-                        }
-                    } catch (e) {
-                        console.error(`[Andalina] Error fetching data '${name}' from ${src}:`, e);
-                    }
-                }
-                node.remove();
-            });
+            renderDevTools();
 
-            await Promise.all(fetchPromises);
-        }
-
-        await prefetchData();
-
-        window.__andalinaDebugTree = {
-            name: 'Root Document',
-            src: window.location ? window.location.pathname : 'index.html',
-            props: {},
-            fetchTime: 0,
-            parseTime: 0,
-            children: []
-        };
-        const tParseRoot = performance.now();
-        await processNodes(document.documentElement, window.__andalinaDebugTree);
-        window.__andalinaDebugTree.parseTime = Math.round(performance.now() - tParseRoot);
-
-        processDataBindings(document.documentElement);
-        
-        // Remove developer comments (<!-- an-comment: ... -->) before finalizing DOM
-        const commentWalker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT, null, false);
-        const commentsToRemove = [];
-        let commentNode;
-        while ((commentNode = commentWalker.nextNode())) {
-            if (commentNode.nodeValue && commentNode.nodeValue.trim().startsWith('an-comment:')) {
-                commentsToRemove.push(commentNode);
+            // Dispatch completion event for 3rd party integrations (React/Angular/etc.)
+            try {
+                document.dispatchEvent(new CustomEvent('andalina:ready', { detail: { totalTime } }));
+            } catch(e) {
+                // Ignore in Node.js / Linkedom builder environments
             }
-        }
-        commentsToRemove.forEach(c => c.remove());
-
-        const totalTime = Math.round(performance.now() - startTime);
-
-        if (globalConfig.debug) {
-            console.log(`%c[Andalina Debug] ✅ Parsing complete in ${totalTime}ms.`, 'color: #9b59b6; font-weight: bold;');
-        } else {
-            console.log(`[Andalina] Parsing complete in ${totalTime}ms.`);
-        }
-        
-        if (globalConfig.showRenderedHtml) {
-            console.groupCollapsed('%c[Andalina] ✨ Final Rendered HTML (Click to expand)', 'color: #2ecc71; font-size: 13px; font-weight: bold;');
-            console.log(document.documentElement.outerHTML);
-            console.groupEnd();
-        }
-
-        renderDevTools();
-
-        if (globalConfig.preventFOUC) {
-            const foucStyle = document.getElementById('andalina-fouc');
-            if (foucStyle) foucStyle.remove();
-            // Smooth fade in
-            document.body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-in' });
-        }
-        
-        // Dispatch completion event for 3rd party integrations (React/Angular/etc.)
-        try {
-            document.dispatchEvent(new CustomEvent('andalina:ready', { detail: { totalTime } }));
-        } catch(e) {
-            // Ignore in Node.js / Linkedom builder environments
+        } catch (fatalError) {
+            console.error('[Andalina] Fatal error during initialization:', fatalError);
+        } finally {
+            clearFOUC();
         }
     }
 
@@ -996,7 +1059,7 @@
         </style>
         <div id="andalina-dt-header">
             <span>🌳 Andalina DevTools</span>
-            <span style="font-size: 11px; color: #aaa;">v1.6.0</span>
+            <span style="font-size: 11px; color: #aaa;">v1.7.0</span>
         </div>
         <div id="andalina-dt-body"></div>`;
         

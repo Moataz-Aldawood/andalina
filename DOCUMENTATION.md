@@ -1,59 +1,111 @@
 # Andalina Documentation
 
-> *This document is auto-generated from the official website documentation.*
+> A zero-dependency, client-side template engine that brings component architecture, layouts, data bindings, and logic to vanilla HTML.
 
-## What is andalina?
+---
 
-andalina is a zero-dependency, development-time composition tool designed to enforce the DRY (Don't Repeat Yourself) principle for HTML authoring. It is not a framework for serving web applications; it is a template parser for HTML/XHTML that runs directly in the browser.
+## Table of Contents
 
-### The Problem We Solve:
+- [What is Andalina?](#what-is-andalina)
+  - [The Problem We Solve](#the-problem-we-solve)
+  - [The Vision](#the-vision)
+- [How to Use](#how-to-use)
+  - [1. Download Andalina](#1-download-andalina)
+  - [2. Add to Your HTML Document](#2-add-to-your-html-document)
+  - [3. Run a Local Development Server](#3-run-a-local-development-server)
+- [Core Tags Reference](#core-tags-reference)
+  - [`<an-include>`](#an-include)
+  - [`<an-data>`](#an-data)
+  - [`<an-repeat>`](#an-repeat)
+  - [`<an-component>`](#an-component)
+  - [`<an-layout>`](#an-layout)
+  - [`<an-template>`](#an-template)
+  - [`<an-code>`](#an-code)
+  - [`<an-if>` / `<an-else>`](#an-if--an-else)
+- [JS Expressions in Bindings](#js-expressions-in-bindings)
+- [`<!-- an-comment: -->`](#--an-comment---)
+- [Configuration](#configuration)
+  - [Global Configuration (`andalina.config.json`)](#global-configuration-andalinaconfigjson)
+  - [Page Scope Overrides](#page-scope-overrides)
+- [Developer Tools & Inspection](#developer-tools--inspection)
+  - [Show Rendered HTML](#show-rendered-html)
+  - [Debugging & DevTools Overlay](#debugging--devtools-overlay)
+- [Third-Party JS Compatibility](#third-party-js-compatibility)
+  - [The Issue](#the-issue)
+  - [The Solution (`andalina:ready`)](#the-solution-andalinaready)
+  - [Safe Initialization Example](#safe-initialization-example)
+- [Andalina Builder (VS Code Extension & CLI)](#andalina-builder-vs-code-extension--cli)
+  - [Features](#features)
+  - [How to Use](#how-to-use-1)
 
-This addresses a classic Developer Experience (DX) problem: the handoff friction between Front-End (FE) and Back-End (BE) teams. Often, when the FE team delivers raw HTML, the BE team has to rewrite or "clean up" the HTML to ingest it or wrap it in their server-side logic (JSF, ASP, Laravel, PHP, Django, JSP, Thymeleaf, Blade, Jinja2, etc.). This leads to massive BE/FE misalignment during the development phase.
+---
 
-### The Vision:
+## What is Andalina?
 
-Our vision is to solve this misalignment by providing a simple, unified, language-agnostic template language. By using andalina, the FE team delivers structured, modular components that perfectly map to server-side component boundaries. The BE team can now easily integrate these templates without rewriting the HTML. This vision is built upon four core pillars:
+**Andalina** is a zero-dependency, development-time composition tool designed to enforce the **DRY (Don't Repeat Yourself)** principle for HTML authoring. It is not a framework for serving web applications; it is a template parser for HTML/XHTML that runs directly in the browser without build steps, Webpack, or Node.js runtime requirements.
 
-- Zero-Dependency: andalina runs entirely in the browser. No Node.js build pipelines, no Webpack, and no server-side rendering required.
-- Simple & Easy to Learn: andalina uses only 5 core tags. It is incredibly easy to pick up, even for absolute beginners.
-- Standard HTML/XHTML: There is no need to learn a new programming language or complex framework. It's just the HTML you already know!
-- Single Source of Truth: Front-End developers can fix bugs in exactly one place. No more repeating code across 20 files—andalina handles the repetition for you.
+### The Problem We Solve
+
+This addresses a classic **Developer Experience (DX) problem**: the handoff friction between Front-End (FE) and Back-End (BE) teams. 
+
+Often, when the FE team delivers raw HTML prototypes, the BE team has to rewrite or "clean up" the HTML to ingest it or wrap it into server-side view engines (JavaServer Faces, Blade, Laravel, Django, Thymeleaf, ASP.NET, PHP, JSP, Jinja2, etc.). This leads to significant misalignment, code drift, and duplicated maintenance during active development.
+
+### The Vision
+
+Our vision is to solve this misalignment by providing a simple, unified, language-agnostic template language. By using Andalina, the FE team delivers structured, modular components that map directly to server-side component boundaries. The BE team can integrate these templates without rewriting the markup.
+
+This vision is built upon four core pillars:
+
+1. **Zero-Dependency**: Andalina runs entirely in the browser. No Node.js build pipelines, no Webpack bundlers, and no server-side rendering required.
+2. **Simple & Easy to Learn**: Andalina uses only intuitive declarative tags (`<an-*>`). It is easy to pick up, even for beginners.
+3. **Standard HTML/XHTML**: No need to learn a new programming language or proprietary JSX syntax. It's just the HTML you already know!
+4. **Single Source of Truth**: Front-End developers fix bugs in exactly one place. No more repeating navigation bars or cards across 20 files—Andalina handles composition automatically.
+
+---
 
 ## How to Use
 
 ### 1. Download Andalina
 
-First, download the latest version of Andalina from the Download Page (or our GitHub Repository). The downloadable archive (.zip) includes:
+Download the latest version of Andalina from the official website or repository. The distribution archive (`.zip`) includes:
 
-- andalina.js: The core zero-dependency client-side template engine.
-- andalina.config.json: Mandatory configuration file for defining paths and framework-safe data binding delimiters.
+- `andalina.js`: The zero-dependency core client-side template engine.
+- `andalina.config.json`: Configuration file for defining paths and framework-safe data binding delimiters.
 
 ### 2. Add to Your HTML Document
 
-Place andalina.js in your project directory and simply drop the script tag into the <head> of your HTML document. Ensure you include the defer attribute so Andalina executes after the DOM is ready:
+Place `andalina.js` into your project directory and include it inside the `<head>` of your HTML document using the `defer` attribute so it executes after DOM parsing:
 
 ```html
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 ```
 
 ### 3. Run a Local Development Server
 
-> **Important:** Important Note: Because andalina uses the Fetch API to load templates dynamically, modern browsers will block it due to CORS restrictions if you open the HTML/XHTML file directly (e.g., file://). You must run your project through a local development server (like VS Code's "Live Server" extension) for andalina to work!
+> [!IMPORTANT]
+> **CORS Restriction**: Because Andalina uses the browser Fetch API to load templates dynamically, modern browsers block requests when opening HTML files via the `file://` protocol. **You must run your project through a local HTTP server** (such as VS Code's "Live Server" extension, `npx serve`, or Python's `http.server`) for Andalina to work!
 
-## <an-include>
+---
 
-Used to inject static HTML partials directly into your page.
+## Core Tags Reference
 
-### Attributes:
+### `<an-include>`
 
-- src (Optional): The exact path to the HTML/XHTML file you want to include.
-- name (Optional): The name of the include fragment (resolves to [includesPath]/[name][extension]). Note: You must provide either src or name.
+Used to inject static HTML partials directly into your document.
 
-### Example:
+#### Attributes:
 
-1. The Partial (head-content.html)
+- `src` *(Optional)*: The exact relative or absolute path to the HTML/XHTML file you want to include.
+- `name` *(Optional)*: The name of the include fragment (resolves automatically to `[includesPath]/[name][extension]`).
+
+> [!NOTE]
+> You must provide either `src` or `name`.
+
+#### Example:
+
+**1. The Partial (`head-content.html`)**
 
 ```html
 <an-attribute name="title" default-value="Welcome" />
@@ -61,21 +113,20 @@ Used to inject static HTML partials directly into your page.
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <!-- Favicon -->
-<link rel="icon" data-type="image/x-icon" 
-href="./assets/imgs/Favicon/Favicon.png"/>
+<link rel="icon" data-type="image/x-icon" href="./assets/imgs/Favicon/Favicon.png"/>
 <!-- css files -->
 <link rel="stylesheet" href="./assets/style.css"/>
 <!-- js -->
-<script src="./js/x.js"/>
+<script src="./js/x.js"></script>
 ```
 
-2. The Call (index.html)
+**2. The Calling Page (`index.html`)**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
     <an-include src="head-content.html"></an-include>
 </head>
 <body>
@@ -84,24 +135,22 @@ href="./assets/imgs/Favicon/Favicon.png"/>
 </html>
 ```
 
-### Rendered HTML:
+#### Rendered HTML:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <!-- Favicon -->
-    <link rel="icon" data-type="image/x-icon" 
-    href="./assets/imgs/Favicon/Favicon.png"/>
+    <link rel="icon" data-type="image/x-icon" href="./assets/imgs/Favicon/Favicon.png"/>
     <!-- css files -->
     <link rel="stylesheet" href="./assets/style.css"/>
-
     <!-- js -->
-    <script src="./js/x.js"/>
+    <script src="./js/x.js"></script>
 </head>
 <body>
     <p> Welcome </p>
@@ -109,26 +158,27 @@ href="./assets/imgs/Favicon/Favicon.png"/>
 </html>
 ```
 
-## <an-data>
+---
+
+### `<an-data>`
 
 Used to fetch external JSON data and store it in memory for your templates to use.
 
-### Attributes:
+#### Attributes:
 
-- src (Required): The URL or path to the JSON endpoint/file.
-- name (Required): The variable name to store the fetched data in.
+- `src` *(Required)*: The URL or relative path to the JSON file or endpoint.
+- `name` *(Required)*: The variable name to store the fetched data under in memory.
 
-### Example:
+#### Example 1 (Basic Fetch):
 
 ```html
 <!-- Fetch data from an external JSON file and store it in 'myList' -->
-<an-data src="https://api.example.com/items.json" name="myList" />
-
+<an-data src="https://api.example.com/items.json" name="myList"></an-data>
 ```
 
-### Example 2 (Global Data Binding & Arrays):
+#### Example 2 (Global Data Binding & Array Indexing):
 
-Any data fetched using <an-data> becomes globally available to the entire document. You can inject specific strings or nested objects directly into your HTML or component attributes anywhere on the page, without needing a loop!
+Any data fetched using `<an-data>` becomes globally available throughout the entire document. You can inject strings, numbers, or nested objects directly into your HTML markup or element attributes anywhere on the page without needing a loop:
 
 ```html
 <!-- store.json contains: { "title": "Tech Haven", "featured": ["Laptops", "Phones"] } -->
@@ -141,10 +191,9 @@ Any data fetched using <an-data> becomes globally available to the entire docume
     <!-- Access array indexes natively using bracket notation -->
     <p>Today's featured category: {{ store.featured[0] }}</p>
 </div>
-
 ```
 
-### Rendered HTML (Example 2):
+#### Rendered HTML (Example 2):
 
 ```html
 <div class="store-info">
@@ -154,27 +203,28 @@ Any data fetched using <an-data> becomes globally available to the entire docume
     <!-- Access array indexes natively using bracket notation -->
     <p>Today's featured category: Laptops</p>
 </div>
-
 ```
 
-## <an-repeat>
+---
 
-Used to loop content dynamically. You can either repeat a specific number of times, or iterate over data fetched with <an-data>.
+### `<an-repeat>`
 
-### Attributes:
+Used to loop content dynamically. You can either repeat content a specific number of times, or iterate over arrays fetched via `<an-data>`.
 
-- times (Optional): An integer specifying how many times to repeat the content block. (Used for simple numeric loops).
-- data (Optional): The name of the data array fetched via <an-data> to iterate over.
-- item (Optional, Default: "item"): The local variable name used to access the current object in the data array.
-- index-as (Optional, Default: "$index"): The variable name used to access the current loop iteration index.
+#### Attributes:
 
-### Example 1 (Simple numeric loop):
+- `times` *(Optional)*: An integer specifying how many times to repeat the content block (for simple numeric loops).
+- `data` *(Optional)*: The name of the data array fetched via `<an-data>` to iterate over.
+- `item` *(Optional, Default: `"item"`)*: The local variable name used to access the current item in the array.
+- `index-as` *(Optional, Default: `"$index"`)*: The variable name representing the current loop iteration index (0-indexed).
+
+#### Example 1 (Simple Numeric Loop):
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
     <an-repeat times="3" index-as="i">
@@ -184,13 +234,13 @@ Used to loop content dynamically. You can either repeat a specific number of tim
 </html>
 ```
 
-### Rendered HTML (Example 1):
+#### Rendered HTML (Example 1):
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
     <p>Item number 0</p>
@@ -200,11 +250,11 @@ Used to loop content dynamically. You can either repeat a specific number of tim
 </html>
 ```
 
-### Example 2 (Looping over fetched data):
+#### Example 2 (Looping Over Fetched Data):
 
 ```html
-<!-- Assuming data.json contains an array of objects like { "id": 1, "name": "Product A" } -->
-<an-data src="data.json" name="products" />
+<!-- data.json contains: [{ "id": 1, "name": "Product A" }, { "id": 2, "name": "Product B" }] -->
+<an-data src="data.json" name="products"></an-data>
 
 <an-repeat data="products" item="product">
     <div class="product-card">
@@ -212,10 +262,9 @@ Used to loop content dynamically. You can either repeat a specific number of tim
         <p>Product ID: {{ product.id }}</p>
     </div>
 </an-repeat>
-
 ```
 
-### Rendered HTML (Example 2):
+#### Rendered HTML (Example 2):
 
 ```html
 <div class="product-card">
@@ -226,35 +275,40 @@ Used to loop content dynamically. You can either repeat a specific number of tim
     <h3>Product B</h3>
     <p>Product ID: 2</p>
 </div>
-
 ```
 
-## <an-component>
+---
 
-Used to import reusable components and pass dynamic properties via attributes. Variables inside the component are defined using <an-attribute>.
+### `<an-component>`
 
-### Attributes:
+Used to instantiate reusable components and pass dynamic properties via attributes.
 
-- src (Optional): The exact path to the component HTML/XHTML file.
-- name (Optional): The name of the component (resolves to [componentsPath]/[name][extension]). Note: You must provide either src or name.
-- Dynamic Attributes: Any other attribute you add will be passed to the component as a property.
+#### Attributes:
 
-Inside the component file, define your component using Andalina's Structured Syntax: wrap the file in an <an-component-def> container, specify metadata in an <an-attributes> block, and place your markup inside an <an-body> block.
+- `src` *(Optional)*: The exact path to the component HTML/XHTML file.
+- `name` *(Optional)*: The name of the component (resolves to `[componentsPath]/[name][extension]`).
+- *Dynamic Attributes*: Any additional attributes added to the tag are passed into the component as property bindings.
 
-Inside <an-attributes>, use <an-attribute> to define the props. It accepts:
+#### Component Structured Syntax:
 
-- name (Required): The name of the property.
-- default-value (Optional): A fallback value if the prop is not passed.
-- mandatory (Optional): Set to "true" to log a warning if the prop is missing.
+Inside the component file, define your component using Andalina's **Structured Syntax**:
+1. Wrap the file in an `<an-component-def>` container.
+2. Specify prop metadata inside an `<an-attributes>` block.
+3. Place your component template inside an `<an-body>` block.
 
-### Example:
+Inside `<an-attributes>`, use `<an-attribute>` to declare properties:
+- `name` *(Required)*: The name of the property.
+- `default-value` *(Optional)*: A fallback value if the prop is omitted by the caller.
+- `mandatory` *(Optional)*: Set to `"true"` to emit a warning if the prop is not provided.
 
-1. The Component (user-card.html)
+#### Example:
+
+**1. The Component (`user-card.html`)**
 
 ```html
 <an-component-def>
     <an-attributes>
-        <!-- define components attributes that will be passed from the caller -->
+        <!-- define component attributes that will be passed from the caller -->
         <an-attribute name="username" mandatory="true" />
         <an-attribute name="role" default-value="Member" />
     </an-attributes>
@@ -269,32 +323,31 @@ Inside <an-attributes>, use <an-attribute> to define the props. It accepts:
 </an-component-def>
 ```
 
-2. The Call (index.html)
+**2. The Calling Page (`index.html`)**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
-
     <!-- call a component using src attribute -->
-    <an-component src="user-card.html" username="Alice" role="Admin"/>
+    <an-component src="user-card.html" username="Alice" role="Admin"></an-component>
 
     <!-- call a component using name attribute -->
-    <an-component name="user-card" username="Bob"/>
+    <an-component name="user-card" username="Bob"></an-component>
 </body>
 </html>
 ```
 
-### Rendered HTML:
+#### Rendered HTML:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
     <div class="card">
@@ -310,20 +363,22 @@ Inside <an-attributes>, use <an-attribute> to define the props. It accepts:
 </html>
 ```
 
-## <an-layout>
+---
 
-A structural wrapper that can be nested inside an <an-template> or within another layout. It provides a reusable shell (like a sidebar grid or a card container) and uses <an-place> slots to accept content from children.
+### `<an-layout>`
 
-Like components, layouts use Andalina's Structured Syntax: wrap the file in an <an-layout-def> container, specify optional metadata in an <an-attributes> block, and place your structural markup inside an <an-body> block.
+A structural wrapper that can be nested inside an `<an-template>` or within another layout. It provides a reusable shell (like a dashboard grid, sidebar layout, or split container) and uses `<an-place>` slots to accept content injected via `<an-inject>`.
 
-### Attributes:
+Like components, layouts use Andalina's **Structured Syntax**: wrap the file in an `<an-layout-def>` container, define optional metadata inside `<an-attributes>`, and place the structural markup inside `<an-body>`.
 
-- src (Optional): The exact path to the layout HTML/XHTML file.
-- name (Optional): The name of the layout (resolves to [layoutsPath]/[name][extension]). Note: You must provide either src or name.
+#### Attributes:
 
-### Example:
+- `src` *(Optional)*: The exact path to the layout HTML/XHTML file.
+- `name` *(Optional)*: The name of the layout (resolves to `[layoutsPath]/[name][extension]`).
 
-1. The Grid Layout (dashboard-layout.html)
+#### Example:
+
+**1. The Grid Layout (`dashboard-layout.html`)**
 
 ```html
 <an-layout-def>
@@ -347,19 +402,18 @@ Like components, layouts use Andalina's Structured Syntax: wrap the file in an <
         </div>
     </an-body>
 </an-layout-def>
-
 ```
 
-2. The Calling Page (admin.html)
+**2. The Calling Page (`admin.html`)**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
-    <an-layout src="dashboard-layout.html">
+    <an-layout src="dashboard-layout.html" theme="dark">
         <an-inject name="header-content">
             <h1>Admin Dashboard</h1>
         </an-inject>
@@ -377,13 +431,13 @@ Like components, layouts use Andalina's Structured Syntax: wrap the file in an <
 </html>
 ```
 
-### Rendered HTML:
+#### Rendered HTML:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
     <div class="dashboard-grid theme-dark">
@@ -407,18 +461,20 @@ Like components, layouts use Andalina's Structured Syntax: wrap the file in an <
 </html>
 ```
 
-## <an-template>
+---
 
-The root tag used in your final page to wrap your content inside a complete HTML/XHTML document template. Unlike an <an-layout> (which acts as a structural partial), a template provides the full, standard structure of a webpage, including the <html>, <head>, and <body> tags.
+### `<an-template>`
 
-### Attributes:
+The root template tag used on your page to wrap your content inside a complete HTML document template. Unlike an `<an-layout>` (which acts as an inner structural partial), a template provides the full document structure, including the `<!DOCTYPE html>`, `<html>`, `<head>`, and `<body>` tags.
 
-- src (Optional): The exact path to the template page HTML/XHTML file.
-- name (Optional): The name of the template page (resolves to [templatesPath]/[name][extension]). Note: You must provide either src or name.
+#### Attributes:
 
-### Example:
+- `src` *(Optional)*: The exact path to the root template HTML/XHTML file.
+- `name` *(Optional)*: The name of the template page (resolves to `[templatesPath]/[name][extension]`).
 
-1. The Root Template (master.html)
+#### Example:
+
+**1. The Root Template (`master.html`)**
 
 ```html
 <!DOCTYPE html>
@@ -451,23 +507,22 @@ The root tag used in your final page to wrap your content inside a complete HTML
     <script src="andalina.js" data-templates-path="templates"></script>
 </body>
 </html>
-
 ```
 
-2. The Calling Page (index.html)
+**2. The Calling Page (`index.html`)**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
     <an-template name="master" lang="fr">
         <an-inject name="content">
             <section class="hero">
                 <h1>Welcome to my Website!</h1>
-                <p>This is my the page content.</p>
+                <p>This is my page content.</p>
             </section>
         </an-inject>
     </an-template>
@@ -475,13 +530,13 @@ The root tag used in your final page to wrap your content inside a complete HTML
 </html>
 ```
 
-### Rendered HTML:
+#### Rendered HTML:
 
 ```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
     <meta charset="UTF-8">
     <title>My Awesome Website</title>
     <link rel="stylesheet" href="style.css">
@@ -496,7 +551,7 @@ The root tag used in your final page to wrap your content inside a complete HTML
     <main class="container">
         <section class="hero">
             <h1>Welcome to my Website!</h1>
-            <p>This is my the page content.</p>
+            <p>This is my page content.</p>
         </section>
     </main>
 
@@ -506,36 +561,45 @@ The root tag used in your final page to wrap your content inside a complete HTML
     </footer>
 </body>
 </html>
-
 ```
 
-## <an-code>
+---
 
-Used to inject unparsed source code directly from a file, perfectly formatted and safely escaped for documentation blocks.
+### `<an-code>`
 
-> **Important:** Syntax Highlighting Warning: If you are using a code highlighter like highlight.js or Prism.js, you must ensure it only runs after your <an-code> blocks have been fully fetched and injected. For a detailed explanation of this async race condition and how to fix it, please see the Third-Party JS Compatibility section.
+Used to inject and safely escape source code inside documentation blocks—either by fetching an external file (`src="js/app.js"`) or by extracting a live element directly from the current page (`src="#element-id"`).
 
-### Attributes:
+> [!WARNING]
+> **Syntax Highlighting Warning**: If you are using a code highlighter like `highlight.js` or `Prism.js`, you must ensure it executes *after* your `<an-code>` blocks have finished fetching and injecting. For safe timing, see the [Third-Party JS Compatibility](#third-party-js-compatibility) section.
 
-- src (Required): The exact path to the source code file. If codesPath is configured, it resolves relative to that directory.
+#### Attributes:
 
-### Example:
+- `src` *(Required)*:
+  - **File Path** (e.g. `src="js/app.js"`): Fetches the external source file (relative to `codesPath` if configured). External files are injected **as-is without formatting** by default to preserve language-specific indentation (Java, Python, XML, JS, etc.).
+  - **In-Page Element Selector** (e.g. `src="#button-demo"`): Clones the matching element from the current page, strips its demo `id` attribute by default, and **auto-formats** the HTML indentation.
+- `stage` *(Optional, default: `"after"`)*: Controls *when* an in-page element (`src="#id"`) is captured:
+  - `stage="before"`: Captures the raw, unrendered Andalina markup (e.g., `<an-component>`, `<an-repeat>`, `{{ prop }}`) *before* Andalina processes it.
+  - `stage="after"`: Captures the final rendered HTML *after* all Andalina components, loops, conditionals, and data bindings have resolved.
+- `unwrap` *(Optional, default: `"false"`)*: When set to `"true"`, extracts only the inner content (`innerHTML`) of the target wrapper element instead of including the wrapper tag itself (`outerHTML`).
+- `keep-id` *(Optional, default: `"false"`)*: By default, Andalina strips the `id` attribute from the cloned root element so demo selector IDs do not clutter your documentation snippets. Set `keep-id="true"` to preserve the `id` attribute.
+- `format` *(Optional)*: Controls HTML auto-formatting (`"true"` or `"false"`). Defaults to `"true"` for in-page elements (`src="#id"`) and `"false"` for external files.
 
-1. The Source Code (js/app.js)
+#### Example 1: Loading Code from an External File
 
-```html
+**1. The Source Code (`js/app.js`)**
+
+```javascript
 function greet(name) {
     console.log("Hello, " + name + "!");
 }
 greet("World");
-
 ```
 
-2. The Call (index.html)
+**2. The Calling Page (`index.html`)**
 
 ```html
 <head>
-    <script src="andalina.js" defer> </script>
+    <script src="andalina.js" defer></script>
 </head>
 <body>
     <pre>
@@ -544,18 +608,36 @@ greet("World");
         </code>
     </pre>
 </body>
-
 ```
 
-## <an-if> / <an-else>
+#### Example 2: Extracting Live In-Page Demo Code (Two-Tab Pattern)
 
-Evaluate a conditional block. You can use native JavaScript expressions inside the condition against your <an-data> sources.
+You can point multiple `<an-code>` tags to the same demo container using `stage="before"` and `stage="after"` to showcase both the Andalina component call and the final compiled HTML output:
 
-### Attributes:
+```html
+<!-- 1. Live Demo Container -->
+<div id="button-demo">
+    <an-component name="primary-button" label="Save Changes"></an-component>
+</div>
 
-- condition (Required on an-if): The JavaScript expression to evaluate. Must resolve to a truthy or falsy value.
+<!-- 2. Tab 1: Show Raw Andalina Code (Pre-Engine) -->
+<pre><code class="language-html"><an-code src="#button-demo" stage="before" unwrap="true"></an-code></code></pre>
 
-### Example:
+<!-- 3. Tab 2: Show Final Rendered HTML (Post-Engine) -->
+<pre><code class="language-html"><an-code src="#button-demo" stage="after" unwrap="true"></an-code></code></pre>
+```
+
+---
+
+### `<an-if>` / `<an-else>`
+
+Evaluate conditional blocks based on JavaScript expressions evaluated against your `<an-data>` stores.
+
+#### Attributes:
+
+- `condition` *(Required on `an-if`)*: The JavaScript expression to evaluate. Must resolve to a truthy or falsy value.
+
+#### Example:
 
 ```html
 <an-if condition="store.isOpen && user.name !== ''">
@@ -566,7 +648,11 @@ Evaluate a conditional block. You can use native JavaScript expressions inside t
 </an-else>
 ```
 
-In Andalina v1.6.0+, standard double-curly bindings fully support native JavaScript expressions, array methods, and fallbacks.
+---
+
+## JS Expressions in Bindings
+
+In Andalina, standard double-curly property bindings (`{{ }}`) fully support native JavaScript expressions, array methods, fallbacks, arithmetic, and ternary logic:
 
 ```html
 <!-- Fallbacks -->
@@ -575,49 +661,62 @@ In Andalina v1.6.0+, standard double-curly bindings fully support native JavaScr
 <!-- Math & Logic -->
 <p>Total Price with Tax: {{ price * 1.2 }}</p>
 <p>Discount: {{ price > 100 ? '20%' : '5%' }}</p>
+
+<!-- String and Array Operations -->
+<p>User Initial: {{ user.name.charAt(0).toUpperCase() }}</p>
+<p>Items in cart: {{ cart.items.length }}</p>
 ```
 
-## <!-- an-comment: -->
+---
 
-Andalina provides a specialized HTML comment syntax for development notes that are automatically stripped out when you compile your project using the Andalina Builder.
+## `<!-- an-comment: -->`
 
-### Syntax:
+Andalina provides a specialized HTML comment syntax for internal development notes that are automatically stripped from the final HTML during rendering and AOT compilation:
 
+#### Syntax:
+
+```html
 <!-- an-comment: Your note here -->
+```
 
-### Example:
+#### Example:
 
 ```html
 <!-- an-comment: This is a note for developers that won't appear in the final HTML -->
 <div>Visible Content</div>
 ```
 
+---
+
 ## Configuration
 
-Define the global behavior in andalina.config.json:
+### Global Configuration (`andalina.config.json`)
 
-### Properties:
+Define global engine behaviors in `andalina.config.json` placed at the root of your project:
 
-- showRenderedHtml: {enabled, disabled}. Enables or disables the output of the final rendered HTML into the Developer Tools Console.
-- debug: {enabled, disabled}. Enables or disables the output of detailed debugging information during the rendering process.
-- debugUI: {true, false}. When debug is enabled, this toggles the floating visual component tree overlay. Defaults to true.
-- preventFOUC: {enabled, disabled}. Prevents Flash of Unstyled Content by hiding the page body until rendering completes.
-- propStart: (Mandatory) The starting string for properties (e.g. {{).
-- propEnd: (Mandatory) The ending string for properties (e.g. }}).
-- prefix: A custom prefix for Andalina tags. Defaults to an. It can be any string (e.g., an, andalina, aa).
-- componentsPath: The directory path where your component files are stored.
-- layoutsPath: The directory path where your layout files are stored.
-- templatesPath: The directory path where your templates files are stored.
-- includesPath: The directory path where your HTML fragment and include files are stored.
-- codesPath: The directory path where your source code snippet files are stored.
-- extension: The default file extension to be used for components, layouts, pages, and includes when referring to them by name only. It can be any string, but it must start with a dot (e.g., .html, .xhtml).
+| Property | Values / Type | Description |
+| :--- | :--- | :--- |
+| `showRenderedHtml` | `"enabled"` \| `"disabled"` | Prints the final rendered HTML into the Developer Tools Console. |
+| `debug` | `"enabled"` \| `"disabled"` | Enables detailed timing and fetch trace logs in the browser console. |
+| `debugUI` | `true` \| `false` | Toggles the floating visual component tree overlay when `debug` is enabled (defaults to `true`). |
+| `preventFOUC` | `"enabled"` \| `"disabled"` | Prevents Flash of Unstyled Content by hiding the body until rendering completes. |
+| `propStart` | `string` **(Mandatory)** | Starting delimiter for property bindings (e.g. `"{{"`). |
+| `propEnd` | `string` **(Mandatory)** | Ending delimiter for property bindings (e.g. `"}}"`). |
+| `prefix` | `string` | Custom tag prefix for Andalina tags (defaults to `"an"`). |
+| `componentsPath` | `string` | Directory where reusable component files reside. |
+| `layoutsPath` | `string` | Directory where layout files reside. |
+| `templatesPath` | `string` | Directory where document template files reside. |
+| `includesPath` | `string` | Directory where partial include snippets reside. |
+| `codesPath` | `string` | Directory where source code files reside. |
+| `extension` | `string` | Default extension used when resolving tags by `name` (e.g. `".html"`, `".xhtml"`). Must start with a dot. |
 
-### Example:
+#### Example `andalina.config.json`:
 
-```html
+```json
 {
     "showRenderedHtml": "disabled",
     "debug": "enabled",
+    "debugUI": true,
     "preventFOUC": "enabled",
     "propStart": "{{",
     "propEnd": "}}",
@@ -630,85 +729,90 @@ Define the global behavior in andalina.config.json:
 }
 ```
 
-Page Scope Configuration: You can override the global configuration directly on a specific page by adding data attributes to the andalina script tag.
+### Page Scope Overrides
+
+You can override global configuration settings directly on any individual page by adding data attributes to the `<script>` tag:
 
 ```html
 <script src="andalina.js" 
-	data-show-rendered-html="enabled" 
-	data-extension=".xhtml" 
-	defer>
+    data-show-rendered-html="enabled" 
+    data-extension=".xhtml" 
+    defer>
 </script>
-
 ```
 
-## Show Rendered HTML
+---
 
-Since andalina runs client-side and dynamically manipulates the DOM, viewing the page source in your browser (Right Click > View Page Source) will only show your <an-> tags, not the final rendered HTML.
+## Developer Tools & Inspection
 
-If you need to inspect or copy the completely rendered HTML, you can enable the showRenderedHtml configuration globally in andalina.config.json, or on a single page using data-show-rendered-html="enabled":
+### Show Rendered HTML
 
-When enabled, andalina will print the Final Rendered HTML directly into your Developer Tools Console! You can easily inspect it or copy-paste it.
+Because Andalina runs client-side and dynamically constructs the DOM, viewing the raw source via your browser's **Right Click > View Page Source** will only show your original `<an-*>` tags, not the resolved HTML.
 
-## Debugging
+If you need to inspect or copy the fully rendered HTML output, set `showRenderedHtml: "enabled"` in `andalina.config.json` or use `data-show-rendered-html="enabled"` on your script tag. Andalina will log the complete rendered HTML directly to your Developer Tools Console!
 
-When working with complex nested templates, it's easy to lose track of what andalina is fetching. To help with this, you can enable debug mode.
+### Debugging & DevTools Overlay
 
-### Enable Debug Mode:
+When working with complex nested templates and components, enable `debug: "enabled"`:
 
-You can turn on debug mode globally in your andalina.config.json, or on a single page using the script attribute: data-debug="enabled".
+1. **Console Trace**: Andalina prints a structured performance trace to the console showing which files were fetched, network response times, parsing durations, and passed properties.
+2. **Visual Component Tree**: A collapsible, interactive floating tree widget appears on your page, allowing you to inspect every nested template, layout, component, and their bound properties.
 
-When enabled, andalina will print a beautiful, structured trace directly to your browser's Developer Tools Console, showing exactly which files were fetched, how long the network request took, and the properties passed to each component.
+---
 
 ## Third-Party JS Compatibility
 
-Because andalina dynamically fetches and injects HTML into the DOM asynchronously, it can cause race conditions with third-party JavaScript libraries (such as sliders, lightboxes, or UI frameworks) that attempt to scan the DOM immediately on page load.
+### The Issue
 
-> **Important:** The Issue: If a third-party library runs before andalina has finished injecting your components, the library won't find the elements and will fail to initialize.
+Because Andalina fetches and injects HTML partials asynchronously via the Fetch API, third-party libraries (sliders, UI components, date pickers, or CSS frameworks) that scan the DOM on `DOMContentLoaded` or immediate script execution may fail to find elements because Andalina has not finished rendering.
 
-### The Solution:
+### The Solution (`andalina:ready`)
 
-You must initialize your third-party libraries after you are sure the asynchronous fetching has completed. A reliable way to handle this is by awaiting the component injections or using a Promise.all approach if you are manually fetching content.
+Andalina dispatches a custom `andalina:ready` event on the `document` as soon as all templates, components, and data bindings have finished rendering. Initialize your client-side libraries inside an event listener for `andalina:ready`:
 
-### Example: Safe Initialization
+### Safe Initialization Example:
 
-```html
+```javascript
 // Wait for Andalina to finish parsing and injecting the entire DOM
 document.addEventListener('andalina:ready', function(e) {
-    console.log(`Andalina finished in ${e.detail.totalTime}ms`);
+    console.log(`Andalina finished rendering in ${e.detail.totalTime}ms`);
     
-    // It is now safe to initialize React, Angular, Bootstrap, or other libraries
-    // that need to bind to the final DOM structure.
-    
-    // Example: React
-    // const root = ReactDOM.createRoot(document.getElementById('root'));
-    // root.render(<App />);
-    
-    // Example: Bootstrap tooltips
-    // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    // const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-});
+    // It is now safe to initialize React, Angular, Bootstrap, Swiper, etc.
+    // Example: Bootstrap Tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
 
+    // Example: Syntax Highlighters
+    if (window.hljs) {
+        hljs.highlightAll();
+    }
+});
 ```
 
-## Andalina Builder
+---
 
-The Andalina Builder is a powerful VS Code Extension that performs AOT (Ahead of Time) Transpilation. It seamlessly converts your raw Andalina project directly into static SSG files or native Enterprise framework views.
+## Andalina Builder (VS Code Extension & CLI)
 
-### Features:
+The **Andalina Builder** is an AOT (Ahead of Time) transpiler available as a VS Code extension and a CLI tool (`andalina-builder`). It compiles your dynamic Andalina projects directly into static SSG files or native Enterprise backend framework views.
 
-- GUI Configuration: Manage your build targets natively in VS Code without editing JSON files manually.
-- Multi-Target Transpilation: With a single click, convert your Andalina UI into: Static HTML (Flat SSG) JavaServer Faces (JSF) [Experimental] (Outputs a Maven Web App structure with Composite Components and Facelets Templating) Laravel Blade [Experimental] (Uses @component, @slot, @extends) Django [Experimental] (Uses {% include %}, {% block %}, {% extends %}) Thymeleaf [Experimental] (Uses th:replace, th:fragment, th:each)
-- Static HTML (Flat SSG)
-- JavaServer Faces (JSF) [Experimental] (Outputs a Maven Web App structure with Composite Components and Facelets Templating)
-- Laravel Blade [Experimental] (Uses @component, @slot, @extends)
-- Django [Experimental] (Uses {% include %}, {% block %}, {% extends %})
-- Thymeleaf [Experimental] (Uses th:replace, th:fragment, th:each)
-- Advanced Architecture Support: Resolves <an-component>, <an-layout>, <an-template>, and <an-inject> tags directly into native server-side equivalents.
-- Production Cleanup: Safely strips Andalina-specific scripts, styles, <an-data>, and <!-- an-comment --> tags from your final production artifacts.
-- Asset Copying: Automatically copies your images, CSS, and JS files to the target directory.
-- Auto Build on Save: Optionally watch your source files and automatically rebuild when changes are detected.
+### Features
 
-### How to Use:
+- **GUI Configuration**: Manage build targets visually in the VS Code sidebar without editing JSON by hand.
+- **Multi-Target Transpilation**:
+  - **Static HTML (Flat SSG)**: Flatten templates and components into production-ready static HTML.
+  - **JavaServer Faces (JSF)** `[Experimental]`: Compiles into a Maven Web App structure with Composite Components and Facelets.
+  - **Laravel Blade** `[Experimental]`: Transpiles components and slots to `@component`, `@slot`, and `@extends`.
+  - **Django** `[Experimental]`: Converts layouts and components into `{% include %}`, `{% block %}`, and `{% extends %}`.
+  - **Thymeleaf** `[Experimental]`: Translates tags into `th:replace`, `th:fragment`, and `th:each`.
+- **Production Cleanup**: Automatically removes development scripts, Andalina config tags, `<an-data>`, and `<!-- an-comment -->` notes.
+- **Asset Sync**: Copies images, CSS, and JS files to destination directories automatically.
+- **Auto-Build on Save**: Optionally watch source HTML files and automatically rebuild on save.
 
-1. Install the Andalina Builder extension in VS Code. 2. Look for the Andalina Build view in your VS Code Explorer sidebar. 3. Click the + icon to add a new Action. 4. Specify your Source Folder and Target Folder. 5. Check off one or more Target Platforms (e.g. Static HTML, JSF, Blade, etc.). 6. Click the play button on your Action in the sidebar to build your artifacts!
+### How to Use
 
+1. Install the **Andalina Builder** extension from the VS Code Marketplace or Open VSX Registry.
+2. Open the **Andalina Build** view in the VS Code Explorer sidebar.
+3. Click the **`+`** icon to add a new build action.
+4. Specify your **Source Folder** and **Target Folder**.
+5. Select one or more **Target Platforms** (e.g., Static HTML, Blade, Django, etc.).
+6. Click the **Play** button on your action to compile your project!

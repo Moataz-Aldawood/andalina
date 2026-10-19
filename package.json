@@ -1,6 +1,6 @@
 {
   "name": "andalina",
-  "version": "1.6.0",
+  "version": "1.8.0",
   "description": "A zero-dependency, client-side template engine bringing component architecture to vanilla HTML.",
   "main": "core/andalina.js",
   "files": [
@@ -29,6 +29,8 @@
   "author": "Moataz Aldawood",
   "license": "LGPL-3.0-or-later",
   "dependencies": {
+    "dotenv": "^17.4.2",
+    "node-fetch": "^3.3.2",
     "website-scraper": "^6.0.0"
   },
   "devDependencies": {

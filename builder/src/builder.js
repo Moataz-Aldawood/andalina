@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { parseHTML, DOMParser, HTMLElement, customElements } = require('linkedom');
 
 async function buildProject(srcDir, destDir, options = {}) {
+    const { parseHTML, DOMParser, HTMLElement, customElements } = await import('linkedom');
     console.log(`[Builder] Starting build for project: ${srcDir}`);
     console.log(`[Builder] Output directory: ${destDir}`);
 
