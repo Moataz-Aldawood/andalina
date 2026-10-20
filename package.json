@@ -1,6 +1,6 @@
 {
   "name": "andalina",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A zero-dependency, client-side template engine bringing component architecture to vanilla HTML.",
   "main": "core/andalina.js",
   "files": [

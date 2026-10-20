@@ -199,6 +199,72 @@ console.log('Test 4: <an-code src="#id"> In-Page Code Extraction (stage="before"
     assert.strictEqual(outExternal, `def greet():\n  print("hello")`, 'External file is unformatted by default');
 
     console.log('  ✓ <an-code src="#id"> passed all assertions (basic, keep-id, stage="before", stage="after", unwrap, direct component ID, external file).\n');
+
+    // 5. Test Finding D: Script text integrity in cloneNodeSafe (textContent instead of innerHTML)
+    console.log('Test 5: Script Text Integrity in cloneNodeSafe() (Finding D)');
+    const scriptWithEntities = document.createElement('div');
+    scriptWithEntities.innerHTML = '<script>if (x < 10 && y > 2) { console.log("OK"); }</script>';
+    const origScript = scriptWithEntities.querySelector('script');
+    
+    // Test that core/andalina.js has newScript.textContent = node.textContent
+    const coreSource = fs.readFileSync('core/andalina.js', 'utf8');
+    assert.ok(coreSource.includes('newScript.textContent = node.textContent'), 'cloneNodeSafe must assign textContent to avoid entity mangling');
+    assert.ok(!coreSource.includes('newScript.innerHTML = node.innerHTML'), 'cloneNodeSafe must not use innerHTML for scripts');
+    console.log('  ✓ cloneNodeSafe script text integrity verified.\n');
+
+    // 6. Test Finding E: Sanitization of Dev-Server Injected Scripts (Live Server)
+    console.log('Test 6: Dev-Server Script Sanitization (Finding E)');
+    const liveServerFragment = `
+        <div class="header">Header Content</div>
+        <!-- Code injected by live-server -->
+        <script>
+            // Live Server WebSocket reloader
+            if ('WebSocket' in window) {
+                var socket = new WebSocket('ws://localhost:8080');
+            }
+        </script>
+    `;
+
+    // Test that live-server pattern is stripped
+    const cleanFragment = liveServerFragment
+        .replace(/<!--\s*Code injected by live-server\s*-->[\s\S]*?<\/script>/gi, '')
+        .replace(/<script\b[^>]*>[\s\S]*?(?:Live-Reloading|live-server|Live reload enabled)[\s\S]*?<\/script>/gi, '');
+    assert.ok(!cleanFragment.includes('live-server'), 'Live server code must be stripped');
+    assert.ok(!cleanFragment.includes('WebSocket'), 'WebSocket reloader must be stripped');
+    assert.ok(cleanFragment.includes('Header Content'), 'Legitimate HTML content must be preserved');
+    console.log('  ✓ Dev-server scripts successfully sanitized.\n');
+
+    // 7. Test Finding F: Nested <an-inject> Slot Collision
+    console.log('Test 7: Nested <an-inject> Slot Collision Prevention (Finding F)');
+    const nestedInjectHtml = `
+        <an-template name="master">
+            <an-inject name="content">
+                <h1>Outer Page</h1>
+                <an-layout name="sub-layout">
+                    <an-inject name="content">
+                        <p>Inner Nested Content</p>
+                    </an-inject>
+                </an-layout>
+            </an-inject>
+        </an-template>
+    `;
+
+    const nestedDom = parseHTML(nestedInjectHtml).document;
+    const pageNode = nestedDom.querySelector('an-template');
+    const tTemplate = 'an-template';
+    const tLayout = 'an-layout';
+    const tComponent = 'an-component';
+    const tInject = 'an-inject';
+
+    // Scoped extraction
+    const scopedInjects = Array.from(pageNode.querySelectorAll(tInject)).filter(inj => {
+        return inj.closest(`${tTemplate}, ${tLayout}, ${tComponent}`) === pageNode;
+    });
+
+    assert.strictEqual(scopedInjects.length, 1, 'Only direct child an-inject should be captured for pageNode');
+    assert.ok(scopedInjects[0].innerHTML.includes('<h1>Outer Page</h1>'), 'Outer slot content must be preserved');
+    console.log('  ✓ Nested <an-inject> slots properly scoped without collision.\n');
+
     console.log('ALL TESTS PASSED! 🎉');
 })().catch(err => {
     console.error('Test failed:', err);

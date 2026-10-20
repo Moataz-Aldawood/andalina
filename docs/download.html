@@ -151,9 +151,9 @@
                      <h1 class="mb-4">Download Andalina</h1>
                      <p class="is-size-5 has-text-grey mb-5">Get the latest version of the core engine and default
                         configuration.</p>
-                     <a href="downloads/andalina-v1.8.0.zip" class="btn btn-primary mb-3"
+                     <a href="downloads/andalina-v1.8.1.zip" class="btn btn-primary mb-3"
                         style="font-size: 1.25rem; padding: 15px 30px;">
-                        <i class="ti-download mr-2"></i> Download v1.8.0 (.zip)
+                        <i class="ti-download mr-2"></i> Download v1.8.1 (.zip)
                      </a>
                      <p class="is-size-6 has-text-grey"><small>Includes <code>andalina.js</code> and
                            <code>andalina.config.json</code> &bull; Licensed under <strong>GNU LGPL-3.0</strong></small>
@@ -179,6 +179,35 @@
                   <div class="p-6 shadow rounded content mt-5">
                      <h2 class="mb-4 border-bottom pb-3">Changelog</h2>
                      <div class="mt-4">
+
+                        <!-- changelog post -->
+                        <h3 id="v1-8-1">v1.8.1 &ndash; Script Execution Integrity, Dev-Server Sanitization &amp; Nested Slot Scoping</h3>
+                        <p><strong>October 20, 2026</strong></p>
+                        <p>Bug fixes and stability improvements for embedded script execution, local dev-server compatibility, and nested slot scoping.</p>
+                        <div class="mt-5">
+                           <div class="badge added">Fixed</div>
+                           <ul>
+                              <li>
+                                 <strong>Script Text Integrity in Dynamic Injection:</strong> Fixed an issue in <code>cloneNodeSafe</code> where <code>.innerHTML</code> caused logical operators (<code>&amp;&amp;</code>, <code>&lt;</code>) inside <code>&lt;script&gt;</code> blocks to be HTML entity-encoded, leading to syntax errors during dynamic script execution. Cloned scripts now preserve raw code via verbatim <code>.textContent</code>.
+                              </li>
+                              <li>
+                                 <strong>Dev-Server Live Reloader Sanitization:</strong> Automatically detects and strips injected VS Code Live Server / WebSocket reloader scripts from fetched template and component fragments (<code>fetchFragment</code>), preventing redundant reloader executions and stopping development server scripts from leaking into <code>&lt;an-code&gt;</code> documentation blocks.
+                              </li>
+                              <li>
+                                 <strong>Nested Slot Collision Prevention:</strong> Scoped <code>&lt;an-inject&gt;</code> slot extraction to only direct children of the target template/layout/component container (<code>getDirectInjects</code>), ensuring inner slots with matching names (e.g. <code>name="content"</code>) never overwrite outer parent slots.
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="mt-5">
+                           <div class="badge updated">Updated</div>
+                           <ul>
+                              <li>
+                                 <strong>Andalina Builder &amp; VS Code Extension (v1.8.1):</strong> Bumped CLI builder and VS Code extension to v1.8.1 with updated engine bundle.
+                              </li>
+                           </ul>
+                        </div>
+
+                        <hr>
 
                         <!-- changelog post -->
                         <h3 id="v1-8-0">v1.8.0 &ndash; In-Page Demo Code Extraction &amp; Two-Stage Lifecycle</h3>

@@ -371,6 +371,9 @@ A structural wrapper that can be nested inside an `<an-template>` or within anot
 
 Like components, layouts use Andalina's **Structured Syntax**: wrap the file in an `<an-layout-def>` container, define optional metadata inside `<an-attributes>`, and place the structural markup inside `<an-body>`.
 
+> [!NOTE]
+> **Nested Slot Scoping**: In Andalina v1.8.1+, slot injections (`<an-inject>`) are strictly scoped to their immediate parent container (`<an-template>`, `<an-layout>`, or `<an-component>`). If a layout nests a child component that also defines an inner slot with the same name (e.g. `name="content"`), the inner slot will never collide with or overwrite the parent's content.
+
 #### Attributes:
 
 - `src` *(Optional)*: The exact path to the layout HTML/XHTML file.
@@ -571,6 +574,9 @@ Used to inject and safely escape source code inside documentation blocks—eithe
 
 > [!WARNING]
 > **Syntax Highlighting Warning**: If you are using a code highlighter like `highlight.js` or `Prism.js`, you must ensure it executes *after* your `<an-code>` blocks have finished fetching and injecting. For safe timing, see the [Third-Party JS Compatibility](#third-party-js-compatibility) section.
+
+> [!TIP]
+> **Dev-Server Script Sanitization**: When loading component or template files, any live-reloading scripts injected by local development servers (e.g. VS Code Live Server WebSocket reloaders) are automatically stripped so they never appear inside your code boxes.
 
 #### Attributes:
 

@@ -12,3 +12,13 @@
 - **Status**: resolved
 - **UAT**: [todo]
 
+## Issue 3: Script Entity Integrity, Dev-Server Sanitization, and Nested Slot Scoping (Findings D, E, F)
+
+- **Description**:
+  1. Fix script syntax errors caused by `.innerHTML` entity mangling (`&amp;&amp;`, `&lt;`) in `cloneNodeSafe` by using `.textContent`.
+  2. Strip VS Code Live Server / dev-server injected WebSocket reloader scripts in `fetchFragment` and ignore them in `cloneNodeSafe`.
+  3. Scope `<an-inject>` slot collection to direct children of `pageNode` / `targetNode` via `getDirectInjects` to prevent nested components/layouts from colliding with parent slots.
+- **Status**: resolved
+- **UAT**: [todo]
+
+

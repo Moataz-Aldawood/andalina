@@ -1,7 +1,7 @@
 /**
  * Andalina - Zero-dependency HTML template parser
  * A development-time tool for client-side HTML composition.
- * Version: 1.8.0
+ * Version: 1.8.1
  * License: GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)
  */
 (function() {
@@ -198,6 +198,23 @@
         return html.replace(/<((?:an-[a-z0-9_-]+))((?:\s+[^=>"']+(?:=(?:"[^"]*"|'[^']*'|[^>\s]+))?)*)\s*\/>/gi, '<$1$2></$1>');
     }
 
+    // Sanitizes local development-server reload scripts (e.g. VS Code Live Server WebSocket reloaders)
+    function sanitizeDevServerScripts(html) {
+        if (!html) return html;
+        return html
+            .replace(/<!--\s*Code injected by live-server\s*-->[\s\S]*?<\/script>/gi, '')
+            .replace(/<script\b[^>]*>[\s\S]*?(?:Live-Reloading|live-server|Live reload enabled)[\s\S]*?<\/script>/gi, '');
+    }
+
+    function isDevServerScript(scriptNode) {
+        if (!scriptNode) return false;
+        const text = scriptNode.textContent || scriptNode.innerHTML || '';
+        return text.includes('Code injected by live-server') || 
+               text.includes('Live-Reloading') || 
+               text.includes('Live reload enabled') || 
+               (text.includes('WebSocket') && text.includes('reload') && text.includes('refreshcss'));
+    }
+
     async function fetchFragment(url) {
         if (cache.has(url)) {
             return cache.get(url);
@@ -210,7 +227,8 @@
             }
             const response = await fetch(fetchUrl);
             if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-            const text = await response.text();
+            let text = await response.text();
+            text = sanitizeDevServerScripts(text);
             cache.set(url, text);
             return text;
         } catch (error) {
@@ -221,11 +239,15 @@
 
     // Safely clones a node. If it's a script, it creates a NEW script tag 
     // so the browser executes it when appended to the DOM.
+    // Uses .textContent (not .innerHTML) to avoid entity mangling (&amp;&amp; / &lt;) in script bodies.
     function cloneNodeSafe(node) {
         if (node.tagName === 'SCRIPT') {
+            if (isDevServerScript(node)) {
+                return document.createComment(' [Andalina] Stripped dev-server live reload script ');
+            }
             const newScript = document.createElement('script');
             Array.from(node.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-            newScript.innerHTML = node.innerHTML;
+            newScript.textContent = node.textContent;
             return newScript;
         }
         
@@ -233,9 +255,13 @@
         // Recursively fix nested scripts
         const scripts = clone.querySelectorAll ? clone.querySelectorAll('script') : [];
         scripts.forEach(script => {
+            if (isDevServerScript(script)) {
+                script.remove();
+                return;
+            }
             const newScript = document.createElement('script');
             Array.from(script.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-            newScript.innerHTML = script.innerHTML;
+            newScript.textContent = script.textContent;
             script.replaceWith(newScript);
         });
         return clone;
@@ -364,7 +390,26 @@
         return props;
     }
 
-
+    // Scopes <an-inject> slot extraction to direct children of containerNode,
+    // preventing nested components or layouts from colliding with parent slot names.
+    function getDirectInjects(containerNode) {
+        if (!containerNode || !containerNode.querySelectorAll) return [];
+        const selector = `${tTemplate}, ${tLayout}, ${tComponent}`;
+        return Array.from(containerNode.querySelectorAll(tInject)).filter(inj => {
+            if (inj.closest) {
+                return inj.closest(selector) === containerNode;
+            }
+            let parent = inj.parentElement;
+            while (parent && parent !== containerNode) {
+                const tag = parent.tagName ? parent.tagName.toLowerCase() : '';
+                if (tag === tTemplate || tag === tLayout || tag === tComponent) {
+                    return false;
+                }
+                parent = parent.parentElement;
+            }
+            return parent === containerNode;
+        });
+    }
 
     async function processNodes(context, parentTrackerNode = null) {
         let iterations = 0;
@@ -583,8 +628,8 @@
                     };
                     if (parentTrackerNode) parentTrackerNode.children.push(trackerNode);
 
-                    // Collect <an-inject> blocks from the child template
-                    const injects = Array.from(pageNode.querySelectorAll(tInject));
+                    // Collect <an-inject> blocks from the child template (scoped to direct children)
+                    const injects = getDirectInjects(pageNode);
                     const blocks = {};
                     injects.forEach(inj => {
                         const name = inj.getAttribute('name');
@@ -712,7 +757,7 @@
                         layoutContainer = bodyNode;
                     }
 
-                    const injects = Array.from(targetNode.querySelectorAll(tInject));
+                    const injects = getDirectInjects(targetNode);
                     const blocks = {};
                     injects.forEach(inj => {
                         const name = inj.getAttribute('name');
@@ -1239,7 +1284,7 @@
         </style>
         <div id="andalina-dt-header">
             <span>🌳 Andalina DevTools</span>
-            <span style="font-size: 11px; color: #aaa;">v1.8.0</span>
+            <span style="font-size: 11px; color: #aaa;">v1.8.1</span>
         </div>
         <div id="andalina-dt-body"></div>`;
         

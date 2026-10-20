@@ -432,6 +432,7 @@
                         </p>
                         <p>Like components, layouts use Andalina's <strong>Structured Syntax</strong>: wrap the file in an <code>&lt;an-layout-def&gt;</code> container, specify optional metadata in an <code>&lt;an-attributes&gt;</code> block, and place your structural markup inside an <code>&lt;an-body&gt;</code> block.
                         </p>
+                        <div class="andalina-inline-note"><strong>Note on Nested Slots:</strong> In Andalina v1.8.1+, slot injections (<code>&lt;an-inject&gt;</code>) are strictly scoped to their immediate parent container. If a page or layout nests a child component that also defines an inner slot with the same name (e.g. <code>name="content"</code>), the inner slot will never collide with or overwrite the parent's content.</div>
 
                         <h4>Attributes:</h4>
                         <ul>
@@ -500,6 +501,7 @@
                            For a detailed explanation of this async race condition and how to fix it, please see the <a
                               href="#async-compatibility"><strong>Third-Party JS Compatibility</strong></a> section.
                         </div>
+                        <p style="margin-top: 15px;"><em>Note on Dev-Server Scripts:</em> When loading component or template files, any live-reloading scripts injected by local development servers (e.g. VS Code Live Server WebSocket reloaders) are automatically stripped so they never appear inside your code boxes.</p>
 
 
                         <h4>Attributes:</h4>
