@@ -186,6 +186,9 @@
                      <a href="#repeat">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-repeat&gt;</span></a>
                   </li>
+                  <li title="Architecture: Layout vs Component" class="sidelist">
+                     <a href="#architecture-guide">Architecture: Layout vs Component</a>
+                  </li>
                   <li title="&lt;an-component&gt;" class="sidelist">
                      <a href="#components">Tag <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                            class="an-tag">-component&gt;</span></a>
@@ -377,14 +380,59 @@
                            class="rendered-html-block"><code class="language-html"><an-code src="codes/an-repeat-data-rendered-html-1.txt"></an-code></code></pre>
                      </div>
 
+                     <div id="architecture-guide">
+                        <h3>Architecture Guide: <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span class="an-tag">-layout&gt;</span> vs <span class="an-tag">&lt;</span><span class="an-prefix">an</span><span class="an-tag">-component&gt;</span></h3>
+                        <p>When structuring your application, choosing between an <code>&lt;an-layout&gt;</code> and an <code>&lt;an-component&gt;</code> follows a clean separation of concerns:</p>
+                        
+                        <div class="table-container my-4">
+                           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                              <thead>
+                                 <tr>
+                                    <th>Concept</th>
+                                    <th><code>&lt;an-layout&gt;</code></th>
+                                    <th><code>&lt;an-component&gt;</code></th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr>
+                                    <td><strong>Primary Role</strong></td>
+                                    <td><strong>Content Holder &amp; Structural Organizer</strong></td>
+                                    <td><strong>Discrete, Customizable UI Block</strong></td>
+                                 </tr>
+                                 <tr>
+                                    <td><strong>Purpose</strong></td>
+                                    <td>Frames, positions, and organizes dynamic content.</td>
+                                    <td>Self-contained, bounded UI element with a defined shape.</td>
+                                 </tr>
+                                 <tr>
+                                    <td><strong>Primary Mechanism</strong></td>
+                                    <td>Slots (<code>&lt;an-place&gt;</code> &amp; <code>&lt;an-inject&gt;</code>)</td>
+                                    <td>Attributes &amp; Props (<code>&lt;an-attributes&gt;</code> &amp; dynamic props)</td>
+                                 </tr>
+                                 <tr>
+                                    <td><strong>Directory</strong></td>
+                                    <td><code>layouts/</code> (<code>layoutsPath</code>)</td>
+                                    <td><code>components/</code> (<code>componentsPath</code>)</td>
+                                 </tr>
+                                 <tr>
+                                    <td><strong>Typical Examples</strong></td>
+                                    <td>Page shells, grid columns, sections, sidebars, accordions, tabs, dialog containers</td>
+                                    <td>Buttons, badges, form inputs, toggles, tab-headers, avatars, stat chips</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+
+                        <div class="andalina-inline-note">
+                           <strong>Rule of Thumb:</strong> If its primary job is to <strong>hold, arrange, and frame other content</strong> (such as a Grid, Accordion, Sidebar, or Section container), make it an <code>&lt;an-layout&gt;</code>. If it is a <strong>discrete, reusable building block</strong> configured by attributes (like a Button, Input, or Badge), make it an <code>&lt;an-component&gt;</code>.
+                        </div>
+                     </div>
+
                      <div id="components">
 
                         <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                               class="an-tag">-component&gt;</span></h3>
-                        <p>Used to import reusable components and pass dynamic properties via attributes. Variables
-                           inside the component are defined using
-                           <code>&lt;an-attribute&gt;</code>.
-                        </p>
+                        <p>Used to instantiate reusable, self-contained UI building blocks (buttons, badges, inputs, toggles, cards, avatars) and configure them via attributes/props. Variables inside the component are defined using <code>&lt;an-attribute&gt;</code>.</p>
 
                         <h4>Attributes:</h4>
                         <ul>
@@ -410,7 +458,7 @@
                               missing.</li>
                         </ul>
 
-                        <h4>Example:</h4>
+                        <h4>Example 1: Prop-Driven Component (user-card.html)</h4>
                         <p><strong>1. The Component (user-card.html)</strong></p>
                         <pre><code class="language-html"><an-code src="codes/an-component-example-01.txt"></an-code></code></pre>
 
@@ -420,16 +468,27 @@
                         <h4>Rendered HTML:</h4>
                         <pre
                            class="rendered-html-block"><code class="language-html"><an-code src="codes/an-component-rendered-html-1.txt"></an-code></code></pre>
+
+                        <h4 class="mt-5">Example 2: Slot-Injected Component (custom-btn.html)</h4>
+                        <p>While components are predominantly configured via attributes and props, they can also define internal <code>&lt;an-place&gt;</code> slots for cases requiring rich markup injection (such as custom button icons or action bars). Callers populate these slots using <code>&lt;an-inject&gt;</code>:</p>
+
+                        <p><strong>1. The Component (custom-btn.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-component-slot-example-01.txt"></an-code></code></pre>
+
+                        <p><strong>2. The Call (index.html)</strong></p>
+                        <pre><code class="language-html"><an-code src="codes/an-component-slot-example-02.txt"></an-code></code></pre>
+
+                        <div class="andalina-inline-note">
+                           <strong>Strict Slot Scoping:</strong> In Andalina v1.8.1+, <code>&lt;an-inject&gt;</code> tags are strictly scoped to their immediate parent <code>&lt;an-component&gt;</code>, preventing nested slots from colliding.
+                        </div>
                      </div>
 
                      <div id="layout">
 
                         <h3><span class="an-tag">&lt;</span><span class="an-prefix">an</span><span
                               class="an-tag">-layout&gt;</span></h3>
-                        <p>A structural wrapper that can be nested inside an <code>&lt;an-template&gt;</code> or within
-                           another layout. It provides a reusable shell (like a sidebar grid or a card container) and
-                           uses <code>&lt;an-place&gt;</code> slots to accept content from children.
-                        </p>
+                        <p>The <strong>Content Holder &amp; Structural Organizer</strong> of your application. Layouts provide reusable structural shells (like dashboard grids, sidebar scaffolding, two-column form sections, accordions/tabs, or card containers) and can be nested inside <code>&lt;an-template&gt;</code> or within another layout.</p>
+                        <p>Layouts use <code>&lt;an-place&gt;</code> slots to accept arbitrary content injected by the caller via <code>&lt;an-inject&gt;</code>. Layouts can also accept configuration attributes via <code>&lt;an-attributes&gt;</code>.</p>
                         <p>Like components, layouts use Andalina's <strong>Structured Syntax</strong>: wrap the file in an <code>&lt;an-layout-def&gt;</code> container, specify optional metadata in an <code>&lt;an-attributes&gt;</code> block, and place your structural markup inside an <code>&lt;an-body&gt;</code> block.
                         </p>
                         <div class="andalina-inline-note"><strong>Note on Nested Slots:</strong> In Andalina v1.8.1+, slot injections (<code>&lt;an-inject&gt;</code>) are strictly scoped to their immediate parent container. If a page or layout nests a child component that also defines an inner slot with the same name (e.g. <code>name="content"</code>), the inner slot will never collide with or overwrite the parent's content.</div>

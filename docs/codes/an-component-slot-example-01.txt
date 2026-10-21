@@ -1,0 +1,11 @@
+<an-component-def>
+    <an-attributes>
+        <an-attribute name="variant" default-value="primary" />
+    </an-attributes>
+    <an-body>
+        <button class="btn btn-{{variant}}">
+            <an-place name="icon"><span>⚡</span></an-place>
+            <an-place name="label">Default Button</an-place>
+        </button>
+    </an-body>
+</an-component-def>

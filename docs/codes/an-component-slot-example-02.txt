@@ -1,0 +1,10 @@
+<!-- 1. Overrides label only (icon keeps default fallback ⚡) -->
+<an-component name="custom-btn" variant="outline">
+    <an-inject name="label">Deploy Application</an-inject>
+</an-component>
+
+<!-- 2. Overrides both icon and label -->
+<an-component name="custom-btn" variant="primary">
+    <an-inject name="icon"><svg width="16" height="16"><use href="icons.svg#rocket"></use></svg></an-inject>
+    <an-inject name="label">Launch Production</an-inject>
+</an-component>

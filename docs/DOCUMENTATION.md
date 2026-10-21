@@ -17,6 +17,7 @@
   - [`<an-include>`](#an-include)
   - [`<an-data>`](#an-data)
   - [`<an-repeat>`](#an-repeat)
+  - [Architecture: `<an-layout>` vs `<an-component>`](#architecture-an-layout-vs-an-component)
   - [`<an-component>`](#an-component)
   - [`<an-layout>`](#an-layout)
   - [`<an-template>`](#an-template)
@@ -279,9 +280,26 @@ Used to loop content dynamically. You can either repeat content a specific numbe
 
 ---
 
+### Architecture: `<an-layout>` vs `<an-component>`
+
+When structuring an application, choosing between an `<an-layout>` and an `<an-component>` follows a clear separation of concerns:
+
+| Concept | `<an-layout>` | `<an-component>` |
+| :--- | :--- | :--- |
+| **Primary Role** | **Content Holder & Structural Organizer** | **Discrete, Customizable UI Block** |
+| **Purpose** | Frames, positions, and organizes dynamic content. | Self-contained, bounded UI element with a defined shape. |
+| **Primary Mechanism** | Slots (`<an-place>` & `<an-inject>`) | Attributes & Props (`<an-attributes>` & dynamic props) |
+| **Directory** | `layouts/` (`layoutsPath`) | `components/` (`componentsPath`) |
+| **Typical Examples** | Page shells, grid columns, sections, sidebars, accordions, tabs, dialog containers | Buttons, badges, form inputs, toggles, tab-headers, avatars, stat chips |
+
+> [!TIP]
+> **Rule of Thumb**: If its primary job is to **hold, arrange, and frame other content** (such as a Grid, Accordion, Sidebar, or Section container), make it an **`<an-layout>`**. If it is a **discrete, reusable building block** configured by attributes (like a Button, Input, or Badge), make it an **`<an-component>`**.
+
+---
+
 ### `<an-component>`
 
-Used to instantiate reusable components and pass dynamic properties via attributes.
+Used to instantiate reusable, self-contained UI building blocks (buttons, badges, inputs, toggles, cards, avatars) and configure them via attributes/props.
 
 #### Attributes:
 
@@ -301,7 +319,7 @@ Inside `<an-attributes>`, use `<an-attribute>` to declare properties:
 - `default-value` *(Optional)*: A fallback value if the prop is omitted by the caller.
 - `mandatory` *(Optional)*: Set to `"true"` to emit a warning if the prop is not provided.
 
-#### Example:
+#### Example 1: Prop-Driven Component (`user-card.html`)
 
 **1. The Component (`user-card.html`)**
 
@@ -363,11 +381,51 @@ Inside `<an-attributes>`, use `<an-attribute>` to declare properties:
 </html>
 ```
 
+#### Example 2: Slot-Injected Component (`custom-btn.html`)
+
+While components are predominantly driven by attribute props, components can also define `<an-place>` slots for cases requiring rich markup injection (e.g. custom button icons or actions). Callers populate these slots using `<an-inject>`.
+
+**1. The Component (`custom-btn.html`)**
+
+```html
+<an-component-def>
+    <an-attributes>
+        <an-attribute name="variant" default-value="primary" />
+    </an-attributes>
+    <an-body>
+        <button class="btn btn-{{variant}}">
+            <an-place name="icon"><span>⚡</span></an-place>
+            <an-place name="label">Default Button</an-place>
+        </button>
+    </an-body>
+</an-component-def>
+```
+
+**2. The Calling Page (`index.html`)**
+
+```html
+<!-- Overrides label only (icon keeps default fallback ⚡) -->
+<an-component name="custom-btn" variant="outline">
+    <an-inject name="label">Deploy Application</an-inject>
+</an-component>
+
+<!-- Overrides both icon and label -->
+<an-component name="custom-btn" variant="primary">
+    <an-inject name="icon"><svg width="16" height="16"><use href="icons.svg#rocket"></use></svg></an-inject>
+    <an-inject name="label">Launch Production</an-inject>
+</an-component>
+```
+
+> [!NOTE]
+> **Strict Slot Scoping**: In Andalina v1.8.1+, `<an-inject>` tags are strictly scoped to their immediate parent `<an-component>`, preventing nested slots from colliding.
+
 ---
 
 ### `<an-layout>`
 
-A structural wrapper that can be nested inside an `<an-template>` or within another layout. It provides a reusable shell (like a dashboard grid, sidebar layout, or split container) and uses `<an-place>` slots to accept content injected via `<an-inject>`.
+The **Content Holder & Structural Organizer** of your application. Layouts provide reusable structural shells (like dashboard grids, sidebar scaffolding, two-column form sections, accordions/tabs, or card containers) and can be nested inside `<an-template>` or within another layout.
+
+Layouts use `<an-place>` slots to accept arbitrary content injected by the caller via `<an-inject>`. Layouts can also accept configuration attributes via `<an-attributes>`.
 
 Like components, layouts use Andalina's **Structured Syntax**: wrap the file in an `<an-layout-def>` container, define optional metadata inside `<an-attributes>`, and place the structural markup inside `<an-body>`.
 
